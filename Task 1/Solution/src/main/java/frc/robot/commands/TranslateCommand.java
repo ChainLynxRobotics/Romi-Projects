@@ -1,7 +1,8 @@
 package frc.robot.commands;
 
+import static frc.robot.Constants.DriveConstants.*;
+
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.subsystems.RomiDrivetrain;
 
 public class TranslateCommand extends Command {
@@ -22,7 +23,7 @@ public class TranslateCommand extends Command {
 
     @Override
     public void execute() {
-        drive.arcadeDrive(Constants.kDefaultDriveSpeed * Math.signum(dist), 0);
+        drive.arcadeDrive(kDefaultDriveSpeed * Math.signum(dist), 0);
     }
 
     @Override

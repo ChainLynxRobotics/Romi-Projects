@@ -15,17 +15,37 @@ Once you have used the WPILib VSCode extension to create a new [Romi template (n
 
 ```
 public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
-    m_diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
+    diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
 }
 ```
-Arcade drive is a method of m_diffDrive, which is an instance of the RomiDrivetrain class. The parameters of arcade drive are xaxisSpeed, the speed of translation, and zaxisRotate, the speed at which we want the robot to rotate. In a differential drivetrain, the difference in the magnitudes of the individual wheel's speeds determines the speed at which the robot will rotate.
 
-If you right click on arcadeDrive called on the RomiDrivetrain instance and click 'go to definition', you can view the internals of WPILib's differential drive implementation for Romis. Under the hood, the speeds set on each wheel are:
+#### Naming Conventions
+At ChainLynx, we use the following naming conventions
+
+```
+// For Objects,
+private Subsystem subsystem;
+
+// For Constants,
+
+public static final kMaxVelocity;
+
+// For Fields,
+
+private double multiplier;
+
+In other teams or example code, you may seem conventions like m_ObjectName for objects, and other slight variations.
+Always remember to read the type and examine the usage to make sure you know what your looking at.
+
+Arcade drive is a method of diffDrive, which is an instance of the RomiDrivetrain class. The parameters of arcade drive are xaxisSpeed, the speed of translation, and zaxisRotate, the speed at which we want the robot to rotate. In a differential drivetrain, the difference in the magnitudes of the individual wheel's speeds determines the speed at which the robot will rotate, and the ratios of the speed of each wheel can be used to determine the ratio of translational velocity vs rotational velocity.
+
+If you right click on arcadeDrive called on the RomiDrivetrain instance and click 'go to definition' (F12 Shortcut), you can view the internals of WPILib's differential drive implementation for Romis. Under the hood, the speeds set on each wheel are:
 ```
 double leftSpeed = xSpeed - zRotation;
 double rightSpeed = xSpeed + zRotation;
 ```
-Intuitively, when one wheel is spinning faster than the other, the robot will rotate in the direction of the wheel that's spinning slower.
+When reading robot code, understanding what each of the variables you are looking is, what their value should be, and where that value is coming from. Look at your code so far and try to figure out what each of these values, taking into account that romis have a diffdrive
+T, when one wheel is spinning faster than the other, the robot will rotate in the direction of the wheel that's spinning slower.
 
 Now, in the commands folder, create a class called DriveCommand that extends the generic Command object. We want this command to use joystick input to move the Romi around. The methods in the body of this command are from its parent class, Command, so we use the @Override annotation to signify that we're inheriting logic from the parent class.
 
@@ -65,13 +85,13 @@ The DriveCommand’s constructor should have the following arguments:
 A DoubleSupplier is a functional interface that generates doubles dynamically (when requested). Primitives like doubles won’t change once they’re passed in, but suppliers contain code that gives new doubles on the fly. Therefore, when the joystick input changes, we don’t have to create a whole new command object just to change the command inputs!
 
 ```
-private final RomiDrivetrain m_drive;
+private final RomiDrivetrain drivetrain;
 private final DoubleSupplier speed;
 private final DoubleSupplier rot;
 
 public DriveCommand(
     RomiDrivetrain drive, DoubleSupplier speed, DoubleSupplier rot) {
-    m_drive = drive;
+    this.drive = drive;
     this.speed = speed;
     this.rot = rot;
 
@@ -84,21 +104,21 @@ In execute, call the arcadeDrive method with speed and rot as inputs
 ```
 @Override
 public void execute() {
-    m_drive.arcadeDrive(speed.getAsDouble(), rot.getAsDouble());
+    drive.arcadeDrive(speed.getAsDouble(), rot.getAsDouble());
 }
 ```
 
 Moving into the constructor of RobotContainer, initialize RomiDrivetrain as a variable and create a new DriveCommand. Now, initialize a Joystick() in RobotContainer, and pass in the controller X and Y values into DriveCommand through the earlier suppliers. 
 
 ```
-private final RomiDrivetrain m_romiDrivetrain;
-private final DriveCommand m_autoCommand;
+private final RomiDrivetrain romiDrivetrain;
+private final DriveCommand autoCommand;
 private final Joystick stick = new Joystick(0);
 
 /** The container for the robot. Contains subsystems, OI devices, and commands. */
 public RobotContainer() {
-    m_romiDrivetrain = new RomiDrivetrain();
-    m_autoCommand = new DriveCommand(m_romiDrivetrain, () -> stick.getRawAxis(0), () -> stick.getRawAxis(1));
+    romiDrivetrain = new RomiDrivetrain();
+    autoCommand = new DriveCommand(romiDrivetrain, () -> stick.getRawAxis(0), () -> stick.getRawAxis(1));
     // Configure the button bindings
     configureButtonBindings();
 }
@@ -109,7 +129,7 @@ This code instantiates a RomiDrivetrain object, a Joystick object on port 0 of D
 
 Then, in the constructor of RobotContainer, set this command to be the default command for the subsystem, so it will always be running unless it is interrupted by another command. This is why we don’t need an isFinished condition for DriveCommand because it will only ever be interrupted, not terminated. 
 ```
-m_romiDrivetrain.setDefaultCommand(m_command);
+romiDrivetrain.setDefaultCommand(command);
 ```
 
 When the command runs, it should now automatically reference the controller values and respond to joystick input. Congratulations, this is now a functioning robot!
@@ -160,14 +180,14 @@ We use absolute values in the isFinished method in the case the inputted distanc
 #### Rotation command
 This command is logically very similar to the translation command. We need to define a RomiGyro object in the drivetrain subsystem, as well as a function to get its angle, which is in degrees by default. 
 ```
-private final RomiGyro m_gyro = new RomiGyro();
+private final RomiGyro gyro = new RomiGyro();
 
 public double getAngle() {
-    return m_gyro.getAngle();
+    return gyro.getAngle();
 }
 
 public void resetGyro() {
-    m_gyro.reset();
+    gyro.reset();
 }
 ```
 
@@ -199,8 +219,8 @@ private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
 In the constructor of Robot Container, add instances of your new commands as options of the auto chooser.
 ```
-autoChooser.addOption("drive 6 inches", new TranslateCommand(m_romiDrivetrain, 6));
-autoChooser.addOption("turn 180", new TurnCommand(m_romiDrivetrain, 180));
+autoChooser.addOption("drive 6 inches", new TranslateCommand(romiDrivetrain, 6));
+autoChooser.addOption("turn 180", new TurnCommand(romiDrivetrain, 180));
 ```
 
 Great job finishing your first task!

@@ -1,7 +1,8 @@
 package frc.robot.commands;
 
+import static frc.robot.Constants.DriveConstants.*;
+
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.subsystems.RomiDrivetrain;
 
 public class TurnCommand extends Command {
@@ -11,7 +12,6 @@ public class TurnCommand extends Command {
     public TurnCommand(RomiDrivetrain drive, double angle) {
         this.drive = drive;
         this.angle = angle;
-
         addRequirements(drive);
     }
 
@@ -22,7 +22,7 @@ public class TurnCommand extends Command {
 
     @Override
     public void execute() {
-        drive.arcadeDrive(0, Constants.kDefaultRotSpeed * Math.signum(angle));
+        drive.arcadeDrive(0, kDefaultRotSpeed * Math.signum(angle));
     }
 
     @Override

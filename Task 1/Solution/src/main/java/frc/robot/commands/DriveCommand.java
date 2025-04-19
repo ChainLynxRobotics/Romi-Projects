@@ -5,13 +5,13 @@ import frc.robot.subsystems.RomiDrivetrain;
 import java.util.function.DoubleSupplier;
 
 public class DriveCommand extends Command {
-  private final RomiDrivetrain m_drive;
+  private final RomiDrivetrain drive;
   private final DoubleSupplier speed;
   private final DoubleSupplier rot;
 
   public DriveCommand(
       RomiDrivetrain drive, DoubleSupplier speed, DoubleSupplier rot) {
-    m_drive = drive;
+    this.drive = drive;
     this.speed = speed;
     this.rot = rot;
     
@@ -26,7 +26,7 @@ public class DriveCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_drive.arcadeDrive(speed.getAsDouble(), rot.getAsDouble());
+    drive.arcadeDrive(speed.getAsDouble(), rot.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.

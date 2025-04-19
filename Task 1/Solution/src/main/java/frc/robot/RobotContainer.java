@@ -22,21 +22,21 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final RomiDrivetrain m_romiDrivetrain;
-  private final DriveCommand m_command;
+  private final RomiDrivetrain romiDrivetrain;
+  private final DriveCommand driveCommand;
 
-  private final Joystick stick = new Joystick(0);
+  private final Joystick joystick = new Joystick(0);
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    m_romiDrivetrain = new RomiDrivetrain();
-    m_command = new DriveCommand(m_romiDrivetrain, () -> stick.getRawAxis(0), () -> stick.getRawAxis(1));
-    m_romiDrivetrain.setDefaultCommand(m_command);
+    romiDrivetrain = new RomiDrivetrain();
+    driveCommand = new DriveCommand(romiDrivetrain, () -> joystick.getRawAxis(0), () -> joystick.getRawAxis(1));
+    romiDrivetrain.setDefaultCommand(driveCommand);
 
 
-    autoChooser.addOption("drive 6 inches", new TranslateCommand(m_romiDrivetrain, 6));
-    autoChooser.addOption("turn 180", new TurnCommand(m_romiDrivetrain, 180));
+    autoChooser.addOption("drive 6 inches", new TranslateCommand(romiDrivetrain, 6));
+    autoChooser.addOption("turn 180", new TurnCommand(romiDrivetrain, 180));
 
     // Configure the button bindings
     configureButtonBindings();

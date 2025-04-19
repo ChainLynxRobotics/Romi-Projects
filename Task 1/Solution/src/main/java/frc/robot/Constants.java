@@ -13,6 +13,10 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public static final double kDefaultDriveSpeed = 0.2;
-    public static final double kDefaultRotSpeed = 0.5;
-}
+    public final class DriveConstants {
+        public static final double kDefaultDriveSpeed = 0.2; // % of max power in volts, 0-1
+        public static final double kDefaultRotSpeed = 0.5; // // % of max power in volts, 0-1
+        public static final double kCountsPerRevolution = 1440.0;
+        public static final double kWheelDiameterInch = 2.75591; // 70 mm
+    }
+}   
