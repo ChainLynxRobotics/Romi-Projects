@@ -35,6 +35,7 @@ public class RomiDrivetrain extends SubsystemBase {
     leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterInch) / kCountsPerRevolution);
     rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterInch) / kCountsPerRevolution);
     resetEncoders();
+    resetGyro();
 
     // Invert right side since motor is flipped
     rightMotor.setInverted(true);
