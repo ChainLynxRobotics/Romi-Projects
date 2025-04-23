@@ -29,6 +29,12 @@ private double multiplier;
 
 In other teams or example code, you may seem conventions like m_ObjectName for objects, and other slight variations.
 Always remember to read the type and examine the usage to make sure you know what your looking at.
+#### Units
+[The Units library](https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-units.html) alows you have variables like ```Distance kElevatorHight``` instead of ```double kElevatorHightMeters``` The advantage of this you you can get the hight in meters but also in inches or feet, the other main reason to use the units library is to avoid mismatched units like saying that a measurment in feet is in meters like what happened with the [Mars Climate Orbiter](https://en.wikipedia.org/wiki/Mars_Climate_Orbiter#Cause_of_failure).
+
+You can create a measure(such as Distance or Angle) using the ```.of``` meathod on a unit eg. ```Distance kBumperWidth = Inches.of(23.5)``` You can also manipulate a measure with meathods like ```.plus``` or ```.times```, and you can compare them with meathods like ```.lt```(less than) or ```.gte```(greater than or equal to).
+
+To use the units library you can import ```import static edu.wpi.first.units.Units.*;``` for the units like ```Inches``` or ```Rotations```, and ```import edu.wpi.first.units.measure.*;``` for measures like ```Distance``` or ```Angle```.
 #### Drivetrain
 Once you have used the WPILib VSCode extension to create a new [Romi template (not example) command-based project](https://docs.wpilib.org/en/stable/docs/romi-robot/programming-romi.html), look at RomiDrivetrain.java in the subsystems folder. For tank drivetrains like Romi, which can’t turn and move back and forth at the same time, we use arcade drive (try to find this method) to control the Romis. 
 
