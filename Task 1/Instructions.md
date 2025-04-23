@@ -1,17 +1,17 @@
 # Task 1: Controlling Romi Drivetrain and Sensors
 
-### Objectives 
+## Objectives 
 Off the template command-based Romi project, create a command that will allow joystick or keyboard input to control the Romi drivetrain. Create commands to drive the Romi forward and rotate it a certain amount.
 
-### Resources
+## Resources
 - [WPILib Command based programming structure](https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html)
 - [The anatomy of a command](https://github.com/wpilibsuite/allwpilib/blob/main/wpilibNewCommands/src/main/java/edu/wpi/first/wpilibj2/command/Command.java)
 - [WPILib Romi programming docs](https://docs.wpilib.org/en/stable/docs/romi-robot/programming-romi.html)
 - [WPILib PID controllers](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/pidcontroller.html)
 
 
-### Task Details - Part 1
-#### Naming Conventions
+## Task Details - Part 1
+### Naming Conventions
 At ChainLynx, we use the following naming conventions
 
 ```
@@ -29,7 +29,7 @@ private double multiplier;
 
 In other teams or example code, you may seem conventions like m_ObjectName for objects, and other slight variations.
 Always remember to read the type and examine the usage to make sure you know what your looking at.
-#### Units
+### Units
 [The Units library](https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-units.html) alows you have variables like ```Distance kElevatorHight``` instead of ```double kElevatorHightMeters``` The advantage of this you you can get the hight in meters but also in inches or feet, the other main reason to use the units library is to avoid mismatched units like saying that a measurment in feet is in meters like what happened with the [Mars Climate Orbiter](https://en.wikipedia.org/wiki/Mars_Climate_Orbiter#Cause_of_failure).
 
 You can create a measure(such as Distance or Angle) using the ```.of``` meathod on a unit eg. ```Distance kBumperWidth = Inches.of(23.5)``` You can also manipulate a measure with meathods like ```.plus``` or ```.times```, and you can compare them with meathods like ```.lt```(less than) or ```.gte```(greater than or equal to).
@@ -54,7 +54,10 @@ double rightSpeed = xSpeed + zRotation;
 When reading robot code, understanding what each of the variables you are looking is, what their value should be, and where that value is coming from. Look at your code so far and try to figure out what each of these values, taking into account that romis have a diffdrive
 T, when one wheel is spinning faster than the other, the robot will rotate in the direction of the wheel that's spinning slower.
 
-Now, in the commands folder, create a class called DriveCommand that extends the generic Command object. We want this command to use joystick input to move the Romi around. The methods in the body of this command are from its parent class, Command, so we use the @Override annotation to signify that we're inheriting logic from the parent class.
+### Commands
+In WPILib there are two ways of declaring a command the first is more verbose but gives you a better idea of how a command functions under the hood.
+
+To create the first type of commmand, in the commands folder, create a class called DriveCommand that extends the generic Command object. We want this command to use joystick input to move the Romi around. The methods in the body of this command are from its parent class, Command, so we use the @Override annotation to signify that we're inheriting logic from the parent class.
 
 ```
 public class DriveCommand extends Command {
@@ -132,7 +135,13 @@ public RobotContainer() {
 ```
 It is often good style to finish object initalization in the constructor of the class you're coding, as your more explicitly specifying that you're initializing those objects when the class itself is being initialized. 
 
-This code instantiates a RomiDrivetrain object, a Joystick object on port 0 of Driver Station, and the Drive Command you just started to create. Note that by using () ->, which is an [anonymous function](https://www.w3schools.com/java/java_lambda.asp), you are turning a regular double into a Double Supplier. By calling getRawAxis, you can access the x, y, z, and w axes of a given joystick.
+This code instantiates a RomiDrivetrain object, a Joystick object on port 0 of Driver Station, and the Drive Command you just started to create. Note that by using ```() ->```, which is an [anonymous function](https://www.w3schools.com/java/java_lambda.asp), you are turning a regular double into a Double Supplier. By calling getRawAxis, you can access the x, y, z, and w axes of a given joystick.
+
+However this code in most cases is overkill and can be acheived in a much simpler manner by using [command compositions](https://docs.wpilib.org/en/stable/docs/software/commandbased/command-compositions.html). When you are using command compositions it can usaly be read like English, the drive command with command compositions looks like this.
+```
+run(() -> romiDrivetrain.arcadeDrive(joystick.getRawAxis(0), joystick.getRawAxis(1)), romiDrivetrain).finallyDo(() -> romiDrivetrain.arcadeDrive(0, 0))
+```
+When reading this composition the run function creates a command that will call the function it is given every loop, in our case it will call arcade drive with the joysticks inputs. The reason that we dont need to use a double supplier here is because the function is a suplying in itself, so the joystick inputs will still be updated. The finallyDo at the end will call its function when the command is ended or interupted, so we give it a function to stop the motors on the romi.
 
 Then, in the constructor of RobotContainer, set this command to be the default command for the subsystem, so it will always be running unless it is interrupted by another command. This is why we don’t need an isFinished condition for DriveCommand because it will only ever be interrupted, not terminated. 
 ```

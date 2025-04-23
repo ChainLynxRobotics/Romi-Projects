@@ -6,6 +6,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -26,6 +28,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final RomiDrivetrain romiDrivetrain;
   private final DriveCommand driveCommand;
+  private final Command driveCommand2;
 
   private final Joystick joystick = new Joystick(0);
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -34,6 +37,7 @@ public class RobotContainer {
   public RobotContainer() {
     romiDrivetrain = new RomiDrivetrain();
     driveCommand = new DriveCommand(romiDrivetrain, () -> joystick.getRawAxis(0), () -> joystick.getRawAxis(1));
+    driveCommand2 = run(() -> romiDrivetrain.arcadeDrive(joystick.getRawAxis(0), joystick.getRawAxis(1)), romiDrivetrain).finallyDo(() -> romiDrivetrain.arcadeDrive(0, 0));
     romiDrivetrain.setDefaultCommand(driveCommand);
 
 
