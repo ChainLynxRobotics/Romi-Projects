@@ -11,14 +11,6 @@ Off the template command-based Romi project, create a command that will allow jo
 
 
 ### Task Details - Part 1
-Once you have used the WPILib VSCode extension to create a new [Romi template (not example) command-based project](https://docs.wpilib.org/en/stable/docs/romi-robot/programming-romi.html), look at RomiDrivetrain.java in the subsystems folder. For tank drivetrains like Romi, which can’t turn and move back and forth at the same time, we use arcade drive (try to find this method) to control the Romis. 
-
-```
-public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
-    diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
-}
-```
-
 #### Naming Conventions
 At ChainLynx, we use the following naming conventions
 
@@ -37,6 +29,14 @@ private double multiplier;
 
 In other teams or example code, you may seem conventions like m_ObjectName for objects, and other slight variations.
 Always remember to read the type and examine the usage to make sure you know what your looking at.
+#### Drivetrain
+Once you have used the WPILib VSCode extension to create a new [Romi template (not example) command-based project](https://docs.wpilib.org/en/stable/docs/romi-robot/programming-romi.html), look at RomiDrivetrain.java in the subsystems folder. For tank drivetrains like Romi, which can’t turn and move back and forth at the same time, we use arcade drive (try to find this method) to control the Romis. 
+
+```
+public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
+    diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
+}
+```
 
 Arcade drive is a method of diffDrive, which is inside an instance of the RomiDrivetrain class, when you call Arcade drive on a RomiDrivetrain it will pass the call to the diffDrive. The parameters of arcade drive are xaxisSpeed, the speed of translation, and zaxisRotate, the speed at which we want the robot to rotate. In a differential drivetrain, the difference in the magnitudes of the individual wheel's speeds determines the speed at which the robot will rotate, and the ratios of the speed of each wheel can be used to determine the ratio of translational velocity vs rotational velocity.
 
