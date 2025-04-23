@@ -34,7 +34,7 @@ public class TranslateCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return drive.getAverageDistance().times(dir).gte(dist);
+        return drive.getAverageDistance().times(dir).gte(dist.times(dir));
     }
 
     @Override

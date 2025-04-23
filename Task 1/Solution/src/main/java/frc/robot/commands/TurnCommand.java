@@ -33,7 +33,7 @@ public class TurnCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return drive.getAngle().times(dir).gte(angle);
+        return drive.getAngle().times(dir).gte(angle.times(dir));
     }
 
     @Override
