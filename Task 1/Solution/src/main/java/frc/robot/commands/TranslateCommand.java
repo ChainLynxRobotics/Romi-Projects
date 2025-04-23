@@ -5,13 +5,19 @@ import static frc.robot.Constants.DriveConstants.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.RomiDrivetrain;
 
+import edu.wpi.first.units.measure.*;
+
 public class TranslateCommand extends Command {
     private RomiDrivetrain drive;
-    private double dist;
+    private Distance dist;
+    // should be 1 or -1
+    private double dir;
 
-    public TranslateCommand(RomiDrivetrain drive, double distInches) {
+    public TranslateCommand(RomiDrivetrain drive, Distance dist) {
         this.drive = drive;
-        this.dist = distInches;
+        this.dist = dist;
+
+        this.dir = Math.signum(this.dist.baseUnitMagnitude());
 
         addRequirements(drive);
     }
@@ -23,12 +29,12 @@ public class TranslateCommand extends Command {
 
     @Override
     public void execute() {
-        drive.arcadeDrive(kDefaultDriveSpeed * Math.signum(dist), 0);
+        drive.arcadeDrive(kDefaultDriveSpeed * dir, 0);
     }
 
     @Override
     public boolean isFinished() {
-        return Math.abs((drive.getLeftDistanceInch() + drive.getRightDistanceInch()) / 2) >= Math.abs(dist);
+        return drive.getAverageDistance().times(dir).gte(dist);
     }
 
     @Override

@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -35,8 +37,8 @@ public class RobotContainer {
     romiDrivetrain.setDefaultCommand(driveCommand);
 
 
-    autoChooser.addOption("drive 6 inches", new TranslateCommand(romiDrivetrain, 6));
-    autoChooser.addOption("turn 180", new TurnCommand(romiDrivetrain, 180));
+    autoChooser.addOption("drive 6 inches", new TranslateCommand(romiDrivetrain, Inches.of(6)));
+    autoChooser.addOption("turn 180", new TurnCommand(romiDrivetrain, Degrees.of(180)));
 
     // Configure the button bindings
     configureButtonBindings();

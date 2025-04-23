@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+import edu.wpi.first.units.measure.*;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -17,6 +20,6 @@ public final class Constants {
         public static final double kDefaultDriveSpeed = 0.2; // % of max power in volts, 0-1
         public static final double kDefaultRotSpeed = 0.5; // // % of max power in volts, 0-1
         public static final double kCountsPerRevolution = 1440.0;
-        public static final double kWheelDiameterInch = 2.75591; // 70 mm
+        public static final Distance kWheelDiameter = Millimeters.of(70); // 70 mm
     }
 }   

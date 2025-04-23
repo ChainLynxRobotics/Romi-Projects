@@ -6,6 +6,9 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.DriveConstants.*;
 
+import static edu.wpi.first.units.Units.*;
+import edu.wpi.first.units.measure.*;
+
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
@@ -32,8 +35,8 @@ public class RomiDrivetrain extends SubsystemBase {
   /** Creates a new RomiDrivetrain. */
   public RomiDrivetrain() {
     // Use inches as unit for encoder distances
-    leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterInch) / kCountsPerRevolution);
-    rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterInch) / kCountsPerRevolution);
+    leftEncoder.setDistancePerPulse(kWheelDiameter.times(Math.PI).div(kCountsPerRevolution).in(Meters));
+    rightEncoder.setDistancePerPulse(kWheelDiameter.times(Math.PI).div(kCountsPerRevolution).in(Meters));
     resetEncoders();
     resetGyro();
 
@@ -50,17 +53,21 @@ public class RomiDrivetrain extends SubsystemBase {
     rightEncoder.reset();
   }
 
-  public double getLeftDistanceInch() {
-    return leftEncoder.getDistance();
+  public Distance getLeftDistance() {
+    return Meters.of(leftEncoder.getDistance());
   }
 
-  public double getRightDistanceInch() {
-    return rightEncoder.getDistance();
+  public Distance getRightDistance() {
+    return Meters.of(rightEncoder.getDistance());
+  }
+
+  public Distance getAverageDistance() {
+    return getLeftDistance().plus(getRightDistance()).div(2);
   }
 
   /** Gyro angle in degrees */
-  public double getAngle() {
-    return gyro.getAngle();
+  public Angle getAngle() {
+    return Degrees.of(gyro.getAngle());
   }
 
   public void resetGyro() {
