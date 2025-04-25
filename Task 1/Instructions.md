@@ -16,6 +16,7 @@ At ChainLynx, we use the following naming conventions
 
 ```
 // For Objects,
+
 private Subsystem subsystem;
 
 // For Constants,
@@ -38,15 +39,21 @@ To use the units library you can import ```import static edu.wpi.first.units.Uni
 #### Drivetrain
 Once you have used the WPILib VSCode extension to create a new [Romi template (not example) command-based project](https://docs.wpilib.org/en/stable/docs/romi-robot/programming-romi.html), look at RomiDrivetrain.java in the subsystems folder. For tank drivetrains like Romi, which can’t turn and move back and forth at the same time, we use arcade drive (try to find this method) to control the Romis. 
 
-```
-public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
-    diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
-}
-```
+[Solution](/Romi-Projects/Task%201/Solution/src/main/java/frc/robot/subsystems/RomiDrivetrain.java/#L47)
 
+<details>
+    <summary>Solution</summary>
+    
+    public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
+    diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
+    }
+    
+</details>
+<br>
 Arcade drive is a method of diffDrive, which is inside an instance of the RomiDrivetrain class, when you call Arcade drive on a RomiDrivetrain it will pass the call to the diffDrive. The parameters of arcade drive are xaxisSpeed, the speed of translation, and zaxisRotate, the speed at which we want the robot to rotate. In a differential drivetrain, the difference in the magnitudes of the individual wheel's speeds determines the speed at which the robot will rotate, and the ratios of the speed of each wheel can be used to determine the ratio of translational velocity vs rotational velocity.
 
 If you right click on arcadeDrive called on the RomiDrivetrain instance and click 'go to definition' (F12 Shortcut), you can view the internals of WPILib's differential drive implementation for Romis. Under the hood, the speeds set on each wheel are:
+
 ```
 double leftSpeed = xSpeed - zRotation;
 double rightSpeed = xSpeed + zRotation;
@@ -59,29 +66,33 @@ In WPILib there are two ways of declaring a command the first is more verbose bu
 
 To create the first type of commmand, in the commands folder, create a class called DriveCommand that extends the generic Command object. We want this command to use joystick input to move the Romi around. The methods in the body of this command are from its parent class, Command, so we use the @Override annotation to signify that we're inheriting logic from the parent class.
 
-```
-public class DriveCommand extends Command {
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {}
 
-    // Called every time the scheduler runs while the command is scheduled.
-    @Override
-    public void execute() {}
 
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {}
+<details>
+    <summary>Solution</summary>
 
-    // Returns true when the command should end.
-    @Override
-    public boolean isFinished() {
-        return false;
+    public class DriveCommand extends Command {
+        // Called when the command is initially scheduled.
+        @Override
+        public void initialize() {}
+
+        // Called every time the scheduler runs while the command is scheduled.
+        @Override
+        public void execute() {}
+
+        // Called once the command ends or is interrupted.
+        @Override
+        public void end(boolean interrupted) {}
+
+        // Returns true when the command should end.
+        @Override
+        public boolean isFinished() {
+            return false;
+        }
     }
-}
-```
-
-In its execute method (this is periodic, so it is called for every cycle of the Command Scheduler, which is a class that manages the state of the robot program, or every 0.02 seconds), we will be calling the arcadeDrive method from the RomiDrivetrain subsystem based on joystick inputs. 
+</details>
+<br>
+In its execute method (this is periodic, so it is called for every cycle of the Command Scheduler, which is a class that manages the state of the robot program, or every 0.02 seconds) we will be calling the arcadeDrive method from the RomiDrivetrain subsystem based on joystick inputs. 
 
 Normally, we need to track and report if the command is finished with isFinished(), but this command is an exception which will be explained shortly.
 
@@ -93,46 +104,60 @@ The DriveCommand’s constructor should have the following arguments:
 
 #### Why are we using Double Suppliers instead of just doubles? 
 A DoubleSupplier is a functional interface that generates doubles dynamically (when requested). Primitives like doubles won’t change once they’re passed in, but suppliers contain code that gives new doubles on the fly. Therefore, when the joystick input changes, we don’t have to create a whole new command object just to change the command inputs!
+[Solution](/Romi-Projects/Task%201/Solution/src/main/java/frc/robot/commands/DriveCommand.java)
+<details>
+    <summary>Solution</summary>
 
-```
-private final RomiDrivetrain drivetrain;
-private final DoubleSupplier speed;
-private final DoubleSupplier rot;
+    private final RomiDrivetrain drivetrain;
+    private final DoubleSupplier speed;
+    private final DoubleSupplier rot;
 
-public DriveCommand(
-    RomiDrivetrain drive, DoubleSupplier speed, DoubleSupplier rot) {
-    this.drive = drive;
-    this.speed = speed;
-    this.rot = rot;
+    public DriveCommand(
+        RomiDrivetrain drive, DoubleSupplier speed, DoubleSupplier rot) {
+        this.drive = drive;
+        this.speed = speed;
+        this.rot = rot;
 
-    // Use addRequirements here to declare drive dependencies.
-    addRequirements(drive);
-}
-```
+        // Use addRequirements here to declare drive dependencies.
+        addRequirements(drive);
+    }
+</details>
+<br>
 
 In execute, call the arcadeDrive method with speed and rot as inputs
-```
-@Override
-public void execute() {
-    drive.arcadeDrive(speed.getAsDouble(), rot.getAsDouble());
-}
-```
 
-Moving into the constructor of RobotContainer, initialize RomiDrivetrain as a variable and create a new DriveCommand. Now, initialize a Joystick() in RobotContainer, and pass in the controller X and Y values into DriveCommand through the earlier suppliers. 
+[Solution](/Romi-Projects/Task%201/Solution/src/main/java/frc/robot/commands/DriveCommand.java)
+<details>
+    <summary>Solutions</summary>
 
-```
-private final RomiDrivetrain romiDrivetrain;
-private final DriveCommand autoCommand;
-private final Joystick stick = new Joystick(0);
+    @Override
+    public void execute() {
+        drive.arcadeDrive(speed.getAsDouble(), rot.getAsDouble());
+    }
+    
+</details>
+<br>
 
-/** The container for the robot. Contains subsystems, OI devices, and commands. */
-public RobotContainer() {
-    romiDrivetrain = new RomiDrivetrain();
-    autoCommand = new DriveCommand(romiDrivetrain, () -> stick.getRawAxis(0), () -> stick.getRawAxis(1));
-    // Configure the button bindings
-    configureButtonBindings();
-}
-```
+Moving into the constructor of RobotContainer, initialize RomiDrivetrain as a variable and create a new DriveCommand. Now, initialize a Joystick() in RobotContainer, and pass in the controller X and Y values into DriveCommand through the earlier suppliers.
+
+[Solution](/Romi-Projects/Task%201/Solution/src/main/java/frc/robot/RobotContainer.java)
+<details>
+    <summary>Solutions</summary>
+
+    private final RomiDrivetrain romiDrivetrain;
+    private final DriveCommand autoCommand;
+    private final Joystick stick = new Joystick(0);
+
+    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    public RobotContainer() {
+        romiDrivetrain = new RomiDrivetrain();
+        autoCommand = new DriveCommand(romiDrivetrain, () -> stick.getRawAxis(0), () -> stick.getRawAxis(1));
+        // Configure the button bindings
+        configureButtonBindings();
+    }
+</details>
+<br>
+
 It is often good style to finish object initalization in the constructor of the class you're coding, as your more explicitly specifying that you're initializing those objects when the class itself is being initialized. 
 
 This code instantiates a RomiDrivetrain object, a Joystick object on port 0 of Driver Station, and the Drive Command you just started to create. Note that by using ```() ->```, which is an [anonymous function](https://www.w3schools.com/java/java_lambda.asp), you are turning a regular double into a Double Supplier. By calling getRawAxis, you can access the x, y, z, and w axes of a given joystick.
