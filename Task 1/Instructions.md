@@ -104,7 +104,9 @@ The DriveCommand’s constructor should have the following arguments:
 
 #### Why are we using Double Suppliers instead of just doubles? 
 A DoubleSupplier is a functional interface that generates doubles dynamically (when requested). Primitives like doubles won’t change once they’re passed in, but suppliers contain code that gives new doubles on the fly. Therefore, when the joystick input changes, we don’t have to create a whole new command object just to change the command inputs!
+
 [Solution](/Romi-Projects/Task%201/Solution/src/main/java/frc/robot/commands/DriveCommand.java)
+
 <details>
     <summary>Solution</summary>
 
@@ -163,15 +165,22 @@ It is often good style to finish object initalization in the constructor of the 
 This code instantiates a RomiDrivetrain object, a Joystick object on port 0 of Driver Station, and the Drive Command you just started to create. Note that by using ```() ->```, which is an [anonymous function](https://www.w3schools.com/java/java_lambda.asp), you are turning a regular double into a Double Supplier. By calling getRawAxis, you can access the x, y, z, and w axes of a given joystick.
 
 However this code in most cases is overkill and can be acheived in a much simpler manner by using [command compositions](https://docs.wpilib.org/en/stable/docs/software/commandbased/command-compositions.html). When you are using command compositions it can usaly be read like English, the drive command with command compositions looks like this.
-```
-run(() -> romiDrivetrain.arcadeDrive(joystick.getRawAxis(0), joystick.getRawAxis(1)), romiDrivetrain).finallyDo(() -> romiDrivetrain.arcadeDrive(0, 0))
-```
+<details>
+    <summary>Solution</summary>
+
+    run(() -> romiDrivetrain.arcadeDrive(joystick.getRawAxis(0), joystick.getRawAxis(1)), romiDrivetrain).finallyDo(() -> romiDrivetrain.arcadeDrive(0, 0))
+</details>
+<br>
 When reading this composition the run function creates a command that will call the function it is given every loop, in our case it will call arcade drive with the joysticks inputs. The reason that we dont need to use a double supplier here is because the function is a suplying in itself, so the joystick inputs will still be updated. The finallyDo at the end will call its function when the command is ended or interupted, so we give it a function to stop the motors on the romi.
 
 Then, in the constructor of RobotContainer, set this command to be the default command for the subsystem, so it will always be running unless it is interrupted by another command. This is why we don’t need an isFinished condition for DriveCommand because it will only ever be interrupted, not terminated. 
-```
-romiDrivetrain.setDefaultCommand(command);
-```
+
+<details>
+    <summary>Solution</summary>
+
+    romiDrivetrain.setDefaultCommand(command);
+</details>
+<br>
 
 When the command runs, it should now automatically reference the controller values and respond to joystick input. Congratulations, this is now a functioning robot!
 
@@ -180,88 +189,107 @@ Now we will use the same command logic to create rotate and translate commands. 
 
 #### Translation command
 We will now drive a certain distance using data from the drivetrain's encoders. There are methods in the drivetrain class to get the distances the encoders have traveled in inches (getLeftDistanceInch and getRightDistanceInch). The code will be similar to the default command we wrote earlier, except we will have an isFinished condition that terminates the command once the desired distance is reached. We will also drive at a constant speed with no rotation.
+<details>
+    <summary>Solution</summary>
 
-```
-private RomiDrivetrain drive;
-    private double dist;
+    private RomiDrivetrain drive;
+        private double dist;
 
-    public TranslateCommand(RomiDrivetrain drive, double distInches) {
-        this.drive = drive;
-        this.dist = distInches;
+        public TranslateCommand(RomiDrivetrain drive, double distInches) {
+            this.drive = drive;
+            this.dist = distInches;
 
-        addRequirements(drive);
-    }
-```
+            addRequirements(drive);
+        }
+</details>
+<br>
 
 After defining the constructor to access the drivetrain instance defined in Robot Container and the desired distance to travel (this is called dependency injection), we need to reset the encoder measurements to be zeroed relative to the start of the command and drive the robot at a constant translational speed until it reaches its distance setpoint.
 
-```
-@Override
-public void initialize() {
-    drive.resetEncoders();
-}
+<details>
+    <summary>Solution</summary>
 
-@Override
-public void execute() {
-    drive.arcadeDrive(Constants.kDefaultDriveSpeed * Math.signum(dist), 0);
-}
+    @Override
+    public void initialize() {
+        drive.resetEncoders();
+    }
 
-@Override
-public boolean isFinished() {
-    return Math.abs((drive.getLeftDistanceInch() + drive.getRightDistanceInch()) / 2) >= Math.abs(dist);
-}
+    @Override
+    public void execute() {
+        drive.arcadeDrive(Constants.kDefaultDriveSpeed * Math.signum(dist), 0);
+    }
 
-@Override
-public void end(boolean interrupted) {
-    drive.arcadeDrive(0, 0);
-}
-```
+    @Override
+    public boolean isFinished() {
+        return Math.abs((drive.getLeftDistanceInch() + drive.getRightDistanceInch()) / 2) >= Math.abs(dist);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        drive.arcadeDrive(0, 0);
+    }
+</details>
+<br>
+
 We use absolute values in the isFinished method in the case the inputted distance is negative. Similarly, we multiply the default translation speed by the sign of the distance so we travel in the right direction. Before ending the command, we stop the drivetrain.
 
 #### Rotation command
-This command is logically very similar to the translation command. We need to define a RomiGyro object in the drivetrain subsystem, as well as a function to get its angle, which is in degrees by default. 
-```
-private final RomiGyro gyro = new RomiGyro();
+This command is logically very similar to the translation command. We need to define a RomiGyro object in the drivetrain subsystem, as well as a function to get its angle, which is in degrees by default.
 
-public double getAngle() {
-    return gyro.getAngle();
-}
+<details>
+    <summary>Solution</summary>
 
-public void resetGyro() {
-    gyro.reset();
-}
-```
+    private final RomiGyro gyro = new RomiGyro();
+
+    public double getAngle() {
+        return gyro.getAngle();
+    }
+
+    public void resetGyro() {
+        gyro.reset();
+    }
+</details>
+<br>
 
 Now, we can use this method in our turn command.
-```
-@Override
-public void initialize() {
-    drive.resetGyro();
-}
+<details>
+    <summary>Solution</summary>
 
-@Override
-public void execute() {
-    drive.arcadeDrive(0, Constants.kDefaultRotSpeed * Math.signum(angle));
-}
+    @Override
+    public void initialize() {
+        drive.resetGyro();
+    }
 
-@Override
-public boolean isFinished() {
-    return Math.abs(drive.getAngle()) >= Math.abs(angle);
-}
-```
+    @Override
+    public void execute() {
+        drive.arcadeDrive(0, Constants.kDefaultRotSpeed * Math.signum(angle));
+    }
+
+    @Override
+    public boolean isFinished() {
+        return Math.abs(drive.getAngle()) >= Math.abs(angle);
+    }
+</details>
+<br>
 Now you also have a rotation command!
 
 #### Running your commands
 In Robot Container, create a [Sendable Chooser](https://docs.wpilib.org/en/stable/docs/software/dashboards/smartdashboard/choosing-an-autonomous-program-from-smartdashboard.html) that consumes commands (SendableChooser<Command>) to add different autonomous options. Add a rotate as well as a translate command as auto options.
 
-```
-private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-```
+<details>
+    <summary>Solution</summary>
+    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+</details>
+<br>
+
 
 In the constructor of Robot Container, add instances of your new commands as options of the auto chooser.
-```
-autoChooser.addOption("drive 6 inches", new TranslateCommand(romiDrivetrain, 6));
-autoChooser.addOption("turn 180", new TurnCommand(romiDrivetrain, 180));
-```
+<details>
+    <summary>Solution</summary>
+
+    autoChooser.addOption("drive 6 inches", new TranslateCommand(romiDrivetrain, 6));
+    autoChooser.addOption("turn 180", new TurnCommand(romiDrivetrain, 180));
+</details>
+<br>
 
 Great job finishing your first task!
