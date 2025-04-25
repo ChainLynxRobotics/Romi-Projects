@@ -7,54 +7,53 @@ Off the template command-based Romi project, create a command that will allow jo
 - [WPILib Command based programming structure](https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html)
 - [The anatomy of a command](https://github.com/wpilibsuite/allwpilib/blob/main/wpilibNewCommands/src/main/java/edu/wpi/first/wpilibj2/command/Command.java)
 - [WPILib Romi programming docs](https://docs.wpilib.org/en/stable/docs/romi-robot/programming-romi.html)
-- [WPILib PID controllers](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/pidcontroller.html)
-
 
 ## Task Details - Part 1
 ### Naming Conventions
 At ChainLynx, we use the following naming conventions
 
-```
-// For Objects,
+```java
+// For classes
+public class RobotContainer {}
 
-private Subsystem subsystem;
+// For objects,
+private Subsystem elevatorSubsystem;
 
-// For Constants,
+// For constants,
 
 public static final kMaxVelocity;
 
-// For Fields,
+// For fields,
 
-private double multiplier;
+private double speedMultiplier;
 ```
 
 In other teams or example code, you may seem conventions like m_ObjectName for objects, and other slight variations.
 Always remember to read the type and examine the usage to make sure you know what your looking at.
 ### Units
-[The Units library](https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-units.html) alows you have variables like ```Distance kElevatorHight``` instead of ```double kElevatorHightMeters``` The advantage of this you you can get the hight in meters but also in inches or feet, the other main reason to use the units library is to avoid mismatched units like saying that a measurment in feet is in meters like what happened with the [Mars Climate Orbiter](https://en.wikipedia.org/wiki/Mars_Climate_Orbiter#Cause_of_failure).
+[The Units library](https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-units.html) alows you have variables like `Distance kElevatorHight` instead of `double kElevatorHightMeters` The advantage of this you you can get the hight in meters but also in inches or feet, the other main reason to use the units library is to avoid mismatched units like saying that a measurment in feet is in meters like what happened with the [Mars Climate Orbiter](https://en.wikipedia.org/wiki/Mars_Climate_Orbiter#Cause_of_failure).
 
-You can create a measure(such as Distance or Angle) using the ```.of``` meathod on a unit eg. ```Distance kBumperWidth = Inches.of(23.5)``` You can also manipulate a measure with meathods like ```.plus``` or ```.times```, and you can compare them with meathods like ```.lt```(less than) or ```.gte```(greater than or equal to).
+You can create a measure(such as Distance or Angle) using the `.of` meathod on a unit eg. `Distance kBumperWidth = Inches.of(23.5)` You can also manipulate a measure with meathods like `.plus` or `.times`, and you can compare them with meathods like `.lt`(less than) or `.gte`(greater than or equal to).
 
-To use the units library you can import ```import static edu.wpi.first.units.Units.*;``` for the units like ```Inches``` or ```Rotations```, and ```import edu.wpi.first.units.measure.*;``` for measures like ```Distance``` or ```Angle```.
+To use the units library you can import `import static edu.wpi.first.units.Units.*;` for the units like `Inches` or `Rotations`, and `import edu.wpi.first.units.measure.*;` for measures like `Distance` or `Angle`.
 ### Drivetrain
-Once you have used the WPILib VSCode extension to create a new [Romi template (not example) command-based project](https://docs.wpilib.org/en/stable/docs/romi-robot/programming-romi.html), look at RomiDrivetrain.java in the subsystems folder. For tank drivetrains like Romi, which can’t turn and move back and forth at the same time, we use arcade drive (try to find this method) to control the Romis. 
+Once you have used the WPILib VSCode extension to create a new [Romi template (not example) command-based project](https://docs.wpilib.org/en/stable/docs/romi-robot/programming-romi.html), look at RomiDrivetrain.java in the subsystems folder. For tank drivetrains like Romi, which can’t turn and move back and forth at the same time, we use arcade drive (try to find this method) to control the Romis.
 
 [Solution](/Romi-Projects/Task%201/Solution/src/main/java/frc/robot/subsystems/RomiDrivetrain.java/#L47)
-
 <details>
-    <summary>Solution</summary>
-    
+    <summary>Solution</summary><p>
+
     public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
-    diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
+        diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
     }
-    
-</details>
+
+</p></details>
 <br>
+
 Arcade drive is a method of diffDrive, which is inside an instance of the RomiDrivetrain class, when you call Arcade drive on a RomiDrivetrain it will pass the call to the diffDrive. The parameters of arcade drive are xaxisSpeed, the speed of translation, and zaxisRotate, the speed at which we want the robot to rotate. In a differential drivetrain, the difference in the magnitudes of the individual wheel's speeds determines the speed at which the robot will rotate, and the ratios of the speed of each wheel can be used to determine the ratio of translational velocity vs rotational velocity.
 
 If you right click on arcadeDrive called on the RomiDrivetrain instance and click 'go to definition' (F12 Shortcut), you can view the internals of WPILib's differential drive implementation for Romis. Under the hood, the speeds set on each wheel are:
-
-```
+```java
 double leftSpeed = xSpeed - zRotation;
 double rightSpeed = xSpeed + zRotation;
 ```
@@ -67,12 +66,12 @@ In WPILib there are two ways of declaring a command the first is more verbose bu
 To create the first type of commmand, in the commands folder, create a class called DriveCommand that extends the generic Command object. We want this command to use joystick input to move the Romi around. The methods in the body of this command are from its parent class, Command, so we use the @Override annotation to signify that we're inheriting logic from the parent class.
 
 <details>
-    <summary>Solution</summary>
+    <summary>Solution</summary><p>
 
     public class DriveCommand extends Command {
-        // Called when the command is initially scheduled.
-        @Override
-        public void initialize() {}
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize() {}
 
         // Called every time the scheduler runs while the command is scheduled.
         @Override
@@ -88,8 +87,10 @@ To create the first type of commmand, in the commands folder, create a class cal
             return false;
         }
     }
-</details>
+
+</p></details>
 <br>
+
 In its execute method (this is periodic, so it is called for every cycle of the Command Scheduler, which is a class that manages the state of the robot program, or every 0.02 seconds) we will be calling the arcadeDrive method from the RomiDrivetrain subsystem based on joystick inputs. 
 
 Normally, we need to track and report if the command is finished with isFinished(), but this command is an exception which will be explained shortly.
@@ -101,12 +102,12 @@ The DriveCommand’s constructor should have the following arguments:
 - *DoubleSupplier* rotation (the speed at which the robot turns)
 
 #### Why are we using Double Suppliers instead of just doubles? 
-A DoubleSupplier is a functional interface that generates doubles dynamically (when requested). Primitives like doubles won’t change once they’re passed in, but suppliers contain code that gives new doubles on the fly. Therefore, when the joystick input changes, we don’t have to create a whole new command object just to change the command inputs!
+A DoubleSupplier is a functional interface that generates doubles dynamically (when requested). Primitives(double, int, boolean, ...) won’t change once they’re passed in, but suppliers contain code that gives new doubles on the fly. Therefore, when the joystick input changes, we don’t have to create a whole new command object just to change the command inputs!
 
 [Solution](/Romi-Projects/Task%201/Solution/src/main/java/frc/robot/commands/DriveCommand.java)
 
 <details>
-    <summary>Solution</summary>
+    <summary>Solution</summary><p>
 
     private final RomiDrivetrain drivetrain;
     private final DoubleSupplier speed;
@@ -121,61 +122,66 @@ A DoubleSupplier is a functional interface that generates doubles dynamically (w
         // Use addRequirements here to declare drive dependencies.
         addRequirements(drive);
     }
-</details>
+
+</p></details>
 <br>
 
 In execute, call the arcadeDrive method with speed and rot as inputs
 
-[Solution](/Romi-Projects/Task%201/Solution/src/main/java/frc/robot/commands/DriveCommand.java)
+[Solution](/Romi-Projects/Task%201/Solutions/src/main/java/frc/robot/commands/DriveCommand.java)
 <details>
-    <summary>Solutions</summary>
+    <summary>Solutions</summary><p>
 
     @Override
     public void execute() {
         drive.arcadeDrive(speed.getAsDouble(), rot.getAsDouble());
     }
-    
-</details>
+</p></details>
 <br>
 
 Moving into the constructor of RobotContainer, initialize RomiDrivetrain as a variable and create a new DriveCommand. Now, initialize a Joystick() in RobotContainer, and pass in the controller X and Y values into DriveCommand through the earlier suppliers.
 
 [Solution](/Romi-Projects/Task%201/Solution/src/main/java/frc/robot/RobotContainer.java)
 <details>
-    <summary>Solutions</summary>
+    <summary>Solutions</summary><p>
 
     private final RomiDrivetrain romiDrivetrain;
-    private final DriveCommand autoCommand;
+    private final DriveCommand driveCommand;
     private final Joystick stick = new Joystick(0);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         romiDrivetrain = new RomiDrivetrain();
-        autoCommand = new DriveCommand(romiDrivetrain, () -> stick.getRawAxis(0), () -> stick.getRawAxis(1));
+        driveCommand = new DriveCommand(romiDrivetrain, () -> stick.getRawAxis(0), () -> stick.getRawAxis(1));
         // Configure the button bindings
         configureButtonBindings();
     }
-</details>
-<br>
 
+</p></details>
+<br>
 It is often good style to finish object initalization in the constructor of the class you're coding, as your more explicitly specifying that you're initializing those objects when the class itself is being initialized. 
 
-This code instantiates a RomiDrivetrain object, a Joystick object on port 0 of Driver Station, and the Drive Command you just started to create. Note that by using ```() ->```, which is an [anonymous function](https://www.w3schools.com/java/java_lambda.asp), you are turning a regular double into a Double Supplier. By calling getRawAxis, you can access the x, y, z, and w axes of a given joystick.
+This code instantiates a RomiDrivetrain object, a Joystick object on port 0 of Driver Station, and the Drive Command you just started to create. Note that by using `() ->`, which is an [anonymous function](https://www.w3schools.com/java/java_lambda.asp), you are turning a regular double into a Double Supplier. By calling getRawAxis, you can access the x, y, z, and w axes of a given joystick.
 
 However this code in most cases is overkill and can be acheived in a much simpler manner by using [command compositions](https://docs.wpilib.org/en/stable/docs/software/commandbased/command-compositions.html). When you are using command compositions it can usaly be read like English, the drive command with command compositions looks like this.
-<details>
-    <summary>Solution</summary>
 
-    driveCommand = runEnd(() -> romiDrivetrain.arcadeDrive(joystick.getRawAxis(0), joystick.getRawAxis(1)), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain);
-</details>
+<details>
+    <summary>Solution</summary><p>
+
+    private driveCommand = runEnd(() -> romiDrivetrain.arcadeDrive(joystick.getRawAxis(0), joystick.getRawAxis(1)), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain);
+
+</p></details>
 <br>
-When reading this composition the runEnd function creates a command that will call the function it is given every loop, in our case it will call arcade drive with the joysticks inputs. The reason that we dont need to use a double supplier here is because the function is a suplying in itself, so the joystick inputs will still be updated. The second function that the runEnd taks is the function to run when the command ends or is interupted, so we give it a function to stop the motors on the romi. The final parameter is the requirments of the command like ```addRequirements(drive);``` in the command classes.
+
+When reading this composition the runEnd function creates a command that will call the function it is given every loop, in our case it will call arcade drive with the joysticks inputs. The reason that we dont need to use a double supplier here is because the function is a supplier in itself, so the joystick inputs will still be updated. The second function that the runEnd taks is the function to run when the command ends or is interupted, so we give it a function to stop the motors on the romi. The final parameter is the requirments of the command like `addRequirements(drive);` in the command classes to tell the command scheduler that it needs the drivetrain.
+
 Then, in the constructor of RobotContainer, set this command to be the default command for the subsystem, so it will always be running unless it is interrupted by another command. This is why we don’t need an isFinished condition for DriveCommand because it will only ever be interrupted, not terminated. 
 <details>
-    <summary>Solution</summary>
+    <summary>Solution</summary><p>
 
     romiDrivetrain.setDefaultCommand(driveCommand);
-</details>
+
+</p></details>
 <br>
 
 When the command runs, it should now automatically reference the controller values and respond to joystick input. Congratulations, this is now a functioning robot!
@@ -186,24 +192,26 @@ Now we will use the same command logic to create rotate and translate commands. 
 ### Translation command
 We will now drive a certain distance using data from the drivetrain's encoders. There are methods in the drivetrain class to get the distances the encoders have traveled in inches (getLeftDistanceInch and getRightDistanceInch). The code will be similar to the default command we wrote earlier, except we will have an isFinished condition that terminates the command once the desired distance is reached. We will also drive at a constant speed with no rotation.
 <details>
-    <summary>Solution</summary>
+    <summary>Solution</summary><p>
 
     private RomiDrivetrain drive;
-        private double dist;
+    private double dist;
 
-        public TranslateCommand(RomiDrivetrain drive, double distInches) {
-            this.drive = drive;
-            this.dist = distInches;
+    public TranslateCommand(RomiDrivetrain drive, double distInches) {
+        this.drive = drive;
+        this.dist = distInches;
 
-            addRequirements(drive);
-        }
-</details>
+        addRequirements(drive);
+    }
+
+</p></details>
 <br>
+
 
 After defining the constructor to access the drivetrain instance defined in Robot Container and the desired distance to travel (this is called dependency injection), we need to reset the encoder measurements to be zeroed relative to the start of the command and drive the robot at a constant translational speed until it reaches its distance setpoint.
 
 <details>
-    <summary>Solution</summary>
+    <summary>Solution</summary><p>
 
     @Override
     public void initialize() {
@@ -224,7 +232,8 @@ After defining the constructor to access the drivetrain instance defined in Robo
     public void end(boolean interrupted) {
         drive.arcadeDrive(0, 0);
     }
-</details>
+
+</p></details>
 <br>
 
 We use absolute values in the isFinished method in the case the inputted distance is negative. Similarly, we multiply the default translation speed by the sign of the distance so we travel in the right direction. Before ending the command, we stop the drivetrain.
@@ -232,8 +241,9 @@ We use absolute values in the isFinished method in the case the inputted distanc
 ### Rotation command
 This command is logically very similar to the translation command. We need to define a RomiGyro object in the drivetrain subsystem, as well as a function to get its angle, which is in degrees by default. 
 <details>
-    <summary>Solution</summary>
-private final RomiGyro gyro = new RomiGyro();
+    <summary>Solution</summary><p>
+
+    private final RomiGyro gyro = new RomiGyro();
 
     public double getAngle() {
         return gyro.getAngle();
@@ -242,12 +252,13 @@ private final RomiGyro gyro = new RomiGyro();
     public void resetGyro() {
         gyro.reset();
     }
-</details>
+
+</p></details>
 <br>
 
 Now, we can use this method in our turn command.
 <details>
-    <summary>Solution</summary>
+    <summary>Solution</summary><p>
 
     @Override
     public void initialize() {
@@ -263,27 +274,28 @@ Now, we can use this method in our turn command.
     public boolean isFinished() {
         return Math.abs(drive.getAngle()) >= Math.abs(angle);
     }
-</details>
+
+</p></details>
 <br>
+
 Now you also have a rotation command!
 
 ### Running your commands
 In Robot Container, create a [Sendable Chooser](https://docs.wpilib.org/en/stable/docs/software/dashboards/smartdashboard/choosing-an-autonomous-program-from-smartdashboard.html) that consumes commands (SendableChooser<Command>) to add different autonomous options. Add a rotate as well as a translate command as auto options.
 
 <details>
-    <summary>Solution</summary>
-    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-</details>
-<br>
+    <summary>Solution</summary><p>
 
+    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+
+<p></details>
 
 In the constructor of Robot Container, add instances of your new commands as options of the auto chooser.
 <details>
-    <summary>Solution</summary>
+    <summary>Solution</summary><p>
 
-    autoChooser.addOption("drive 6 inches", new TranslateCommand(romiDrivetrain, 6));
-    autoChooser.addOption("turn 180", new TurnCommand(romiDrivetrain, 180));
-</details>
-<br>
+    autoChooser.addOption("drive 6 inches", translateCommand);
+    
+</p></details>
 
 Great job finishing your first task!
