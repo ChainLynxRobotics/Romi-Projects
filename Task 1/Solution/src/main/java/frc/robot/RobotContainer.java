@@ -51,8 +51,8 @@ public class RobotContainer {
     double translateDir = Math.signum(distToDrive.baseUnitMagnitude());
     double turnDir = Math.signum(distToDrive.baseUnitMagnitude());
 
-    driveCommand = new DriveCommand(romiDrivetrain, () -> joystick.getRawAxis(0), () -> joystick.getRawAxis(1));
-    driveCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(joystick.getRawAxis(0), joystick.getRawAxis(1)), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain);
+    driveCommand = new DriveCommand(romiDrivetrain, () -> joystick.getY(), () -> joystick.getX());
+    driveCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(joystick.getY(), joystick.getX()), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain);
     translateCommand = new TranslateCommand(romiDrivetrain, distToDrive);
     translateCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(translateDir, 0), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain).until(() -> romiDrivetrain.getAverageDistance().times(translateDir).gte(distToDrive.times(translateDir)));
     turnCommand = new TurnCommand(romiDrivetrain, angleToTurn);

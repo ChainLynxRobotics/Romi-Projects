@@ -71,10 +71,17 @@ To create the first type of commmand, in the commands folder, create a class cal
         <a href="Solution/src/main/java/frc/robot/commands/ExampleCommand.java#L5">Solution</a>
     </summary>
 
+    package frc.robot.commands;
+
+    import edu.wpi.first.wpilibj2.command.Command;
+
     public class DriveCommand extends Command {
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {}
+
+        public DriveCommand() {}
+
+        // Called when the command is initially scheduled.
+        @Override
+        public void initialize() {}
 
         // Called every time the scheduler runs while the command is scheduled.
         @Override
@@ -87,7 +94,7 @@ To create the first type of commmand, in the commands folder, create a class cal
         // Returns true when the command should end.
         @Override
         public boolean isFinished() {
-            return false;
+          return false;
         }
     }
 
@@ -100,12 +107,12 @@ Normally, we need to track and report if the command is finished with isFinished
 
 
 The DriveCommand’s constructor should have the following arguments:
-- *RomiDrivetrain* drivetrain (an instance of the drivetrain object, which will be defined in RobotContainer)
-- *DoubleSupplier* speed (the speed at which the robot moves forward/backward)
-- *DoubleSupplier* rotation (the speed at which the robot turns)
+- `RomiDrivetrain drive` (an instance of the drivetrain object, which will be defined in RobotContainer)
+- `DoubleSupplier speed` (the speed at which the robot moves forward/backward)
+- `DoubleSupplier rotation` (the speed at which the robot turns)
 
 #### Why are we using Double Suppliers instead of just doubles? 
-A DoubleSupplier is a functional interface that generates doubles dynamically (when requested). Primitives(double, int, boolean, ...) won’t change once they’re passed in, but suppliers contain code that gives new doubles on the fly. Therefore, when the joystick input changes, we don’t have to create a whole new command object just to change the command inputs!
+A DoubleSupplier is a [functional interface](https://www.baeldung.com/java-8-functional-interfaces) that generates doubles dynamically (when requested). Primitives(double, int, boolean, ...) won’t change once they’re passed in, but suppliers contain code that gives new doubles on the fly. Therefore, when the joystick input changes, we don’t have to create a whole new command object just to change the command inputs!
 
 <details>
     <summary>
@@ -144,7 +151,7 @@ In execute, call the arcadeDrive method with speed and rot as inputs
 </details>
 <br>
 
-Moving into the constructor of RobotContainer, initialize RomiDrivetrain as a variable and create a new DriveCommand. Now, initialize a Joystick() in RobotContainer, and pass in the controller X and Y values into DriveCommand through the earlier suppliers.
+Moving into the constructor of RobotContainer, initialize RomiDrivetrain as a variable and create a new DriveCommand.Now, initialize a Joystick() in RobotContainer, you can then use the joystick to get double suppliers for the drive command. To make a suplier you need an [anonymous function / lambda](https://www.w3schools.com/java/java_lambda.asp) which is writen with the syntax `() -> someCode` the parenthesies represent the input to the function, so in our case they are empty. After the arrow is the code that will will return a value, in this case a double.
 
 <details>
     <summary>
@@ -158,7 +165,7 @@ Moving into the constructor of RobotContainer, initialize RomiDrivetrain as a va
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         romiDrivetrain = new RomiDrivetrain();
-        driveCommand = new DriveCommand(romiDrivetrain, () -> stick.getRawAxis(0), () -> stick.getRawAxis(1));
+        driveCommand = new DriveCommand(romiDrivetrain, () -> joystick.getY(), () -> joystick.getX());
         // Configure the button bindings
         configureButtonBindings();
     }
@@ -167,7 +174,7 @@ Moving into the constructor of RobotContainer, initialize RomiDrivetrain as a va
 <br>
 It is often good style to finish object initalization in the constructor of the class you're coding, as your more explicitly specifying that you're initializing those objects when the class itself is being initialized. 
 
-This code instantiates a RomiDrivetrain object, a Joystick object on port 0 of Driver Station, and the Drive Command you just started to create. Note that by using `() ->`, which is an [anonymous function](https://www.w3schools.com/java/java_lambda.asp), you are turning a regular double into a Double Supplier. By calling getRawAxis, you can access the x, y, z, and w axes of a given joystick.
+This code instantiates a RomiDrivetrain object, a Joystick object on port 0 of Driver Station, and the Drive Command you just started to create.
 
 However this code in most cases is overkill and can be acheived in a much simpler manner by using [command compositions](https://docs.wpilib.org/en/stable/docs/software/commandbased/command-compositions.html). When you are using command compositions it can usaly be read like English, the drive command with command compositions looks like this.
 
@@ -176,7 +183,7 @@ However this code in most cases is overkill and can be acheived in a much simple
         <a href="Solution/src/main/java/frc/robot/RobotContainer.java#L55">Solution</a>
     </summary>
 
-    private driveCommand = runEnd(() -> romiDrivetrain.arcadeDrive(joystick.getRawAxis(0), joystick.getRawAxis(1)), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain);
+    driveCommand = runEnd(() -> romiDrivetrain.arcadeDrive(joystick.getY(), joystick.getX()), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain);
 
 </details>
 <br>
@@ -201,7 +208,9 @@ When the command runs, it should now automatically reference the controller valu
 Now we will use the same command logic to create rotate and translate commands. We will call the arcadeDrive method periodically, and once the translation distance or rotation angle, respectively, is reached (use sensor readings from the drivetrain), return true for the isFinished method.
 
 ### Translation command
-We will now drive a certain distance using data from the drivetrain's encoders. There are methods in the drivetrain class to get the distances the encoders have traveled in inches (getLeftDistanceInch and getRightDistanceInch). The code will be similar to the default command we wrote earlier, except we will have an isFinished condition that terminates the command once the desired distance is reached. We will also drive at a constant speed with no rotation.
+We will now drive a certain distance using data from the drivetrain's encoders. There are methods in the drivetrain class to get the distances the encoders have traveled (`.getLeftDistance` and `.getRightDistance`). The code will be similar to the default command we wrote earlier, except we will have an isFinished condition that terminates the command once the desired distance is reached. We will also drive at a constant speed with no rotation.
+
+In the constructor you will need to take in the RomiDrivetrain and the distance to travel. After that you use `Math.signum` to determin the sign of the distance which is the direction that we need to drive, finaly you need to add the drivetrain as a requirement for the command.
 
 <details>
     <summary>
@@ -209,11 +218,15 @@ We will now drive a certain distance using data from the drivetrain's encoders. 
     </summary>
 
     private RomiDrivetrain drive;
-    private double dist;
+    private Distance dist;
+    // should be 1 or -1
+    private double dir;
 
-    public TranslateCommand(RomiDrivetrain drive, double distInches) {
+    public TranslateCommand(RomiDrivetrain drive, Distance dist) {
         this.drive = drive;
-        this.dist = distInches;
+        this.dist = dist;
+
+        this.dir = Math.signum(this.dist.baseUnitMagnitude());
 
         addRequirements(drive);
     }
@@ -234,14 +247,24 @@ After defining the constructor to access the drivetrain instance defined in Robo
         drive.resetEncoders();
     }
 
+</details>
+<br>
+
+We multiply both the encoder distance and the distance to drive by the direction, so that if the distance is positive it will work and if the distance is negitive it will be converted to be positive. This then lets us compare them using `.gte`(greater than or equal to). Similarly, we multiply the default translation speed by the sign of the distance so we travel in the right direction. Before ending the command, we stop the drivetrain.
+
+<details>
+    <summary>
+        <a href="Solution/src/main/java/frc/robot/subsystems/RomiDrivetrain.java#L30">Solution</a>
+    </summary>
+
     @Override
     public void execute() {
-        drive.arcadeDrive(Constants.kDefaultDriveSpeed * Math.signum(dist), 0);
+        drive.arcadeDrive(kDefaultDriveSpeed * dir, 0);
     }
 
     @Override
     public boolean isFinished() {
-        return Math.abs((drive.getLeftDistanceInch() + drive.getRightDistanceInch()) / 2) >= Math.abs(dist);
+        return drive.getAverageDistance().times(dir).gte(dist.times(dir));
     }
 
     @Override
@@ -251,8 +274,6 @@ After defining the constructor to access the drivetrain instance defined in Robo
 
 </details>
 <br>
-
-We use absolute values in the isFinished method in the case the inputted distance is negative. Similarly, we multiply the default translation speed by the sign of the distance so we travel in the right direction. Before ending the command, we stop the drivetrain.
 
 ### Rotation command
 This command is logically very similar to the translation command. We need to define a RomiGyro object in the drivetrain subsystem, as well as a function to get its angle, which is in degrees by default. 
@@ -323,5 +344,8 @@ In the constructor of Robot Container, add instances of your new commands as opt
     autoChooser.addOption("drive 6 inches", translateCommand);
     
 </details>
+
+## Running code on a romi
+
 
 Great job finishing your first task!

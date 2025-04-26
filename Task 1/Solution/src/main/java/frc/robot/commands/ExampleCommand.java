@@ -4,8 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class ExampleCommand extends Command {
 
-  public ExampleCommand() {
-  }
+  public ExampleCommand() {}
 
   // Called when the command is initially scheduled.
   @Override
