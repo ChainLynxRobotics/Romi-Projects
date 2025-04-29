@@ -12,6 +12,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.TranslateCommand;
 import frc.robot.commands.TurnCommand;
@@ -65,6 +66,7 @@ public class RobotContainer {
     autoChooser.addOption("drive 6 inches comp", translateCommand2);
     autoChooser.addOption("turn 180", turnCommand);
     autoChooser.addOption("turn 180 comp", turnCommand2);
+    SmartDashboard.putData(autoChooser);
 
     // Configure the button bindings
     configureButtonBindings();

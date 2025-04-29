@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.TranslateCommand;
 import frc.robot.commands.TurnCommand;
@@ -47,7 +48,6 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     DogLog.setOptions(new DogLogOptions().withCaptureNt(true));
-    DogLog.setPdh(new PowerDistribution());
     
     romiDrivetrain = new RomiDrivetrain();
 
@@ -71,6 +71,7 @@ public class RobotContainer {
     autoChooser.addOption("drive 6 inches comp", translateCommand2);
     autoChooser.addOption("turn 180", turnCommand);
     autoChooser.addOption("turn 180 comp", turnCommand2);
+    SmartDashboard.putData(autoChooser);
     // Configure the button bindings
     configureButtonBindings();
   }
