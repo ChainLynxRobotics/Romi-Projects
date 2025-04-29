@@ -10,7 +10,7 @@ Off the template command-based Romi project, create a command that will allow jo
 
 ## Task Details - Part 1
 ### Naming Conventions
-At ChainLynx, we use the following naming conventions
+On ChainLynx, we use the following naming conventions
 
 ```java
 // For classes
@@ -21,9 +21,9 @@ private Subsystem elevatorSubsystem;
 
 // For constants,
 
-public static final kMaxVelocity;
+public static final double kMaxVelocity;
 
-// For fields,
+// For class fields,
 
 private double speedMultiplier;
 ```
@@ -31,7 +31,7 @@ private double speedMultiplier;
 In other teams or example code, you may seem conventions like m_ObjectName for objects, and other slight variations.
 Always remember to read the type and examine the usage to make sure you know what your looking at.
 ### Units
-[The Units library](https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-units.html) alows you have variables like `Distance kElevatorHight` instead of `double kElevatorHightMeters` The advantage of this you you can get the hight in meters but also in inches or feet, the other main reason to use the units library is to avoid mismatched units like saying that a measurment in feet is in meters like what happened with the [Mars Climate Orbiter](https://en.wikipedia.org/wiki/Mars_Climate_Orbiter#Cause_of_failure).
+[The Units library](https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-units.html) alows you have variables like `Distance kElevatorHeight` instead of `double kElevatorHeightMeters` The advantage of this you you can get the height in meters but also in inches or feet, the other main reason to use the units library is to avoid mismatched units like saying that a measurment in feet is in meters like what happened with the [Mars Climate Orbiter](https://en.wikipedia.org/wiki/Mars_Climate_Orbiter#Cause_of_failure).
 
 You can create a measure(such as Distance or Angle) using the `.of` meathod on a unit eg. `Distance kBumperWidth = Inches.of(23.5)` You can also manipulate a measure with meathods like `.plus` or `.times`, and you can compare them with meathods like `.lt`(less than) or `.gte`(greater than or equal to).
 
@@ -345,7 +345,7 @@ In the constructor of Robot Container, add instances of your new commands as opt
     
 </details>
 
-## Running code on a romi
+## Running code on a Romi
 
 
 Great job finishing your first task!
