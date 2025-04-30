@@ -1,14 +1,14 @@
-## Task 2: Basic Control Systems (PID) 
+# Task 2: Basic Control Systems (PID) 
 
-### Objectives
+## Objectives
 Implement PID to more precisely rotate and translate your robot to setpoints in order to evelop a more accurate method of robot control. 
 
-### Resources
+## Resources
 - [WPILib PID controllers](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/pidcontroller.html)
 - [PID Simulator](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tuning-flywheel.html)
 - [FRC Wiki PID Controller](https://firstwiki.github.io/wiki/pid-controller)
 
-### Task Details
+## Task Details
 Specifying a distance to travel or an angle to rotate without any control system in place will lead to over or under compensating due to factors like friction and the inertia of the object that’s in motion. Therefore, we use control systems like PID (proportional integral derivative) to adjust the motion of the moving object at each timestep based on its distance from the setpoint (using the proportional term), accumulated error (using the integral term), and rate of change of distance from the setpoint (using the derivative term).
 
 $$\LARGE u(t) = K_{p}e(t) + K_{i}\int_{0}^{t} e(\tau) d\tau + K_{d}\frac{d}{dt} e(t)$$
@@ -17,8 +17,11 @@ Ignore the symbols for now. The second means accumulated error and the third one
 
 You must define a PID Controller object (one for rotation and one for translation) and set wheel speeds to the output of the PID controller, so the robot will be able to adaptively slow down as it approaches the setpoint. You will have to tune the gains of the PID controller to optimize its behavior. 
 
-#### Quiz: which PID controller output is best?
-<image src='pid.png' width=400>
+### Quiz: which PID controller output is best?
+<p align="center">
+  <img src="pid.png" width="400">
+</p>
+
 
 <details>
     <summary>
@@ -141,7 +144,8 @@ To use this dependency, in the constructor of RobotContainer, call the static me
 </details>
 <br>
 
-In RomiDrivetrain, log drivetrain position, angle, and the rotation and translation setpoints (you will need to create local variables to keep track of these as they are set). Logs can be viewed on Elastic.
+In RomiDrivetrain, log drivetrain position, angle, and the rotation and translation setpoints (you will need to create local variables to keep track of these as they are set).
+
 <details>
     <summary>
         <a href="Solution/src/main/java/frc/robot/subsystems/RomiDrivetrain.java#L111">Solution</a>
@@ -157,7 +161,6 @@ In RomiDrivetrain, log drivetrain position, angle, and the rotation and translat
 </details>
 <br>
 
-
-
+Logs can be viewed on Elastic. To set up Elastic, which is a web UI similar to Smart Dashboard and Glass (but better and more reactive), follow [these instructions](https://frc-elastic.gitbook.io/docs/getting-started/installation). Once you connect to the robot from the app, you should be able to view all your logs. 
 
 
