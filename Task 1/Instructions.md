@@ -1,14 +1,18 @@
 # Task 1: Controlling Romi Drivetrain and Sensors
 
-## Objectives 
-Off the template command-based Romi project, create a command that will allow joystick or keyboard input to control the Romi drivetrain. Create commands to drive the Romi forward and rotate it a certain amount.
-
 ## Resources
 - [WPILib Command based programming structure](https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html)
 - [The anatomy of a command](https://github.com/wpilibsuite/allwpilib/blob/main/wpilibNewCommands/src/main/java/edu/wpi/first/wpilibj2/command/Command.java)
 - [WPILib Romi programming docs](https://docs.wpilib.org/en/stable/docs/romi-robot/programming-romi.html)
 
-## Task Details - Part 1
+## Running code on a romi
+
+When writing code it is easy to make mistakes so being able to test code is very importnat. After each section of the task you should try running it on a romi. To run code on a romi you need to connect to its wifi network which should have the password `82488248`, after you connect to the romi click on the <img src="./wpilib%20logo.png" alt="wpilib logo" width="35"/> in the top right of the screen and chose simulate robot code. After the program starts up you will see the sim window.
+
+<img src="./sim.png" alt="sim window" width="750"/>
+
+The most important sections of the window are the robot mode in the top left, and the joystick sections. The robot mode lets you change the mode of the robot to be differnt things like disconnected, disabled, telop, and autonomous, when you are manualy driving the robot it should be in telop. If you are using a joystick you can bind wasd to a joystick by draging keyboard 0 onto one of the joysticks.
+## Conventions
 ### Naming Conventions
 On ChainLynx, we use the following naming conventions
 
@@ -30,12 +34,37 @@ private double speedMultiplier;
 
 In other teams or example code, you may seem conventions like m_ObjectName for objects, and other slight variations.
 Always remember to read the type and examine the usage to make sure you know what your looking at.
+
 ### Units
 [The Units library](https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-units.html) alows you have variables like `Distance kElevatorHeight` instead of `double kElevatorHeightMeters` The advantage of this you you can get the height in meters but also in inches or feet, the other main reason to use the units library is to avoid mismatched units like saying that a measurment in feet is in meters like what happened with the [Mars Climate Orbiter](https://en.wikipedia.org/wiki/Mars_Climate_Orbiter#Cause_of_failure).
 
 You can create a measure(such as Distance or Angle) using the `.of` meathod on a unit eg. `Distance kBumperWidth = Inches.of(23.5)` You can also manipulate a measure with meathods like `.plus` or `.times`, and you can compare them with meathods like `.lt`(less than) or `.gte`(greater than or equal to).
 
 To use the units library you can import `import static edu.wpi.first.units.Units.*;` for the units like `Inches` or `Rotations`, and `import edu.wpi.first.units.measure.*;` for measures like `Distance` or `Angle`.
+
+
+## Objectives 
+Off the template command-based Romi project, create a command that will allow joystick or keyboard input to control the Romi drivetrain. Create commands to drive the Romi forward and rotate it a certain amount.
+
+## Task Details - Part 1
+### Setting up the constants file
+In the constants file you several things, because the constatns are for the drivetrain you should add another class inside of constants called `DrivetrainConstatns`. The things that you need the the constants file are the drive speed, turn speed, the counts per encoder revolution, and the diameter of the wheels; the drive and turn speed should be a number between 0 and 1, however if it is to low the motors will not have enugh power to spin the wheels, the counts per revolution and wheel diameter can both be moved from the drivetrain, the only change that will need to be made is to convert the double being used to a distance in mm.
+
+<details>
+    <summary>
+        <a href="Solution/src/main/java/frc/robot/Constants.java#L19">Solution</a>
+    </summary>
+
+    public final class DriveConstants {
+        public static final double kDefaultDriveSpeed = 0.5; // fraction of max power, 0-1
+        public static final double kDefaultRotSpeed = 0.5; // // fraction of max power, 0-1
+        public static final double kCountsPerRevolution = 1440.0;
+        public static final Distance kWheelDiameter = Millimeters.of(70);
+    }
+
+</details>
+<br>
+
 ### Drivetrain
 Once you have used the WPILib VSCode extension to create a new [Romi template (not example) command-based project](https://docs.wpilib.org/en/stable/docs/romi-robot/programming-romi.html), look at RomiDrivetrain.java in the subsystems folder. For tank drivetrains like Romi, which can’t turn and move back and forth at the same time, we use arcade drive (try to find this method) to control the Romis.
 
@@ -344,8 +373,4 @@ In the constructor of Robot Container, add instances of your new commands as opt
     autoChooser.addOption("drive 6 inches", translateCommand);
     
 </details>
-
-## Running code on a Romi
-
-
 Great job finishing your first task!
