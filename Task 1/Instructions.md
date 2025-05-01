@@ -7,7 +7,7 @@
 
 ## Running code on a romi
 
-When writing code it is easy to make mistakes so being able to test code is very importnat. After each section of the task you should try running it on a romi. To run code on a romi you need to connect to its wifi network which should have the password `82488248`, after you connect to the romi click on the <img src="./wpilib%20logo.png" alt="wpilib logo" width="35"/> in the top right of the screen and chose simulate robot code. After the program starts up you will see the sim window.
+When writing code it is easy to make mistakes so being able to test code is very importnat. After each section of the task you should try running it on a romi. To run code on a romi you need to connect to its wifi network which should have the password `82488248`, after you connect to the romi click on the <img src="./wpilib%20logo.png" alt="wpilib logo" width="35"/>(WPILib code extention) in the top right of the screen and chose simulate robot code. After the program starts up you will see the sim window.
 
 <img src="./sim.png" alt="sim window" width="750"/>
 
@@ -47,8 +47,10 @@ To use the units library you can import `import static edu.wpi.first.units.Units
 Off the template command-based Romi project, create a command that will allow joystick or keyboard input to control the Romi drivetrain. Create commands to drive the Romi forward and rotate it a certain amount.
 
 ## Task Details - Part 1
+### Creating the project
+Use the WPILib VSCode extension to create a new [Romi template (not example) command-based project](https://docs.wpilib.org/en/stable/docs/romi-robot/programming-romi.html). You will need to select several options the most important is to enable desktop suport.
 ### Setting up the constants file
-In the constants file you several things, because the constatns are for the drivetrain you should add another class inside of constants called `DrivetrainConstatns`. The things that you need the the constants file are the drive speed, turn speed, the counts per encoder revolution, and the diameter of the wheels; the drive and turn speed should be a number between 0 and 1, however if it is to low the motors will not have enugh power to spin the wheels, the counts per revolution and wheel diameter can both be moved from the drivetrain, the only change that will need to be made is to convert the double being used to a distance in mm.
+In the constants file you need several things, because the constants are for the drivetrain you should add another class inside of constants called `DrivetrainConstatns`. The things that you need the the constants file are the drive speed, turn speed, the counts per encoder revolution, and the diameter of the wheels; the drive and turn speed should be a number between 0 and 1, however if it is to low the motors will not have enugh power to spin the wheels, the counts per revolution and wheel diameter can both be moved from the drivetrain, the only change that will need to be made is to convert the double being used to a distance in mm.
 
 <details>
     <summary>
@@ -66,7 +68,7 @@ In the constants file you several things, because the constatns are for the driv
 <br>
 
 ### Drivetrain
-Once you have used the WPILib VSCode extension to create a new [Romi template (not example) command-based project](https://docs.wpilib.org/en/stable/docs/romi-robot/programming-romi.html), look at RomiDrivetrain.java in the subsystems folder. For tank drivetrains like Romi, which can’t turn and move back and forth at the same time, we use arcade drive (try to find this method) to control the Romis.
+Look at RomiDrivetrain.java in the subsystems folder. For tank drivetrains like Romi, which can’t turn and move back and forth at the same time, we use arcade drive (try to find this method) to control the Romis.
 
 <details>
     <summary>
