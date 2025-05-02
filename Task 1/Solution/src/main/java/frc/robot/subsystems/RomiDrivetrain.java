@@ -65,7 +65,6 @@ public class RomiDrivetrain extends SubsystemBase {
     return getLeftDistance().plus(getRightDistance()).div(2);
   }
 
-  /** Gyro angle in degrees */
   public Angle getAngle() {
     return Degrees.of(gyro.getAngle());
   }

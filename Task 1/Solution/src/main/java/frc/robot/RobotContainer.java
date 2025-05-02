@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.*;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
+import static frc.robot.Constants.DriveConstants.*;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -55,9 +56,9 @@ public class RobotContainer {
     driveCommand = new DriveCommand(romiDrivetrain, () -> joystick.getY(), () -> joystick.getX());
     driveCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(joystick.getY(), joystick.getX()), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain);
     translateCommand = new TranslateCommand(romiDrivetrain, distToDrive);
-    translateCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(translateDir, 0), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain).until(() -> romiDrivetrain.getAverageDistance().times(translateDir).gte(distToDrive.times(translateDir)));
+    translateCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(translateDir * kDefaultDriveSpeed, 0), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain).until(() -> romiDrivetrain.getAverageDistance().times(translateDir).gte(distToDrive.times(translateDir))).beforeStarting(runOnce(romiDrivetrain::resetEncoders));
     turnCommand = new TurnCommand(romiDrivetrain, angleToTurn);
-    turnCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(0, turnDir), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain).until(() -> romiDrivetrain.getAverageDistance().times(turnDir).gte(distToDrive.times(turnDir)));
+    turnCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(0, turnDir * kDefaultRotSpeed), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain).until(() -> romiDrivetrain.getAverageDistance().times(turnDir).gte(distToDrive.times(turnDir))).beforeStarting(runOnce(romiDrivetrain::resetGyro));
     
     romiDrivetrain.setDefaultCommand(driveCommand);
 

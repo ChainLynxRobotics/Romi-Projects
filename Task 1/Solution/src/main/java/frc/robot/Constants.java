@@ -18,7 +18,7 @@ import edu.wpi.first.units.measure.*;
 public final class Constants {
     public final class DriveConstants {
         public static final double kDefaultDriveSpeed = 0.5; // fraction of max power, 0-1
-        public static final double kDefaultRotSpeed = 0.5; // // fraction of max power, 0-1
+        public static final double kDefaultRotSpeed = 0.5; // fraction of max power, 0-1
         public static final double kCountsPerRevolution = 1440.0;
         public static final Distance kWheelDiameter = Millimeters.of(70);
     }
