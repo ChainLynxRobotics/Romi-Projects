@@ -1,7 +1,5 @@
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Rotations;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.RomiDrivetrain;
 
@@ -25,7 +23,7 @@ public class TurnCommand extends Command {
 
     @Override
     public void execute() {
-        drive.arcadeDrive(0, drive.calculateRotOutput(drive.getAngle().in(Rotations), angle.in(Rotations)));
+        drive.arcadeDrive(0, drive.calculateRotOutput(angle));
     }
 
     @Override

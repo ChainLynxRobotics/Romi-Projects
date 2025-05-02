@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.DriveConstants.*;
 
+import java.lang.ModuleLayer.Controller;
+
 import dev.doglog.DogLog;
 
 import static edu.wpi.first.units.Units.*;
@@ -39,8 +41,8 @@ public class RomiDrivetrain extends SubsystemBase {
   // PID controllers
   private final PIDController rotController;
   private final PIDController translateController;
-  private double curRotSetpoint = 0;
-  private double curTransSetpoint = 0;
+  private Angle curRotSetpoint = Radians.zero();
+  private Distance curTransSetpoint = Meters.zero();
 
   /** Creates a new RomiDrivetrain. */
   public RomiDrivetrain() {
@@ -55,8 +57,8 @@ public class RomiDrivetrain extends SubsystemBase {
 
     translateController = new PIDController(0.1, 0.0, 0.0);
     rotController = new PIDController(10.0, 0.0, 0.0);
-    translateController.setTolerance(DriveConstants.translationTolerance.in(Meters));
-    rotController.setTolerance(DriveConstants.rotationTolerance.in(Rotations));
+    translateController.setTolerance(DriveConstants.translationTolerance.baseUnitMagnitude());
+    rotController.setTolerance(DriveConstants.rotationTolerance.baseUnitMagnitude());
   }
 
   public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
@@ -89,14 +91,14 @@ public class RomiDrivetrain extends SubsystemBase {
     gyro.reset();
   }
 
-  public double calculateRotOutput(double curRot, double setpoint) {
+  public double calculateRotOutput(Angle setpoint) {
     curRotSetpoint = setpoint; 
-    return rotController.calculate(curRot, setpoint);
+    return rotController.calculate(getAngle().baseUnitMagnitude(), setpoint.baseUnitMagnitude());
   }
 
-  public double calculateTranslateOutput(double curDist, double setpoint) {
+  public double calculateTranslateOutput(Distance setpoint) {
     curTransSetpoint = setpoint;
-    return translateController.calculate(curDist, setpoint);
+    return translateController.calculate(getAverageDistance().baseUnitMagnitude(), setpoint.baseUnitMagnitude());
   }
 
   public boolean atTranslationSetpoint() {
@@ -112,8 +114,8 @@ public class RomiDrivetrain extends SubsystemBase {
     // This method will be called once per scheduler run
     DogLog.log("drivetrain/position meters", getAverageDistance().in(Meters));
     DogLog.log("drivetrain/rotation degrees", getAngle().in(Degrees));
-    DogLog.log("drivetrain/translation setpoint", curTransSetpoint);
-    DogLog.log("drivetrain/rotation setpoint", curRotSetpoint);
+    DogLog.log("drivetrain/translation setpoint", curTransSetpoint.in(Meters));
+    DogLog.log("drivetrain/rotation setpoint", curRotSetpoint.in(Degrees));
   }
 
   @Override
