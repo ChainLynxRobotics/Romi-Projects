@@ -47,8 +47,8 @@ First, instantiate the PID controllers, initializing them in the constructor of 
     public RomiDrivetrain() {
     ... 
 
-    translateController = new PIDController(0.1, 0.0, 0.0);
-    rotController = new PIDController(10.0, 0.0, 0.0);
+    translateController = new PIDController(kTranslationP, kTranslationI, kTranslationD);
+    rotController = new PIDController(kRotationP, kRotationI, kRotationD);
     translateController.setTolerance(DriveConstants.translationTolerance.in(Meters));
     rotController.setTolerance(DriveConstants.rotationTolerance.in(Rotations));
   }

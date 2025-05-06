@@ -55,10 +55,10 @@ public class RomiDrivetrain extends SubsystemBase {
     // Invert right side since motor is flipped
     rightMotor.setInverted(true);
 
-    translateController = new PIDController(0.1, 0.0, 0.0);
-    rotController = new PIDController(10.0, 0.0, 0.0);
-    translateController.setTolerance(DriveConstants.translationTolerance.baseUnitMagnitude());
-    rotController.setTolerance(DriveConstants.rotationTolerance.baseUnitMagnitude());
+    translateController = new PIDController(kTranslationP, kTranslationI, kTranslationD);
+    rotController = new PIDController(kRotationP, kRotationI, kRotationD);
+    translateController.setTolerance(DriveConstants.kTranslationTolerance.baseUnitMagnitude());
+    rotController.setTolerance(DriveConstants.kRotationTolerance.baseUnitMagnitude());
   }
 
   public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
@@ -92,7 +92,7 @@ public class RomiDrivetrain extends SubsystemBase {
   }
 
   public double calculateRotOutput(Angle setpoint) {
-    curRotSetpoint = setpoint; 
+    curRotSetpoint = setpoint;
     return rotController.calculate(getAngle().baseUnitMagnitude(), setpoint.baseUnitMagnitude());
   }
 

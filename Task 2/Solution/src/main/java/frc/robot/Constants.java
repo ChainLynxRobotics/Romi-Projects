@@ -22,7 +22,15 @@ public final class Constants {
         public static final double kCountsPerRevolution = 1440.0;
         public static final Distance kWheelDiameter = Millimeters.of(70); // 70 mm
 
-        public static final Distance translationTolerance = Inches.of(1);
-        public static final Angle rotationTolerance = Rotations.of(0.05);
+        public static final Distance kTranslationTolerance = Inches.of(1);
+        public static final Angle kRotationTolerance = Rotations.of(0.05);
+
+        public static final double kTranslationP = 0.1;
+        public static final double kTranslationI = 0;
+        public static final double kTranslationD = 0;
+
+        public static final double kRotationP = 10;
+        public static final double kRotationI  = 0;
+        public static final double kRotationD  = 0;
     }
 }   
