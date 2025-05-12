@@ -25,7 +25,7 @@ You must define a PID Controller object (one for rotation and one for translatio
 
 <details>
     <summary>
-        <a>Answer</a>
+        Answer
     </summary>
     The red output signal because it converges most quickly to the desired setpoint with the least oscillation.
 </details>
@@ -62,8 +62,10 @@ Make sure to define rotation and translation tolerances in constants that repres
     <summary>
         <a href="Solution/src/main/java/frc/robot/Constants.java#L25">Solution</a>
     </summary>
-    public static final Distance translationTolerance = Inches.of(1);
-    public static final Angle rotationTolerance = Rotations.of(0.05);
+
+    public static final Distance kTranslationTolerance = Inches.of(1);
+    public static final Angle kRotationTolerance = Rotations.of(0.05);
+
 </details>
 <br>
 
@@ -73,13 +75,17 @@ Now, let's define methods to calculate PID controller output based on a current 
     <summary>
         <a href="Solution/src/main/java/frc/robot/subsystems/RomiDrivetrain.java#L88">Solution</a>
     </summary>
-    public double calculateRotOutput(double curRot, double setpoint) {
-        return rotController.calculate(curRot, setpoint);
+
+    public double calculateRotOutput(Angle setpoint) {
+        curRotSetpoint = setpoint;
+        return rotController.calculate(getAngle().baseUnitMagnitude(), setpoint.baseUnitMagnitude());
     }
 
-    public double calculateTranslateOutput(double curDist, double setpoint) {
-        return translateController.calculate(curDist, setpoint);
+    public double calculateTranslateOutput(Distance setpoint) {
+        curTransSetpoint = setpoint;
+        return translateController.calculate(getAverageDistance().baseUnitMagnitude(), setpoint.baseUnitMagnitude());
     }
+
 </details>
 <br>
 
@@ -88,6 +94,7 @@ Also in the RomiDrivetrain class, create methods to return whether each controll
     <summary>
         <a href="Solution/src/main/java/frc/robot/subsystems/RomiDrivetrain.java#L96">Solution</a>
     </summary>
+
     public boolean atTranslationSetpoint() {
         return translateController.atSetpoint();
     }
@@ -95,6 +102,7 @@ Also in the RomiDrivetrain class, create methods to return whether each controll
     public boolean atRotationSetpoint() {
         return rotController.atSetpoint();
     }
+
 </details>
 <br>
 
@@ -103,15 +111,17 @@ In the translation command from the previous task, modify the execute method so 
     <summary>
         <a href="Solution/src/main/java/frc/robot/commands/TranslateCommand.java#L26">Solution</a>
     </summary>
+
     @Override
     public void execute() {
-        drive.arcadeDrive(drive.calculateTranslateOutput(drive.getAverageDistance().in(Meters), dist.in(Meters)), 0);
+        drive.arcadeDrive(drive.calculateTranslateOutput(dist), 0);
     }
 
     @Override
     public boolean isFinished() {
         return drive.atTranslationSetpoint();
     }
+
 </details>
 <br>
 
@@ -121,15 +131,17 @@ Implement the same logic for the rotation command, but set the applied rotation 
     <summary>
         <a href="Solution/src/main/java/frc/robot/commands/TurnCommand.java#L27">Solution</a>
     </summary>
+
     @Override
     public void execute() {
-        drive.arcadeDrive(0, drive.calculateRotOutput(drive.getAngle().in(Rotations), angle.in(Rotations)));
+        drive.arcadeDrive(0, drive.calculateRotOutput(angle));
     }
 
     @Override
     public boolean isFinished() {
         return drive.atRotationSetpoint();
     }
+
 </details>
 <br>
 
@@ -140,7 +152,9 @@ To use this dependency, in the constructor of RobotContainer, call the static me
     <summary>
         <a href="Solution/src/main/java/frc/robot/RobotContainer.java#L49">Solution</a>
     </summary>
+
     DogLog.setOptions(new DogLogOptions().withCaptureNt(true));
+
 </details>
 <br>
 
@@ -150,17 +164,17 @@ In RomiDrivetrain, log drivetrain position, angle, and the rotation and translat
     <summary>
         <a href="Solution/src/main/java/frc/robot/subsystems/RomiDrivetrain.java#L111">Solution</a>
     </summary>
+
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
         DogLog.log("drivetrain/position meters", getAverageDistance().in(Meters));
         DogLog.log("drivetrain/rotation degrees", getAngle().in(Degrees));
-        DogLog.log("drivetrain/translation setpoint", curTransSetpoint);
-        DogLog.log("drivetrain/rotation setpoint", curRotSetpoint);
+        DogLog.log("drivetrain/translation setpoint", curTransSetpoint.in(Meters));
+        DogLog.log("drivetrain/rotation setpoint", curRotSetpoint.in(Degrees));
     }
+
 </details>
 <br>
 
-Logs can be viewed on Elastic. To set up Elastic, which is a web UI similar to Smart Dashboard and Glass (but better and more reactive), follow [these instructions](https://frc-elastic.gitbook.io/docs/getting-started/installation). Once you connect to the robot from the app, you should be able to view all your logs. 
-
-
+Logs can be viewed on Elastic. To set up Elastic, which is a web UI similar to Smart Dashboard and Glass (but better and more reactive), follow [these instructions](https://frc-elastic.gitbook.io/docs/getting-started/app-navigation). Once you connect to the robot from the app, you can add a widget to show the positon and rotation of the robot and then use those graphs to tune the pid gains based on the instructions on the pid simulator.
