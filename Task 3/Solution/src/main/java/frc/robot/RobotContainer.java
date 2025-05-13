@@ -9,6 +9,8 @@ import edu.wpi.first.units.measure.*;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.Joystick;
@@ -41,6 +43,9 @@ public class RobotContainer {
   private final TurnCommand turnCommand;
   private final Command turnCommand2;
 
+  private final PathPlannerAuto driveAuto;
+  private final PathPlannerAuto curveAuto;
+
   private final Joystick joystick = new Joystick(0);
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -59,14 +64,20 @@ public class RobotContainer {
     translateCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(romiDrivetrain.calculateTranslateOutput(distToDrive), 0), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain).until(romiDrivetrain::atTranslationSetpoint).beforeStarting(runOnce(romiDrivetrain::resetEncoders));
     turnCommand = new TurnCommand(romiDrivetrain, angleToTurn);
     turnCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(0, romiDrivetrain.calculateRotOutput(angleToTurn)), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain).until(romiDrivetrain::atRotationSetpoint).beforeStarting(runOnce(romiDrivetrain::resetGyro));
+
+    driveAuto = new PathPlannerAuto("drive");
+    curveAuto = new PathPlannerAuto("curve");
     
     romiDrivetrain.setDefaultCommand(driveCommand);
-
 
     autoChooser.addOption("drive 6 inches", translateCommand);
     autoChooser.addOption("drive 6 inches comp", translateCommand2);
     autoChooser.addOption("turn 180", turnCommand);
     autoChooser.addOption("turn 180 comp", turnCommand2);
+
+    autoChooser.addOption("drive auto", driveAuto);
+    autoChooser.addOption("curve auto", curveAuto);
+
     SmartDashboard.putData(autoChooser);
     // Configure the button bindings
     configureButtonBindings();
