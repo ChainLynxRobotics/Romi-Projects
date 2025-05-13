@@ -24,7 +24,7 @@ public class TranslateCommand extends Command {
 
     @Override
     public void execute() {
-        drive.arcadeDrive(drive.calculateTranslateOutput(drive.getAverageDistance().in(Meters), dist.in(Meters)), 0);
+        drive.arcadeDrive(drive.calculateTranslateOutput(dist), 0);
     }
 
     @Override

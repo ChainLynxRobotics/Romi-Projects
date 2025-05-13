@@ -53,15 +53,12 @@ public class RobotContainer {
     distToDrive = Inches.of(6);
     angleToTurn = Rotations.of(0.5);
 
-    double translateDir = Math.signum(distToDrive.baseUnitMagnitude());
-    double turnDir = Math.signum(distToDrive.baseUnitMagnitude());
-
     driveCommand = new DriveCommand(romiDrivetrain, () -> joystick.getY(), () -> joystick.getX());
     driveCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(joystick.getY(), joystick.getX()), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain);
     translateCommand = new TranslateCommand(romiDrivetrain, distToDrive);
-    translateCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(translateDir, 0), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain).until(() -> romiDrivetrain.getAverageDistance().times(translateDir).gte(distToDrive.times(translateDir)));
+    translateCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(romiDrivetrain.calculateTranslateOutput(distToDrive), 0), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain).until(romiDrivetrain::atTranslationSetpoint).beforeStarting(runOnce(romiDrivetrain::resetEncoders));
     turnCommand = new TurnCommand(romiDrivetrain, angleToTurn);
-    turnCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(0, turnDir), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain).until(() -> romiDrivetrain.getAverageDistance().times(turnDir).gte(distToDrive.times(turnDir)));
+    turnCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(0, romiDrivetrain.calculateRotOutput(angleToTurn)), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain).until(romiDrivetrain::atRotationSetpoint).beforeStarting(runOnce(romiDrivetrain::resetGyro));
     
     romiDrivetrain.setDefaultCommand(driveCommand);
 
