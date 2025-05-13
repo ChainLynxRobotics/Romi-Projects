@@ -6,7 +6,9 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.DriveConstants.*;
 
-import java.lang.ModuleLayer.Controller;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPLTVController;
 
 import dev.doglog.DogLog;
 
@@ -14,6 +16,12 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.*;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
@@ -44,6 +52,8 @@ public class RomiDrivetrain extends SubsystemBase {
   private Angle curRotSetpoint = Radians.zero();
   private Distance curTransSetpoint = Meters.zero();
 
+  private DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(getRotation(), getLeftDistance(), getRightDistance());
+
   /** Creates a new RomiDrivetrain. */
   public RomiDrivetrain() {
     // Use inches as unit for encoder distances
@@ -59,12 +69,59 @@ public class RomiDrivetrain extends SubsystemBase {
     rotController = new PIDController(kRotationP, kRotationI, kRotationD);
     translateController.setTolerance(DriveConstants.kTranslationTolerance.baseUnitMagnitude());
     rotController.setTolerance(DriveConstants.kRotationTolerance.baseUnitMagnitude());
+
+    RobotConfig ppConfig = new RobotConfig(0, 0, null, 0);
+    // load config from Path planner GUI
+    try {
+      ppConfig = RobotConfig.fromGUISettings();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    // Configure AutoBuilder last
+    AutoBuilder.configure(
+            this::getPose, // Robot pose supplier
+            this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+            this::getRobotRelitiveSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+            (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+            new PPLTVController(0.02), // PPLTVController is the built in path following controller for differential drive trains
+            ppConfig, // The robot configuration
+            () -> {
+              // Boolean supplier that controls when the path will be mirrored for the red alliance
+              // This will flip the path being followed to the red side of the field.
+              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+              var alliance = DriverStation.getAlliance();
+              if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+              }
+              return false;
+            },
+            this // Reference to this subsystem to set requirements
+    );
+
   }
 
   public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
     diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
   }
 
+  public void driveRobotRelative(ChassisSpeeds speeds) {
+    arcadeDrive(MetersPerSecond.of(speeds.vxMetersPerSecond).div(kMaxSpeed).baseUnitMagnitude(), RadiansPerSecond.of(speeds.omegaRadiansPerSecond).div(kMaxAngularVelocity).baseUnitMagnitude());
+  }
+
+  public Pose2d getPose() {
+    return odometry.update(getRotation(), new DifferentialDriveWheelPositions(getLeftDistance(), getRightDistance()));
+  }
+
+  private void resetPose(Pose2d pose) {
+    odometry.resetPose(pose);
+  }
+
+  public ChassisSpeeds getRobotRelitiveSpeeds() {
+    return new ChassisSpeeds(getAverageVelocity(), MetersPerSecond.zero(), getAngularVelocity());
+  }
+  
   public void resetEncoders() {
     leftEncoder.reset();
     rightEncoder.reset();
@@ -82,9 +139,21 @@ public class RomiDrivetrain extends SubsystemBase {
     return getLeftDistance().plus(getRightDistance()).div(2);
   }
 
+  public LinearVelocity getAverageVelocity() {
+    return MetersPerSecond.of((leftEncoder.getRate() + rightEncoder.getRate()) / 2);
+  }
+
   /** Gyro angle in degrees */
   public Angle getAngle() {
     return Degrees.of(gyro.getAngle());
+  }
+
+  public AngularVelocity getAngularVelocity() {
+    return DegreesPerSecond.of(gyro.getRate());
+  }
+
+  private Rotation2d getRotation() {
+    return new Rotation2d(getAngle());
   }
 
   public void resetGyro() {

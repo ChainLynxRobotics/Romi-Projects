@@ -21,6 +21,10 @@ public final class Constants {
         public static final double kDefaultRotSpeed = 0.5; // // % of max power in volts, 0-1
         public static final double kCountsPerRevolution = 1440.0;
         public static final Distance kWheelDiameter = Millimeters.of(70); // 70 mm
+        public static final Distance kDriveWidth = Millimeters.of(149);
+
+        public static final LinearVelocity kMaxSpeed = MetersPerSecond.of(0.5);
+        public static final AngularVelocity kMaxAngularVelocity = RotationsPerSecond.of(1 / (kDriveWidth.times(Math.PI).div(kMaxSpeed).in(Seconds)));
 
         public static final Distance kTranslationTolerance = Inches.of(1);
         public static final Angle kRotationTolerance = Rotations.of(0.05);
