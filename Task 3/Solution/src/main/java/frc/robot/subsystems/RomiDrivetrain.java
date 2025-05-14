@@ -70,12 +70,13 @@ public class RomiDrivetrain extends SubsystemBase {
     translateController.setTolerance(DriveConstants.kTranslationTolerance.baseUnitMagnitude());
     rotController.setTolerance(DriveConstants.kRotationTolerance.baseUnitMagnitude());
 
-    RobotConfig ppConfig = new RobotConfig(0, 0, null, 0);
+    RobotConfig ppConfig;
     // load config from Path planner GUI
     try {
       ppConfig = RobotConfig.fromGUISettings();
     } catch (Exception e) {
       e.printStackTrace();
+      ppConfig = null;
     }
 
     // Configure AutoBuilder last

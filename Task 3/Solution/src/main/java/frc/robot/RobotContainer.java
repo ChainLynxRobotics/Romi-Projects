@@ -9,6 +9,7 @@ import edu.wpi.first.units.measure.*;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import dev.doglog.DogLog;
@@ -64,6 +65,8 @@ public class RobotContainer {
     translateCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(romiDrivetrain.calculateTranslateOutput(distToDrive), 0), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain).until(romiDrivetrain::atTranslationSetpoint).beforeStarting(runOnce(romiDrivetrain::resetEncoders));
     turnCommand = new TurnCommand(romiDrivetrain, angleToTurn);
     turnCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(0, romiDrivetrain.calculateRotOutput(angleToTurn)), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain).until(romiDrivetrain::atRotationSetpoint).beforeStarting(runOnce(romiDrivetrain::resetGyro));
+
+    NamedCommands.registerCommand("Turn 360", sequence(turnCommand, turnCommand2));
 
     driveAuto = new PathPlannerAuto("drive");
     curveAuto = new PathPlannerAuto("curve");
