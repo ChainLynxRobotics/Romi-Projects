@@ -46,6 +46,7 @@ public class RobotContainer {
 
   private final PathPlannerAuto driveAuto;
   private final PathPlannerAuto curveAuto;
+  private final PathPlannerAuto finalAuto;
 
   private final Joystick joystick = new Joystick(0);
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -70,6 +71,7 @@ public class RobotContainer {
 
     driveAuto = new PathPlannerAuto("drive");
     curveAuto = new PathPlannerAuto("curve");
+    finalAuto = new PathPlannerAuto("drive spin turn");
     
     romiDrivetrain.setDefaultCommand(driveCommand);
 
@@ -80,6 +82,7 @@ public class RobotContainer {
 
     autoChooser.addOption("drive auto", driveAuto);
     autoChooser.addOption("curve auto", curveAuto);
+    autoChooser.addOption("final auto", finalAuto);
 
     SmartDashboard.putData(autoChooser);
     // Configure the button bindings
