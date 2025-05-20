@@ -9,18 +9,13 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.romi.RomiGyro;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.Mode;
 
 import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.Radians;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -31,41 +26,22 @@ public class RomiDrivetrain extends SubsystemBase {
   private final Wheel m_leftWheel;
   private final Wheel m_rightWheel;
 
-  // The Romi has onboard encoders that are hardcoded
-  // to use DIO pins 4/5 and 6/7 for the left and right
-  private final Encoder leftEncoder = new Encoder(4, 5);
-  private final Encoder rightEncoder = new Encoder(6, 7);
-
-  private final RomiGyro m_gyro;
-  private final BuiltInAccelerometer m_accelerometer;
+  private final Gyro gyro;
   private final DifferentialDriveOdometry m_odometry;
 
   private final PIDController m_rotController;
   private final PIDController m_translateController;
-  private double m_rotation; // degrees
 
-  public RomiDrivetrain(WheelIO left, WheelIO right) {
+  public RomiDrivetrain(WheelIO left, WheelIO right, GyroIO gryo) {
     m_leftWheel = new Wheel(left, 0);
     m_rightWheel = new Wheel(right, 1);
     m_diffDrive = new DifferentialDrive(m_leftWheel::set, m_rightWheel::set);
 
-    // Use inches as unit for encoder distances
-    leftEncoder.setDistancePerPulse(DriveConstants.kWheelDiameter.times(Math.PI).div(DriveConstants.kCountsPerRevolution).in(Meters));
-    rightEncoder.setDistancePerPulse(DriveConstants.kWheelDiameter.times(Math.PI).div(DriveConstants.kCountsPerRevolution).in(Meters));
-
-    m_gyro = new RomiGyro();
-    m_gyro.reset();
-    m_accelerometer = new BuiltInAccelerometer();
-
-    if (Constants.currentMode == Mode.SIM) {
-      m_rotation = 0;
-    } else {
-      m_rotation = m_gyro.getAngle();
-    }
+    this.gyro = new Gyro(gryo);
 
     m_odometry =
         new DifferentialDriveOdometry(
-            new Rotation2d(m_rotation),
+            new Rotation2d(gyro.getAngle()),
             m_leftWheel.getPosition(),
             m_rightWheel.getPosition());
 
@@ -101,20 +77,12 @@ public class RomiDrivetrain extends SubsystemBase {
     m_rightWheel.resetEncoder();
   }
 
-  public double getLeftDistanceMeter() {
+  public Distance getLeftDistance() {
     return m_leftWheel.getPosition();
   }
 
-  public double getRightDistanceMeter() {
-    return m_rightWheel.getPosition();
-  }
-
-  public Distance getLeftDistance() {
-    return Meters.of(leftEncoder.getDistance());
-  }
-
   public Distance getRightDistance() {
-    return Meters.of(rightEncoder.getDistance());
+    return m_rightWheel.getPosition();
   }
 
   public Distance getAverageDistance() {
@@ -122,23 +90,11 @@ public class RomiDrivetrain extends SubsystemBase {
   }
 
   public void resetGyro() {
-    m_gyro.reset();
+    gyro.resetGyro();
   }
 
   public Angle getAngle() {
-    return Radians.of(m_rotation);
-  }
-
-  public double getAccelerationX() {
-    return m_accelerometer.getX();
-  }
-
-  public double getAccelerationY() {
-    return m_accelerometer.getY();
-  }
-
-  public double getAccelerationZ() {
-    return m_accelerometer.getZ();
+    return gyro.getAngle();
   }
 
   @AutoLogOutput(key = "Odometry/Robot")
@@ -170,7 +126,7 @@ public class RomiDrivetrain extends SubsystemBase {
 
   public void resetOdometry(Pose2d pose) {
     m_odometry.resetPosition(
-        new Rotation2d(m_rotation),
+        new Rotation2d(gyro.getAngle()),
         new DifferentialDriveWheelPositions(m_leftWheel.getPosition(), m_rightWheel.getPosition()),
         pose);
   }
@@ -185,21 +141,17 @@ public class RomiDrivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (Constants.currentMode == Mode.SIM) {
-      m_rotation = (m_leftWheel.getPosition() - m_rightWheel.getPosition()) / 2;
-    } else {
-      m_rotation = m_gyro.getAngle();
-    }
-
     m_leftWheel.periodic();
     m_rightWheel.periodic();
     m_leftWheel.updateInputs();
     m_rightWheel.updateInputs();
+    gyro.updateInputs();
+    gyro.periodic();
 
-    Logger.recordOutput("gyro angle", m_gyro.getAngle());
+    Logger.recordOutput("gyro angle", gyro.getAngle());
     Logger.recordOutput("left wheel", m_leftWheel.getPosition());
     Logger.recordOutput("right wheel", m_leftWheel.getPosition());
     m_odometry.update(
-        new Rotation2d(m_rotation), m_leftWheel.getPosition(), m_rightWheel.getPosition());
+        new Rotation2d(gyro.getAngle()), m_leftWheel.getPosition().in(Meters), m_rightWheel.getPosition().in(Meters));
   }
 }

@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -14,10 +13,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.TurnCommand;
+import frc.robot.subsystems.Drive.GyroIO;
+import frc.robot.subsystems.Drive.GyroIORomi;
+import frc.robot.subsystems.Drive.GyroIOSim;
 import frc.robot.subsystems.Drive.RomiDrivetrain;
 import frc.robot.subsystems.Drive.WheelIO;
 import frc.robot.subsystems.Drive.WheelIOSim;
 import frc.robot.subsystems.Drive.WheelIOSpark;
+
+import static edu.wpi.first.units.Units.*;
+import edu.wpi.first.units.measure.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -38,13 +43,13 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         m_drivetrain =
-            new RomiDrivetrain(new WheelIOSpark(0, 4, 5, false), new WheelIOSpark(1, 6, 7, true));
+            new RomiDrivetrain(new WheelIOSpark(0, 4, 5, false), new WheelIOSpark(1, 6, 7, true), new GyroIORomi());
         break;
       case SIM:
-        m_drivetrain = new RomiDrivetrain(new WheelIOSim(), new WheelIOSim());
+        m_drivetrain = new RomiDrivetrain(new WheelIOSim(), new WheelIOSim(), new GyroIOSim());
         break;
       default:
-        m_drivetrain = new RomiDrivetrain(new WheelIO() {}, new WheelIO() {});
+        m_drivetrain = new RomiDrivetrain(new WheelIO() {}, new WheelIO() {}, new GyroIO() {});
     }
 
     m_autoCommand = print("placeholder");
@@ -90,17 +95,17 @@ public class RobotContainer {
   }
 
   public Command translateRomi(double distMeters, double threshold) {
-    double setpoint = m_drivetrain.getLeftDistanceMeter() + distMeters;
+    double setpoint = m_drivetrain.getLeftDistance().in(Meters) + distMeters;
     return run(
             () -> {
               double output =
                   m_drivetrain.calculateTranslateOutput(
-                      m_drivetrain.getLeftDistanceMeter(), setpoint);
+                      m_drivetrain.getLeftDistance().in(Meters), setpoint);
               SmartDashboard.putNumber("translationPidOutput", output);
               m_drivetrain.arcadeDrive(output, 0);
             },
             m_drivetrain)
-        .until(() -> Math.abs(m_drivetrain.getLeftDistanceMeter() - setpoint) < threshold)
+        .until(() -> Math.abs(m_drivetrain.getLeftDistance().in(Meters) - setpoint) < threshold)
         .finallyDo(() -> m_drivetrain.arcadeDrive(0, 0));
   }
 

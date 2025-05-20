@@ -7,6 +7,8 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.measure.*;
 
 /**
@@ -36,7 +38,7 @@ public final class Constants {
         public static final double kRamseteZeta = 0.7;
     }
 
-    public final class DriveConstants {
+    public static final class DriveConstants {
         public static final double kDefaultDriveSpeed = 0.2; // % of max power in volts, 0-1
         public static final double kDefaultRotSpeed = 0.5; // // % of max power in volts, 0-1
         public static final double kCountsPerRevolution = 1440.0;
@@ -56,6 +58,8 @@ public final class Constants {
         public static final double kPDriveVel = 0.085;
     
         public static final double kTrackwidthMeters = 0.142072613;
+
+        public static final Per<DistanceUnit,AngleUnit> kAngleToDist = (kWheelDiameter.times(Math.PI)).div(Rotations.one());
 
         public static final double motorPosStdDev = 0.05;
         public static final double motorVelStdDev = 0.01;

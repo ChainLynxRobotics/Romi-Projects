@@ -2,7 +2,10 @@ package frc.robot.subsystems.Drive;
 
 import org.littletonrobotics.junction.Logger;
 
-public class Wheel {
+import static edu.wpi.first.units.Units.*;
+import edu.wpi.first.units.measure.*;
+
+public class Wheel { 
   private final int index;
   private final WheelIO wheel;
   private final WheelIOInputsAutoLogged wheelAutoLogged = new WheelIOInputsAutoLogged();
@@ -22,17 +25,17 @@ public class Wheel {
 
   public void set(double speed) {
     System.out.println("setting wheel " + Integer.toString(index) + " speed to: " + speed);
-    wheel.setDriveSpeed(speed);
+    wheel.setDriveOutput(speed);
   }
 
   /** position in meters */
-  public double getPosition() {
-    return wheelAutoLogged.drivePositionMeters;
+  public Distance getPosition() {
+    return wheelAutoLogged.drivePosition;
   }
 
   /** velocity in m/s */
-  public double getVelocity() {
-    return wheelAutoLogged.driveVelocityMetersPerSec;
+  public LinearVelocity getVelocity() {
+    return wheelAutoLogged.driveVelocity;
   }
 
   public void resetEncoder() {

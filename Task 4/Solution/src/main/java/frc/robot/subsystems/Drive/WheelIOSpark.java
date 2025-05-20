@@ -4,6 +4,9 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import frc.robot.Constants.DriveConstants;
 
+import static edu.wpi.first.units.Units.*;
+import edu.wpi.first.units.measure.*;
+
 public class WheelIOSpark implements WheelIO {
 
   private final Spark motor;
@@ -16,24 +19,19 @@ public class WheelIOSpark implements WheelIO {
 
     motor.setInverted(setInverted);
     encoder.setDistancePerPulse(
-        (Math.PI * DriveConstants.kWheelDiameterMeters) / DriveConstants.kCountsPerRevolution);
+        (DriveConstants.kWheelDiameter.times(Math.PI).div(DriveConstants.kCountsPerRevolution).in(Meters)));
     resetEncoder();
   }
 
   @Override
   public void updateInputs(WheelIOInputs inputs) {
-    inputs.driveAppliedVolts = (motor.get() / 256) * 5;
-    inputs.drivePositionMeters = encoder.getDistance();
-    inputs.driveVelocityMetersPerSec = encoder.getRate();
+    inputs.appliedOutput = motor.get();
+    inputs.drivePosition = Meters.of(encoder.getDistance());
+    inputs.driveVelocity = MetersPerSecond.of(encoder.getRate());
   }
 
   @Override
-  public void setDriveVoltage(double volts) {
-    motor.setVoltage(Math.max(DriveConstants.minVoltage, Math.min(volts, DriveConstants.maxVoltage)));
-  }
-
-  @Override
-  public void setDriveSpeed(double speed) {
+  public void setDriveOutput(double speed) {
     motor.set(Math.max(-1, Math.min(speed, 1)));
   }
 
