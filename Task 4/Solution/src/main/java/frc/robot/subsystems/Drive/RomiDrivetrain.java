@@ -13,9 +13,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.DriveConstants;
 
-import static edu.wpi.first.units.Units.Meters;
+import edu.wpi.first.units.measure.*;
+import static edu.wpi.first.units.Units.*;
+
+import static frc.robot.Constants.DriveConstants.*;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -68,8 +70,9 @@ public class RomiDrivetrain extends SubsystemBase {
 
   public void driveChassisSpeeds(ChassisSpeeds speeds) {
     arcadeDrive(
-        speeds.vxMetersPerSecond / Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-        speeds.omegaRadiansPerSecond / Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond);
+        speeds.vxMetersPerSecond / kMaxSpeed.in(MetersPerSecond),
+        speeds.omegaRadiansPerSecond / kMaxSpeed.in(MetersPerSecond)
+    );
   }
 
   public void resetEncoders() {
@@ -120,7 +123,7 @@ public class RomiDrivetrain extends SubsystemBase {
   }
 
   public ChassisSpeeds getSpeeds() {
-    return DriveConstants.diffDriveKinematics.toChassisSpeeds(
+    return diffDriveKinimatics.toChassisSpeeds(
         new DifferentialDriveWheelSpeeds(m_leftWheel.getVelocity(), m_rightWheel.getVelocity()));
   }
 
