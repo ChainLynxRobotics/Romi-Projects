@@ -17,7 +17,7 @@ public class WheelIOSim implements WheelIO {
     LinearSystemId.createDCMotorSystem(
       DCMotor.getKrakenX60(2), 0, 0), 
       DCMotor.getKrakenX60Foc(2), 
-      DriveConstants.motorPosStdDev, DriveConstants.motorVelStdDev);
+      DriveConstants.kMotorPosStdDev, DriveConstants.kMotorVelStdDev);
   private double driveAppliedOutput = 0.0;
 
   @Override

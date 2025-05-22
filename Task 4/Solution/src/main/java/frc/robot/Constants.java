@@ -39,12 +39,12 @@ public final class Constants {
         public static final LinearVelocity kMaxSpeed = MetersPerSecond.of(0.3);
         public static final AngularVelocity kMaxAngularVelocity = RotationsPerSecond.of(1 / (kDriveWidth.times(Math.PI).div(kMaxSpeed).in(Seconds)));
 
-        public static final Distance translationTolerance = Inches.of(1);
-        public static final Angle rotationTolerance = Rotations.of(0.05);
+        public static final Distance kTranslationTolerance = Inches.of(1);
+        public static final Angle kRotationTolerance = Rotations.of(0.05);
 
-        public static final double motorPosStdDev = 0.05;
-        public static final double motorVelStdDev = 0.01;
+        public static final double kMotorPosStdDev = 0.05;
+        public static final double kMotorVelStdDev = 0.01;
 
-        public static final DifferentialDriveKinematics diffDriveKinimatics = new DifferentialDriveKinematics(kDriveWidth);
+        public static final DifferentialDriveKinematics kDiffDriveKinimatics = new DifferentialDriveKinematics(kDriveWidth);
     }
 }   

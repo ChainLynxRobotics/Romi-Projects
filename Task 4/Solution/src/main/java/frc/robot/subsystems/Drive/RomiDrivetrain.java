@@ -24,48 +24,48 @@ import org.littletonrobotics.junction.Logger;
 
 public class RomiDrivetrain extends SubsystemBase {
 
-  private final DifferentialDrive m_diffDrive;
-  private final Wheel m_leftWheel;
-  private final Wheel m_rightWheel;
+  private final DifferentialDrive diffDrive;
+  private final Wheel leftWheel;
+  private final Wheel rightWheel;
 
   private final Gyro gyro;
-  private final DifferentialDriveOdometry m_odometry;
+  private final DifferentialDriveOdometry odometry;
 
-  private final PIDController m_rotController;
-  private final PIDController m_translateController;
+  private final PIDController rotController;
+  private final PIDController translateController;
 
   public RomiDrivetrain(WheelIO left, WheelIO right, GyroIO gryo) {
-    m_leftWheel = new Wheel(left, 0);
-    m_rightWheel = new Wheel(right, 1);
-    m_diffDrive = new DifferentialDrive(m_leftWheel::set, m_rightWheel::set);
+    leftWheel = new Wheel(left, 0);
+    rightWheel = new Wheel(right, 1);
+    diffDrive = new DifferentialDrive(leftWheel::set, rightWheel::set);
 
     this.gyro = new Gyro(gryo);
 
-    m_odometry =
+    odometry =
         new DifferentialDriveOdometry(
             new Rotation2d(gyro.getAngle()),
-            m_leftWheel.getPosition(),
-            m_rightWheel.getPosition());
+            leftWheel.getPosition(),
+            rightWheel.getPosition());
 
     switch (Constants.currentMode) {
       case REAL:
       case REPLAY:
-        m_translateController = new PIDController(0.05, 0.0, 0.0);
-        m_rotController = new PIDController(7.0, 0.0, 0.0);
+        translateController = new PIDController(0.05, 0.0, 0.0);
+        rotController = new PIDController(7.0, 0.0, 0.0);
         break;
       case SIM:
-        m_translateController = new PIDController(0.1, 0.0, 0.0);
-        m_rotController = new PIDController(10.0, 0.0, 0.0);
+        translateController = new PIDController(0.1, 0.0, 0.0);
+        rotController = new PIDController(10.0, 0.0, 0.0);
         break;
       default:
-        m_translateController = new PIDController(0.1, 0.0, 0.0);
-        m_rotController = new PIDController(10.0, 0.0, 0.0);
+        translateController = new PIDController(0.1, 0.0, 0.0);
+        rotController = new PIDController(10.0, 0.0, 0.0);
         break;
     }
   }
 
   public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
-    m_diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
+    diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
   }
 
   public void driveChassisSpeeds(ChassisSpeeds speeds) {
@@ -76,16 +76,16 @@ public class RomiDrivetrain extends SubsystemBase {
   }
 
   public void resetEncoders() {
-    m_leftWheel.resetEncoder();
-    m_rightWheel.resetEncoder();
+    leftWheel.resetEncoder();
+    rightWheel.resetEncoder();
   }
 
   public Distance getLeftDistance() {
-    return m_leftWheel.getPosition();
+    return leftWheel.getPosition();
   }
 
   public Distance getRightDistance() {
-    return m_rightWheel.getPosition();
+    return rightWheel.getPosition();
   }
 
   public Distance getAverageDistance() {
@@ -102,35 +102,35 @@ public class RomiDrivetrain extends SubsystemBase {
 
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
+    return odometry.getPoseMeters();
   }
 
   public double calculateRotOutput(double curRot, double setpoint) {
-    return m_rotController.calculate(curRot, setpoint);
+    return rotController.calculate(curRot, setpoint);
   }
 
   public double calculateTranslateOutput(double curDist, double setpoint) {
-    return m_translateController.calculate(curDist, setpoint);
+    return translateController.calculate(curDist, setpoint);
   }
 
 
   public boolean atTranslationSetpoint() {
-    return m_translateController.atSetpoint();
+    return translateController.atSetpoint();
   }
 
   public boolean atRotationSetpoint() {
-    return m_rotController.atSetpoint();
+    return rotController.atSetpoint();
   }
 
   public ChassisSpeeds getSpeeds() {
-    return diffDriveKinimatics.toChassisSpeeds(
-        new DifferentialDriveWheelSpeeds(m_leftWheel.getVelocity(), m_rightWheel.getVelocity()));
+    return kDiffDriveKinimatics.toChassisSpeeds(
+        new DifferentialDriveWheelSpeeds(leftWheel.getVelocity(), rightWheel.getVelocity()));
   }
 
   public void resetOdometry(Pose2d pose) {
-    m_odometry.resetPosition(
+    odometry.resetPosition(
         new Rotation2d(gyro.getAngle()),
-        new DifferentialDriveWheelPositions(m_leftWheel.getPosition(), m_rightWheel.getPosition()),
+        new DifferentialDriveWheelPositions(leftWheel.getPosition(), rightWheel.getPosition()),
         pose);
   }
 
@@ -144,17 +144,17 @@ public class RomiDrivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    m_leftWheel.periodic();
-    m_rightWheel.periodic();
-    m_leftWheel.updateInputs();
-    m_rightWheel.updateInputs();
+    leftWheel.periodic();
+    rightWheel.periodic();
+    leftWheel.updateInputs();
+    rightWheel.updateInputs();
     gyro.updateInputs();
     gyro.periodic();
 
     Logger.recordOutput("gyro angle", gyro.getAngle());
-    Logger.recordOutput("left wheel", m_leftWheel.getPosition());
-    Logger.recordOutput("right wheel", m_leftWheel.getPosition());
-    m_odometry.update(
-        new Rotation2d(gyro.getAngle()), m_leftWheel.getPosition().in(Meters), m_rightWheel.getPosition().in(Meters));
+    Logger.recordOutput("left wheel", leftWheel.getPosition());
+    Logger.recordOutput("right wheel", leftWheel.getPosition());
+    odometry.update(
+        new Rotation2d(gyro.getAngle()), leftWheel.getPosition().in(Meters), rightWheel.getPosition().in(Meters));
   }
 }
