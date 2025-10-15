@@ -48,7 +48,7 @@ Off the template command-based Romi project, create a command that will allow jo
 
 ## Task Details - Part 1
 ### Creating the project
-Use the WPILib VSCode extension to create a new [Romi template (not example) command-based project](https://docs.wpilib.org/en/stable/docs/romi-robot/programming-romi.html). You will need to select several options the most important is to enable desktop suport.
+Use the WPILib VSCode extension to create a new **Romi template (not example like the link says)** [command-based project](https://docs.wpilib.org/en/stable/docs/romi-robot/programming-romi.html). You will need to select several options the most important is to enable desktop suport.
 ### Setting up the constants file
 In the constants file you need several things, because the constants are for the drivetrain you should add another class inside of constants called `DriveConstants`. In the DriveConstants class, you will need a `kDefaultDriveSpeed` `kDefaultRotSpeed` `kCountsPerRevolution` and `kWheelDiameter`. The two default speeds should be doubles set to whatever value you want between 0 and 1, and will scale how fast the romi drives and turns, 1 being the fastest and 0 being the slowest. The kCountsPerRevolution helps the encoder track how far the romi has moved, which we will be important later. Finally we need to use the Units library to construct a `Distance` for the Wheel Diameter, and we should say `Millimeters.of(70)` to specify that our wheels are 70 mm in diameter.
 
