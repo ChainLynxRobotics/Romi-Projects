@@ -5,7 +5,7 @@ Implement PID to more precisely rotate and translate your robot to setpoints in 
 
 ## Resources
 - [WPILib PID controllers](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/pidcontroller.html)
-- [PID Simulator](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tuning-flywheel.html)
+- [PID Simulator](https://www.grauonline.de/alexwww/ardumower/pid/pid.html)
 - [FRC Wiki PID Controller](https://firstwiki.github.io/wiki/pid-controller)
 
 ## Task Details
