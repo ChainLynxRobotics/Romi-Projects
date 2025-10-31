@@ -55,8 +55,8 @@ public class RomiDrivetrain extends SubsystemBase {
 
     translateController = new PIDController(kTranslationP, kTranslationI, kTranslationD);
     rotController = new PIDController(kRotationP, kRotationI, kRotationD);
-    translateController.setTolerance(DriveConstants.kTranslationTolerance.baseUnitMagnitude());
-    rotController.setTolerance(DriveConstants.kRotationTolerance.baseUnitMagnitude());
+    translateController.setTolerance(DriveConstants.kTranslationTolerance.in(Meters));
+    rotController.setTolerance(DriveConstants.kRotationTolerance.in(Rotations));
   }
 
   public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
@@ -91,12 +91,12 @@ public class RomiDrivetrain extends SubsystemBase {
 
   public double calculateRotOutput(Angle setpoint) {
     curRotSetpoint = setpoint;
-    return rotController.calculate(getAngle().baseUnitMagnitude(), setpoint.baseUnitMagnitude());
+    return rotController.calculate(getAngle().in(Rotations), setpoint.in(Rotations));
   }
 
   public double calculateTranslateOutput(Distance setpoint) {
     curTransSetpoint = setpoint;
-    return translateController.calculate(getAverageDistance().baseUnitMagnitude(), setpoint.baseUnitMagnitude());
+    return translateController.calculate(getAverageDistance().in(Meters), setpoint.in(Meters));
   }
 
   public boolean atTranslationSetpoint() {
