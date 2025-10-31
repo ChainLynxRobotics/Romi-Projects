@@ -11,10 +11,6 @@ Implement PID to more precisely rotate and translate your robot to setpoints in 
 ## Task Details
 Specifying a distance to travel or an angle to rotate without any control system in place will lead to over or under compensating due to factors like friction and the inertia of the object that’s in motion. Therefore, we use control systems like PID (proportional integral derivative) to adjust the motion of the moving object at each timestep based on its distance from the setpoint (using the proportional term), accumulated error (using the integral term), and rate of change of distance from the setpoint (using the derivative term).
 
-$$\LARGE u(t) = K_{p}e(t) + K_{i}\int_{0}^{t} e(\tau) d\tau + K_{d}\frac{d}{dt} e(t)$$
-
-Ignore the symbols for now. The second means accumulated error and the third one means the instantaneous rate of change in the error. The gains (kP, kI, kD) determine how aggressively the controller compensates for each error type. Higher values of each of the respective gains will make those control outputs more significant in influencing the output behavior of the motor. 
-
 You must define a PID Controller object (one for rotation and one for translation) and set wheel speeds to the output of the PID controller, so the robot will be able to adaptively slow down as it approaches the setpoint. You will have to tune the gains of the PID controller to optimize its behavior. 
 
 ### Quiz: which PID controller output is best?
