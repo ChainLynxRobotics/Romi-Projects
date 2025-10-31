@@ -6,8 +6,6 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.DriveConstants.*;
 
-import java.lang.ModuleLayer.Controller;
-
 import dev.doglog.DogLog;
 
 import static edu.wpi.first.units.Units.*;
