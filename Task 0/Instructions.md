@@ -4,9 +4,9 @@
 
 It is recommeded to bring your own laptop as school laptops have limitations. We have 2 drive laptops that can sometimes be used for coding, but usually they are being used to test the robot.
 
-Installing WPILIB VScode is very necessary. Normal VScode will won't work, as it is missing critical tools required to run and simulate the robot. 
+Installing WPILib VScode is very necessary. Normal VScode will won't work, as it is missing critical tools required to run and simulate the robot. 
 
-## Downloading WPILIB
+## Downloading WPILib
 
 Go to https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html, scroll down, and download the installer.
 

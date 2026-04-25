@@ -7,11 +7,11 @@
 
 ## Running code on a romi
 
-When writing code it is easy to make mistakes so being able to test code is very important. After each section of the task you should try running it on a romi. To run code on a romi you need to connect to its wifi network which should have the password `82488248`, after you connect to the romi click on the <img src="./wpilib%20logo.png" alt="wpilib logo" width="35"/>(WPILib VScode extension) in the top right of the screen and chose simulate robot code. After the program starts up you will see the sim window.
+It is important to test your code after changes as it is easy to make mistakes. It is recommeded to test the code on the Romi after each section. In order to run code on a romi, you need to connect to its wifi network with the password `82488248`. After you connecting, click on the <img src="./wpilib%20logo.png" alt="wpilib logo" width="35"/>(WPILib command palette) in the top right of your screen and choose "Simulate Robot Code". A sim window should pop up.
 
-<img src="./sim.png" alt="sim window" width="750"/>
+<img src="./sim.png" alt="sim window" width="960"/>
 
-The most important sections of the window are the robot mode in the top left, and the joystick sections. The robot mode lets you change the mode of the robot to be differnt things like disconnected, disabled, telop, and autonomous, when you are manualy driving the robot it should be in telop. If you are using a joystick you can bind wasd to a joystick by draging keyboard 0 onto one of the joysticks.
+The most important sections are robot state in the top left and the joystick section. The robot mode lets you change the mode of the robot to be differnt things like disconnected, disabled, telop, and autonomous, when you are manualy driving the robot it should be in telop. If you are using a joystick you can bind wasd to a joystick by draging keyboard 0 onto one of the joysticks.
 ## Conventions
 ### Naming Conventions
 On ChainLynx, we use the following naming conventions
