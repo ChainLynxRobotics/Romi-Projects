@@ -7,7 +7,7 @@
 
 ## Running code on a romi
 
-When writing code it is easy to make mistakes so being able to test code is very important. After each section of the task you should try running it on a romi. To run code on a romi you need to connect to its wifi network which should have the password `82488248`, after you connect to the romi click on the <img src="./wpilib%20logo.png" alt="wpilib logo" width="35"/>(WPILib VScode extention) in the top right of the screen and chose simulate robot code. After the program starts up you will see the sim window.
+When writing code it is easy to make mistakes so being able to test code is very important. After each section of the task you should try running it on a romi. To run code on a romi you need to connect to its wifi network which should have the password `82488248`, after you connect to the romi click on the <img src="./wpilib%20logo.png" alt="wpilib logo" width="35"/>(WPILib VScode extension) in the top right of the screen and chose simulate robot code. After the program starts up you will see the sim window.
 
 <img src="./sim.png" alt="sim window" width="750"/>
 
@@ -56,14 +56,13 @@ In the constants file you need several things, because the constants are for the
     <summary>
         <a href="Solution/src/main/java/frc/robot/Constants.java#L19">Solution</a>
     </summary>
-
+    
     public final class DriveConstants {
         public static final double kDefaultDriveSpeed = 0.5; // fraction of max power, 0-1
         public static final double kDefaultRotSpeed = 0.5; // fraction of max power, 0-1
         public static final double kCountsPerRevolution = 1440.0;
         public static final Distance kWheelDiameter = Millimeters.of(70);
     }
-
 </details>
 <br>
 
