@@ -38,9 +38,13 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // place button bindings here
 
-    //when the a button is pressed, doNothing()
+    // when the a button is pressed, doNothing()
     driveController.a().onTrue(doNothing());
   }
+
+  public Command exampleSequentialCommand() {
+    return run(() -> {System.out.println("this");}).andThen(() -> {System.out.println("that");});
+}
 
   private Command doNothing() {
     return runOnce(() -> {});

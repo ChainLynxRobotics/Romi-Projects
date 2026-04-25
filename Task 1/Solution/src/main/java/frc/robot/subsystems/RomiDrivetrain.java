@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.DriveConstants.*;
 
 import static edu.wpi.first.units.Units.*;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.*;
 
 import edu.wpi.first.wpilibj.Encoder;
@@ -14,6 +16,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.romi.RomiGyro;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveConstants;
 
 public class RomiDrivetrain extends SubsystemBase {
   // The Romi has the left and right motors set to
@@ -27,6 +30,9 @@ public class RomiDrivetrain extends SubsystemBase {
   private final Encoder rightEncoder = new Encoder(6, 7);
 
   private final RomiGyro gyro = new RomiGyro();
+
+  private final PIDController rotController = new PIDController(1, 0, 0);
+  private final PIDController translateController = new PIDController(1, 0, 0);
 
   // Set up the differential drive controller
   private final DifferentialDrive diffDrive =
@@ -47,10 +53,19 @@ public class RomiDrivetrain extends SubsystemBase {
   public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
     diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
   }
+  
 
   public void resetEncoders() {
     leftEncoder.reset();
     rightEncoder.reset();
+  }
+
+  public double calculateRotOutput(Angle setpoint) {
+    return rotController.calculate(getAngle().in(Rotations), setpoint.in(Rotations));
+  }
+
+  public double calculateTranslateOutput(Distance setpoint) {
+    return translateController.calculate(getAverageDistance().in(Meters), setpoint.in(Meters));
   }
 
   public Distance getLeftDistance() {

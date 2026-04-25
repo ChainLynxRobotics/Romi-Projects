@@ -5,12 +5,13 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.*;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.DriveConstants.*;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,7 +19,10 @@ import frc.robot.commands.DriveCommand;
 import frc.robot.commands.TranslateCommand;
 import frc.robot.commands.TurnCommand;
 import frc.robot.subsystems.RomiDrivetrain;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import static frc.robot.Constants.DriveConstants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,44 +34,29 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final RomiDrivetrain romiDrivetrain;
 
-  private final Distance distToDrive;
-  private final Angle angleToTurn;
-
-  private final DriveCommand driveCommand;
-  private final Command driveCommand2;
-  private final TranslateCommand translateCommand;
-  private final Command translateCommand2;
-  private final TurnCommand turnCommand;
-  private final Command turnCommand2;
-
-  private final Joystick joystick = new Joystick(0);
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
+  private final CommandXboxController driveController = new CommandXboxController(0);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     romiDrivetrain = new RomiDrivetrain();
-
-    distToDrive = Inches.of(6);
-    angleToTurn = Rotations.of(0.5);
-
-    double translateDir = Math.signum(distToDrive.baseUnitMagnitude());
-    double turnDir = Math.signum(distToDrive.baseUnitMagnitude());
-
-    driveCommand = new DriveCommand(romiDrivetrain, () -> joystick.getY(), () -> joystick.getX());
-    driveCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(joystick.getY(), joystick.getX()), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain);
-    translateCommand = new TranslateCommand(romiDrivetrain, distToDrive);
-    translateCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(translateDir * kDefaultDriveSpeed, 0), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain).until(() -> romiDrivetrain.getAverageDistance().times(translateDir).gte(distToDrive.times(translateDir))).beforeStarting(runOnce(romiDrivetrain::resetEncoders));
-    turnCommand = new TurnCommand(romiDrivetrain, angleToTurn);
-    turnCommand2 = runEnd(() -> romiDrivetrain.arcadeDrive(0, turnDir * kDefaultRotSpeed), () -> romiDrivetrain.arcadeDrive(0, 0), romiDrivetrain).until(() -> romiDrivetrain.getAverageDistance().times(turnDir).gte(distToDrive.times(turnDir))).beforeStarting(runOnce(romiDrivetrain::resetGyro));
-    
-    romiDrivetrain.setDefaultCommand(driveCommand);
-
-
-    autoChooser.addOption("drive 6 inches", translateCommand);
-    autoChooser.addOption("drive 6 inches comp", translateCommand2);
-    autoChooser.addOption("turn 180", turnCommand);
-    autoChooser.addOption("turn 180 comp", turnCommand2);
     SmartDashboard.putData(autoChooser);
+
+
+    romiDrivetrain.setDefaultCommand(driveCommand());
+
+    driveController
+      .a()
+      .onTrue(rotateCommand());
+
+    driveController
+      .b()
+      .onTrue(translateCommand());
+
+    driveController
+      .y()
+      .onTrue(run(() -> romiDrivetrain.arcadeDrive(0.5, 0)))
+      .onFalse(runOnce(() -> romiDrivetrain.arcadeDrive(0, 0)));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -76,8 +65,8 @@ public class RobotContainer {
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   * edu.wpi.first.wpilibj.driveController} or {@link XboxController}), and then passing it to a {@link
+   * edu.wpi.first.wpilibj2.command.button.driveControllerButton}.
    */
   private void configureButtonBindings() {}
 
@@ -89,5 +78,29 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return autoChooser.getSelected();
+  }
+
+  public Command driveCommand() {
+    return run(() -> romiDrivetrain.arcadeDrive(driveController.getLeftY(), driveController.getRightX()));
+  }
+
+  public Command translateCommand() {
+    return run(() -> romiDrivetrain.arcadeDrive(kDefaultDriveSpeed, 0));
+  }
+
+  public Command translateCommand() {
+    return runOnce(() -> romiDrivetrain.resetEncoders())
+      .andThen(run(() -> romiDrivetrain.arcadeDrive(kDefaultDriveSpeed * 1, 0)))
+      .until(() -> romiDrivetrain.getAverageDistance().gte(Inches.of(5)))
+      .andThen(runOnce(() -> romiDrivetrain.arcadeDrive(0, 0)));
+  }
+
+  
+
+  public Command rotateCommand() {
+    return runOnce(() -> romiDrivetrain.resetGyro())
+      .andThen(run(() -> romiDrivetrain.arcadeDrive(0, kDefaultRotSpeed * 1)))
+      .until(() -> romiDrivetrain.getAngle().gte(Degrees.of(45)))
+      .andThen(runOnce(() -> romiDrivetrain.arcadeDrive(0, 0)));
   }
 }
