@@ -13,34 +13,6 @@ In order to run code on a romi, you need to connect to its wifi network, called 
 The most important sections are robot state in the top left and the joystick section. The robot mode lets you change the mode of the robot to be different things like disconnected, disabled, teleop, and autonomous, when you are manually driving the robot it should be in teleop. If you are using a joystick you can bind wasd to a joystick by dragging keyboard 0 onto one of the joysticks.
 
 You can also use an xbox controller, and this is what we recommend because it is what we use on the actual robot, and so you should get used to coding for it.
-## Conventions
-### Naming Conventions
-On ChainLynx, we use the following naming conventions
-
-```java
-// For classes
-public class RobotContainer {}
-
-// For objects,
-private Subsystem elevatorSubsystem;
-
-// For constants,
-
-public static final double kMaxVelocity;
-
-// For class fields,
-
-private double speedMultiplier;
-```
-
-
-### Units
-[The Units library](https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-units.html) allows you have variables like `Distance kElevatorHeight` instead of `double kElevatorHeightMeters` The advantage of this is that the library will do all of the unit conversions for you, preventing you from making mistakes.
-
-You can create a measure(such as Distance or Angle) using the `.of` method on a unit. For example, `Distance kBumperWidth = Inches.of(23.5)`. This will make a distance object that stores a value of 23.5 inches. You can also manipulate a measure with methods like `.plus` or `.times`. `kBumperWidth.times(2)` would return a value of 47 inches. You can also compare different measures with methods like `.lt`(less than) or `.gte`(greater than or equal to).
-
-To use the units library you can import `import static edu.wpi.first.units.Units.*;` for the units like `Inches` or `Rotations`, and `import edu.wpi.first.units.measure.*;` for measures like `Distance` or `Angle`. When writing code try to use the units library whenever your dealing with real world values.
-
 
 ## Objectives 
 Off the template command-based Romi project, create a command that will allow joystick or keyboard input to control the Romi drivetrain. Create commands to drive the Romi forward and rotate it a certain amount. Whenever you see words in parenthesis after another word, that is showing another name for the word that might help you figure out what it means. For example, a method is commonly referred to as a function in other coding languages, and the math meaning of the word function is more intuitive for understanding what a function is to some people.
