@@ -5,7 +5,7 @@
 - [WPILib Romi programming docs](https://docs.wpilib.org/en/stable/docs/romi-robot/programming-romi.html)
 
 ## Running code on a romi
-In order to run code on a romi, you need to connect to its wifi network, called `Romi1` or `Romi2` (printed on the bottom of the romi) with the password `82488248`. After you connecting, click on the <img src="./wpilib%20logo.png" alt="wpilib logo" width="18"/> in the top right of your screen and choose "Simulate Robot Code". A sim window should pop up.
+In order to run code on a romi, you need to connect to its wifi network, called `Romi1` or `Romi2` (printed on the bottom of the romi) with the password `82488248`. After you connecting, click on the <img src="./wpilib%20logo.png" alt="wpilib logo" width="18"/> in the top right of your screen and choose "Simulate Robot Code". A sim window like the one pictured below should pop up.
 
 <img src="./sim.png" alt="sim window" width="960"/>
 
