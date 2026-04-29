@@ -9,9 +9,11 @@ In order to run code on a romi, you need to connect to its wifi network, called 
 
 <img src="./sim.png" alt="sim window" width="960"/>
 
-The most important sections are robot state in the top left and the joystick section. The robot mode lets you change the mode of the robot to be different things like disconnected, disabled, teleop, and autonomous, when you are manually driving the robot it should be in teleop. If you are using a joystick you can bind wasd to a joystick by dragging keyboard 0 onto one of the joysticks.
+The most important sections of the window are the robot state box in the top left and the joystick section slightly below the center. The robot mode selector lets you change the state of the robot, the importiant mode is `Teleop` which is short for teleoperated, where you control the robot remotely.
 
-You can also use an xbox controller, and this is what we recommend because it is what we use on the actual robot, and so you should get used to coding for it.
+To control the robot you need to drag a controller(i used an 8bit do controller but most should work) from the left to `joystick[0]`. And then switch to `Teleop`.
+
+![alt text](simGUI.gif)
 
 ## Objectives 
 Off the template command-based Romi project, create a command that will allow joystick or keyboard input to control the Romi drivetrain. Create commands to drive the Romi forward and rotate it a certain amount. Whenever you see words in parenthesis after another word, that is showing another name for the word that might help you figure out what it means. For example, a method is commonly referred to as a function in other coding languages, and the math meaning of the word function is more intuitive for understanding what a function is to some people.
