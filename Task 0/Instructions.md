@@ -16,7 +16,7 @@ Then follow the install instructions below the download button.
 
 ## Downloading & configuring Git
 
-Git is also a necessary for uploading your code to the hub. Go to https://git-scm.com/install/windows and follow the install instructions in the page.
+Git is also a necessary for uploading your code to the hub. Go to https://git-scm.com/install/ and follow the install instructions in the page.
 
 Next go to https://git-scm.com/book/ms/v2/Getting-Started-First-Time-Git-Setup to configure your user profile in order to begin using git.
 
