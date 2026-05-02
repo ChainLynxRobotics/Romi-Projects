@@ -211,92 +211,69 @@ If you look in `configureButtonBindings()` you should see this.
 
 To make the A button on the Xbox Controller run our translate command, we just need to swap out the example command, `doNothing()` with our command, `translateCommand()`. Now, when you connect to the Romi, you should be able to run your command every time you press A.
 
-### Rotation command
-This command is logically very similar to the translation command. We need to define a RomiGyro object in the drivetrain subsystem, as well as a method to get its angle, which is in degrees by default so you will need to convert it to an angle object. This method will use `gyro.getAngle()` and just like the encoder values we will need to return an angle, using `Degrees.of()`. We also need to be able to reset the gyro, so make another method called `resetGyro()` that runs `gyro.reset()`.
+### Rotation Command
 
-<details>
-    <summary>
-        <a href="Solution/src/main/java/frc/robot/subsystems/RomiDrivetrain.java#L29">Solution</a>
-    </summary>
+#### Subsystem Internals
+This goal of this command is to turn the Romi and constantly check the angular position (rotation) of it until it hits a certain value, and then stop. To do this, we need a way to check how much the Romi has rotated, something like the encoders, but for turning.
 
-    private final RomiGyro gyro = new RomiGyro();
+We need to define a RomiGyro object in `RomiDrivetrain.java`. This will allow us to interact with the physical gyroscope on the Romi.
 
-    public Angle getAngle() {
-        return Degrees.of(gyro.getAngle());
-    }
+```java
+private final RomiGyro gyro = new RomiGyro();
+```
 
-    public void resetGyro() {
-        gyro.reset();
-    }
+Next, we need to make a method that calls a method of the gyroscope, and call it `getAngle()`. This will allow us to access the reading of that gyroscope from `RobotContainer.java`. We also need a method to reset the gyro, which we will call `resetGyro()`, just like for the encoders.
 
-</details>
-<br>
+```java
+public Angle getAngle() {
+    return Degrees.of(gyro.getAngle());
+}
 
-#### Command class
-Now create a file and command class called TurnCommand and copy the contents of `TranslateCommand`.
-The first thing to do is change every reference of dist to angle, because these commands are trying to do the same thing but instead of a goal distance traveled, we have a goal angle turned. We need an `Angle angle` in the constructor, and we should define `dir` in the same way using `Math.signum()` again. In `initialize()` we now reset the gyro instead of the encoders, and in `execute()` we use `kDefaultRotSpeed * dir` instead of `kDefaultDriveSpeed`. Finally, in `isFinished()` we instead compare `drive.getAngle()` with the `angle` instead of the encoder distance with the distance. `end()` will stay exactly the same.
+public void resetGyro() {
+    return gyro.reset();
+}
+```
 
-<details>
-    <summary>
-        <a href="Solution/src/main/java/frc/robot/commands/TurnCommand.java#L24">Solution</a>
-    </summary>
+#### Command in Robot Container
 
-    public TurnCommand(RomiDrivetrain drive, Angle angle) {
-        this.drive = drive;
-        this.angle = angle;
-        dir = Math.signum(angle.magnitude());
-        addRequirements(drive);
-    }
+Now we need to create a command similar to the `translationCommand()` we made earlier, but instead using our gyroscope and turning. If you want, you can try without looking at the steps below.
 
-    @Override
-    public void initialize() {
-        drive.resetGyro();
-    }
+```java
+public Command translateCommand() {
+    return runOnce(() -> romiDrivetrain.resetEncoders())
+    .andThen(
+        () -> run(() -> romiDrivetrain.arcadeDrive(kDefaultDriveSpeed, 0))
+    .until(() -> romiDrivetrain.getAverageDistance().gte(Inches.of(12))));
+  }
+```
 
-    @Override
-    public void execute() {
-        drive.arcadeDrive(0, kDefaultRotSpeed * dir);
-    }
+First we want to change the name of the command, and swap it from resetting the encoders to resetting the gyroscope.
 
-    @Override
-    public boolean isFinished() {
-        return drive.getAngle().gte(angle);
-    }
+```java
+public Command rotationCommand() {
+    return runOnce(() -> romiDrivetrain.resetGyro())
+    .andThen(
+        () -> run(() -> romiDrivetrain.arcadeDrive(kDefaultDriveSpeed, 0))
+    .until(() -> romiDrivetrain.getAverageDistance().gte(Inches.of(12))));
+  }
+```
 
-    @Override
-    public void end(boolean interrupted) {
-        drive.arcadeDrive(0, 0);
-    }
+Then, we want to change our driving from going forward to turning. One question you might have is which direction we should turn, and we need to make sure we are turning in the direction that our gyro is expecting.
 
-</details>
-<br>
+Our gyro records a positive angle when we turn counter-clockwise, and a positive turning should turn us counter clockwise, so we can use two positive or two negative numbers in our turn speed, and our target angle for this command.
 
-Now you also have a rotation command! Now just like `DriveCommand` we need to make an instance of `TranslateCommand` and `TurnCommand` in `RobotContainer`. For constructing the commands, you may want to make a `kDefaultDistance` and a `kDefaultAngle` in DriveConstants, and pass them into the command constructors.
+For now lets make it turn clockwise, so set a positive drive speed, and wait for a positive angle to be reached.
+
+```java
+public Command rotationCommand() {
+    return runOnce(() -> romiDrivetrain.resetGyro())
+    .andThen(
+        () -> run(() -> romiDrivetrain.arcadeDrive(0, kDefaultRotationSpeed))
+    .until(() -> romiDrivetrain.getAngle().gte(Degrees.of(45))));
+  }
+```
+
+Now you also have a rotation command! Bind it to a different button in the same way and test!
 
 ### Running your commands
-In Robot Container, create a [Sendable Chooser](https://docs.wpilib.org/en/stable/docs/software/dashboards/smartdashboard/choosing-an-autonomous-program-from-smartdashboard.html) that consumes commands (SendableChooser<Command>) to add different autonomous options. 
-
-<details>
-    <summary>
-        <a href="Solution/src/main/java/frc/robot/RobotContainer.java#L42">Solution</a>
-    </summary>
-
-    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-
-</details>
-
-In the constructor of `RobotContainer` use `chooser.addOption()` to add your translate and turn commands to the `SendableChooser`. Finally call `SmartDashboard.putData(chooser)` to send the commands to the dash board.
-<details>
-    <summary>
-        <a href="Solution/src/main/java/frc/robot/RobotContainer.java#L64">Solution</a>
-    </summary>
-
-    chooser.addOption("drive 6 inches", translateCommand);
-    chooser.addOption("turn 180", turnCommand);
-    SmartDashboard.putData(chooser);
-    
-</details>
-
-Then, at the bottom of `RobotContainer` have the method `getAutonomousCommand()` return `chooser.getSelected()`.
-
-To get them to run, start the romi, and look through the tabs at the top until you see SmartDashboard, and select the sendable chooser. Select the command that you want to run, and then set the romi into `Autonomous` in the top right, and if everything went well your command should run!
+In Robot Container, create a [Sendable Chooser](https://docs.wpilib.org/en/stable/docs/software/dashboards/smartdashboard/choosing-an-autonomous-program-from-smartdashboard.html) that consumes commands (SendableChooser<Command>) to add different autonomous options.
