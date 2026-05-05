@@ -19,7 +19,7 @@ Then follow the install instructions below the download button.
 Git is also a necessary for uploading your code to the hub. Go to https://git-scm.com/install/ and follow the install instructions in the page.
 
 Next go to https://git-scm.com/book/ms/v2/Getting-Started-First-Time-Git-Setup to configure your user profile in order to begin using git.
-**Whatever you set as your git name and email will be public on github** If you dont want your actual email to be public you can use [githubs private email](https://docs.github.com/en/account-and-profile/how-tos/email-preferences/setting-your-commit-email-address)
+**Whatever you set as your git name and email will be public on github**. If you dont want your actual email to be public you can use [githubs private email](https://docs.github.com/en/account-and-profile/how-tos/email-preferences/setting-your-commit-email-address)
 
 There are a few settings that you should enable once you set your name and email.
 - rerere.enabled true
