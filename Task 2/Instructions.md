@@ -1,15 +1,14 @@
 # Task 2: Basic Control Systems (PID) 
 
 ## Objectives
-Implement PID to more precisely rotate and translate your robot to setpoints in order to evelop a more accurate method of robot control. 
-
+Implement PID to control the robot more precisely.
 ## Resources
 - [WPILib PID controllers](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/pidcontroller.html)
 - [PID Simulator](https://www.grauonline.de/alexwww/ardumower/pid/pid.html)
 - [FRC Wiki PID Controller](https://firstwiki.github.io/wiki/pid-controller)
 
 ## Task Details
-Specifying a distance to travel or an angle to rotate without any control system in place will lead to over or under compensating due to factors like friction and the inertia of the object that’s in motion. Therefore, we use control systems like PID (proportional integral derivative) to adjust the motion of the moving object at each timestep based on its distance from the setpoint (using the proportional term), accumulated error (using the integral term), and rate of change of distance from the setpoint (using the derivative term).
+Without any control system in place, it will lead to over or under compensating distance/rotation movement due to factors like friction and the inertia of the object. Therefore, we use control systems like PID (proportional integral derivative) to adjust the motion of the moving object at each timestep based on its distance from the setpoint (using the proportional term), accumulated error (using the integral term), and rate of change of distance from the setpoint (using the derivative term).
 
 You must define a PID Controller object (one for rotation and one for translation) and set wheel speeds to the output of the PID controller, so the robot will be able to adaptively slow down as it approaches the setpoint. You will have to tune the gains of the PID controller to optimize its behavior. 
 
@@ -22,12 +21,12 @@ You must define a PID Controller object (one for rotation and one for translatio
 <details>
     <summary>
         Answer
-    </summary>
-    The red output signal because it converges most quickly to the desired setpoint with the least oscillation.
-</details>
+    </summary>  
+    The red output signal because it converges most quickly to the desired setpoint with the least oscillation. 
+</details>  
 
-## Implementation
-We will be modifying the project from task 1 to incorporate the PID control system to more efficiently and accurate control the Romi's behavior.
+## Implementation   
+We will be modifying the project from task 1 to incorporate the PID control system to more efficiently and accurate control the  Romi's behavior.
 
 First, we will initialize PID controllers in the drivetrain and then use their control output in our rotation and translation commands to get to setpoints more precisely, since the motion of the robot will slow as the error between the current position and the setpoint decreases. 
 
@@ -141,36 +140,4 @@ Implement the same logic for the rotation command, but set the applied rotation 
 </details>
 <br>
 
-Deploy this new code to your Romi and run these commands from the Sendable Chooser on the Glass dashboard. To further improve performance, we will use an additional dependency, DogLog, to log the current Romi position and rotation as well as the respective setpoints to tune our gains. You can either select thet "WPILib Vendor Dependencies" extension from the VS Code sidebar and find "DogLog" under the "Available Dependencies" section or install this dependency by pasting this vendordep url: https://doglog.dev/vendordep.json into the WPILib Command palette under Manage Vendor Libraries -> Install New Libraries (online).
-
-To use this dependency, in the constructor of RobotContainer, call the static method setOptions on DogLog to log everything pushed to Network Tables.
-<details>
-    <summary>
-        <a href="Solution/src/main/java/frc/robot/RobotContainer.java#L49">Solution</a>
-    </summary>
-
-    DogLog.setOptions(new DogLogOptions().withCaptureNt(true));
-
-</details>
-<br>
-
-In RomiDrivetrain, log drivetrain position, angle, and the rotation and translation setpoints (you will need to create local variables to keep track of these as they are set).
-
-<details>
-    <summary>
-        <a href="Solution/src/main/java/frc/robot/subsystems/RomiDrivetrain.java#L111">Solution</a>
-    </summary>
-
-    @Override
-    public void periodic() {
-        // This method will be called once per scheduler run
-        DogLog.log("drivetrain/position meters", getAverageDistance().in(Meters));
-        DogLog.log("drivetrain/rotation degrees", getAngle().in(Degrees));
-        DogLog.log("drivetrain/translation setpoint", curTransSetpoint.in(Meters));
-        DogLog.log("drivetrain/rotation setpoint", curRotSetpoint.in(Degrees));
-    }
-
-</details>
-<br>
-
-Logs can be viewed on Elastic. To set up Elastic, which is a web UI similar to Smart Dashboard and Glass (but better and more reactive), follow [these instructions](https://frc-elastic.gitbook.io/docs/getting-started/app-navigation). Once you connect to the robot from the app, you can add a widget to show the positon and rotation of the robot and then use those graphs to tune the pid gains based on the instructions on the pid simulator.
+Deploy this new code to your Romi and run these commands from the Sendable Chooser on the Glass dashboard. 
