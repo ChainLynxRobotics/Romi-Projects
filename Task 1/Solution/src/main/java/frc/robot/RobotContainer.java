@@ -15,9 +15,6 @@ import static frc.robot.Constants.DriveConstants.*;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.DriveCommand;
-import frc.robot.commands.TranslateCommand;
-import frc.robot.commands.TurnCommand;
 import frc.robot.subsystems.RomiDrivetrain;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -42,7 +39,6 @@ public class RobotContainer {
     romiDrivetrain = new RomiDrivetrain();
     SmartDashboard.putData(autoChooser);
 
-
     romiDrivetrain.setDefaultCommand(driveCommand());
 
     driveController
@@ -52,12 +48,6 @@ public class RobotContainer {
     driveController
       .b()
       .onTrue(translateCommand());
-
-    driveController
-      .y()
-      .onTrue(run(() -> romiDrivetrain.arcadeDrive(0.5, 0)))
-      .onFalse(runOnce(() -> romiDrivetrain.arcadeDrive(0, 0)));
-
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -85,22 +75,14 @@ public class RobotContainer {
   }
 
   public Command translateCommand() {
-    return run(() -> romiDrivetrain.arcadeDrive(kDefaultDriveSpeed, 0));
-  }
-
-  public Command translateCommand() {
     return runOnce(() -> romiDrivetrain.resetEncoders())
       .andThen(run(() -> romiDrivetrain.arcadeDrive(kDefaultDriveSpeed * 1, 0)))
-      .until(() -> romiDrivetrain.getAverageDistance().gte(Inches.of(5)))
-      .andThen(runOnce(() -> romiDrivetrain.arcadeDrive(0, 0)));
+      .until(() -> romiDrivetrain.getAverageDistance().gte(Inches.of(5)));
   }
-
-  
 
   public Command rotateCommand() {
     return runOnce(() -> romiDrivetrain.resetGyro())
       .andThen(run(() -> romiDrivetrain.arcadeDrive(0, kDefaultRotSpeed * 1)))
-      .until(() -> romiDrivetrain.getAngle().gte(Degrees.of(45)))
-      .andThen(runOnce(() -> romiDrivetrain.arcadeDrive(0, 0)));
+      .until(() -> romiDrivetrain.getAngle().gte(Degrees.of(45)));
   }
 }

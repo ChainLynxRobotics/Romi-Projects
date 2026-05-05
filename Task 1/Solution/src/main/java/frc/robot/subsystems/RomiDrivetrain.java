@@ -31,9 +31,6 @@ public class RomiDrivetrain extends SubsystemBase {
 
   private final RomiGyro gyro = new RomiGyro();
 
-  private final PIDController rotController = new PIDController(1, 0, 0);
-  private final PIDController translateController = new PIDController(1, 0, 0);
-
   // Set up the differential drive controller
   private final DifferentialDrive diffDrive =
       new DifferentialDrive(leftMotor::set, rightMotor::set);
@@ -54,18 +51,9 @@ public class RomiDrivetrain extends SubsystemBase {
     diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
   }
   
-
   public void resetEncoders() {
     leftEncoder.reset();
     rightEncoder.reset();
-  }
-
-  public double calculateRotOutput(Angle setpoint) {
-    return rotController.calculate(getAngle().in(Rotations), setpoint.in(Rotations));
-  }
-
-  public double calculateTranslateOutput(Distance setpoint) {
-    return translateController.calculate(getAverageDistance().in(Meters), setpoint.in(Meters));
   }
 
   public Distance getLeftDistance() {
