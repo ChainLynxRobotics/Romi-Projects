@@ -4,9 +4,7 @@
 
 It is recommended to bring your own laptop as school laptops have limitations. We have 2 drive laptops that can sometimes be used for coding, but usually they are being used to test the robot.
 
-Installing WPILib VScode is very necessary. Normal VScode will won't work, as it is missing critical tools required to run and simulate the robot.
-
-Also, you can come back to this if you ever forget.
+Installing WPILib VScode is very necessary. Normal VScode won't work, as it is missing critical tools required to run and simulate the robot.
 
 ## Downloading WPILib
 
