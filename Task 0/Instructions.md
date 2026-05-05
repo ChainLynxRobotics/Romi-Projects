@@ -57,13 +57,11 @@ This is the current state of the robot. The robot can be:
 - Disabled
 - Autonomus
 - Teleoperated
-- Test
 
 Disconnected: The robot is not reciving any instructions from the computer
 Disabled: It is communicating with the computer, but is unable to run any code.
 Autonomus: It will run code that is preloaded. The human cannot control the robot.
 Teleoperated: The human will give the robot inputs, which it will run.
-Test: Never used.
 ### Joysticks
 
 ### Other
