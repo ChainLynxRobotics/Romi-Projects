@@ -8,7 +8,7 @@ Installing WPILib VScode is very necessary. Normal VScode won't work, as it is m
 
 ## Downloading WPILib
 
-Go to https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html, scroll down, and download the installer.
+Go to https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html#downloading,  and download the installer.
 
 <img src="./Download.png" alt="Download button" width="901"/>
 
