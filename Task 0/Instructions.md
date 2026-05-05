@@ -89,4 +89,4 @@ private double speedMultiplier;
 
 
 ### Units
-[The Units library](https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-units.html) allows you to store physical measurements such as distance or angle rather than just storing a number. This can help eliminate mistakes, if for example you were given a number and you thought it was in pounds but it was in kilograms. This can happen to even experienced coders such as those at [NASA](https://en.wikipedia.org/wiki/Mars_Climate_Orbiter), so it's important to always use the units library where applicable.
+[The Units library](https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-units.html) allows you to store physical measurements such as distance or angle rather than just storing a number. This can help eliminate mistakes, if for example you were given a number and you thought it was in pounds but it was in kilograms.
