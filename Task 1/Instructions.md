@@ -159,7 +159,7 @@ Above is a command that will print "this" and then print "that".
 
 In this case, we want to run `resetEncoders()`, and then (haha) the rest of the translation command.
 
-You can kind of think of commands like sentences for robots, this command in english says, run resetting the encoders and then run the arcade drive until the average distance of the encoders is greater than or equal two 12 inches. 
+You can kind of think of commands like sentences for robots, this command in english says, run resetting the encoders and then run the arcade drive until the average distance of the encoders is greater than or equal to 12 inches. 
 
 Below is the old version of the command, next to the new one, so you can see the difference.
 
@@ -274,6 +274,3 @@ public Command rotationCommand() {
 ```
 
 Now you also have a rotation command! Bind it to a different button in the same way and test!
-
-### Running your commands
-In Robot Container, create a [Sendable Chooser](https://docs.wpilib.org/en/stable/docs/software/dashboards/smartdashboard/choosing-an-autonomous-program-from-smartdashboard.html) that consumes commands (SendableChooser<Command>) to add different autonomous options.
