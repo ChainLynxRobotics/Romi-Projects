@@ -15,18 +15,25 @@ Go to https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.h
 Then follow the install instructions below the download button.
 
 ## Downloading & configuring Git
+### Windows
+If you use a package manager like [winget](https://learn.microsoft.com/en-us/windows/package-manager/) or [chocolatey](https://chocolatey.org/) use those, otherwise go to https://git-scm.com/install/windows and download and run the standalone installer.
 
-Git is also a necessary for uploading your code to the hub. Go to https://git-scm.com/install/ and follow the install instructions in the page.
+### MacOS
+If you already have homebrew then use `brew install git`, otherwise use `xcode-select --install` to install the xcode command line tools which comes with git.
 
-Next go to https://git-scm.com/book/ms/v2/Getting-Started-First-Time-Git-Setup to configure your user profile in order to begin using git.
-**Whatever you set as your git name and email will be public on github**. If you dont want your actual email to be public you can use [githubs private email](https://docs.github.com/en/account-and-profile/how-tos/email-preferences/setting-your-commit-email-address)
+### Linux
+Its probably already installed, you can check with `which git` if not use `<your favorate package manager invocation to install packages> git`.
 
-There are a few settings that you should enable once you set your name and email.
-- rerere.enabled true
-- push.autosetupremote true
-- pull.rebsse true
-- pull.merge false
-- rebase.autostash
+In order to use git you will need set some config, all should be set with `git config --global <the setting>`
+- Your name. `user.name=<your name>` You should generally set this to the same thing as your github username
+- An email. Go to https://github.com/settings/emails at the bottom turn on the `Keep my email addresses private` setting, then find the email address in that box below the setting that looks like `number+username@users.noreply.github.com` then set that in git `user.email=<email you just found>`
+
+There a few more settings you should set
+- `rerere.enabled=true`
+- `push.autosetupremote=true`
+- `pull.rebase=true`
+- `pull.merge=false`
+- `rebase.autostash=true`
 
 ## Connecting to the Romis
 To connect to the romis, disconnect from your current wi-fi and find the romi's network. If you can't find it, here are some common causes:
