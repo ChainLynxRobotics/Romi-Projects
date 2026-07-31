@@ -36,7 +36,7 @@ There a few more settings you should set
 - `rebase.autostash=true`
 
 ## Connecting to the Romis
-To connect to the romis, disconnect from your current wi-fi and find the romi's network. If you can't find it, here are some common causes:
+To connect to the romis, disconnect from your current wi-fi and find the romi's network, the password will be set to `82488248`. If you can't find it, here are some common causes:
 
 - Romi is off
 - Romi is out of battery
