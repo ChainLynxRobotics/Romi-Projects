@@ -2,9 +2,7 @@
 
 ## Overview
 
-It is recommended to bring your own laptop as school laptops have limitations. We have 2 drive laptops that can sometimes be used for coding, but usually they are being used to test the robot.
-
-Installing WPILib VScode is recommended unless you have a good reason not to. Normal VScode will not use the wpilib JDK by default and is missing all of the preinstalled extensions as well and more.
+It is recommended to bring your own laptop as school laptops have limitations. We have 2 drive laptops that can sometimes be used for coding, but they are often being used to test the robot.
 
 ## Downloading WPILib
 
