@@ -28,10 +28,12 @@ If you already have homebrew then use `brew install git`, otherwise use `xcode-s
 
 Its probably already installed, you can check with `which git` if not use `<your favorate package manager invocation to install packages> git`.
 
-In order to use git you will need set some config, all should be set with `git config --global <the setting>`
+### Configuration
 
-- Your name. `user.name=<your name>` You should generally set this to the same thing as your github username
-- An email. Go to [https://github.com/settings/emails] at the bottom turn on the `Keep my email addresses private` setting, then find the email address in that box below the setting that looks like `number+username@users.noreply.github.com` then set that in git `user.email=<email you just found>`
+In order to use git you will need set some option, all should be set with `git config --global <the setting>`
+
+- Your name. `user.name=<your name>` You should generally set this to the same thing as your forgejo username and beware that this will be public
+- An email. `user.email=<your username>@noreply.localhost`
 
 There a few more settings you should set
 
@@ -40,7 +42,6 @@ There a few more settings you should set
 - `pull.rebase=true`
 - `pull.merge=false`
 - `rebase.autostash=true`
-
 
 ## Connecting to the Romis
 
