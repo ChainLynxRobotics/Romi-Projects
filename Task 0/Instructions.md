@@ -58,9 +58,8 @@ Once the romi is on you can connect to the romis, by disconnecting from your cur
 
 ### Possible fixes
 
-- Turn the romi on (Try both the switch and the button)
-- Ask if other people are connected to the romi
-- Put batteries/replace the batteries in the romi
+- Ask if other people are already connected to the romi
+- Put in batteries/replace the batteries in the romi
 - Restart your computer
 
 ## Sim interface
