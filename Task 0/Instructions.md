@@ -13,28 +13,28 @@ Go to [https://github.com/wpilibsuite/allwpilib/releases/latest/](https://github
 Then Follow these instructions [https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html#extracting-the-installer](https://github.com/wpilibsuite/allwpilib/releases/latest/) to extract the installer and then run it.
 During the install select the option to install everything, install for all users(if its an option) and to download VSCode with `Download for this computer only`
 
-## Downloading & configuring Git
+## Downloading Git
 
 ### Windows
 
-If you use a package manager like [winget](https://learn.microsoft.com/en-us/windows/package-manager/) or [chocolatey](https://chocolatey.org/) use those, otherwise go to [https://git-scm.com/install/windows] and download and run the standalone installer.
+If you use a package manager like [winget](https://learn.microsoft.com/en-us/windows/package-manager/) or [chocolatey](https://chocolatey.org/), use those to install git, otherwise go to [https://git-scm.com/install/windows](https://git-scm.com/install/windows) then download and run the standalone installer.
 
 ### MacOS
 
-If you already have homebrew then use `brew install git`, otherwise use `xcode-select --install` to install the xcode command line tools which comes with git.
+If you use homebrew then run `brew install git` in a terminal, otherwise run `xcode-select --install` in a terminal.
 
 ### Linux
 
-Its probably already installed, you can check with `which git` if not use `<your favorate package manager invocation to install packages> git`.
+Its probably already installed, you can check by running `which git` if not run `<your favorate package manager invocation to install packages> git`.
 
-### Configuration
+## Configuring Git
 
-In order to use git you will need set some option, all should be set with `git config --global <the setting>`
+In order to use git you need to configure a few options, all of these can be configured by running `git config --global <the setting>` in a terminal.
 
-- Your name. `user.name=<your name>` You should generally set this to the same thing as your forgejo username and beware that this will be public
-- An email. `user.email=<your username>@noreply.localhost`
+- `user.name=<your name>` Your name should be something identifiable, but beware it will be public
+- `user.email=<your forgejo username>@noreply.localhost`
 
-There a few more settings you should set
+There a few more settings you should set to make git easier to use
 
 - `rerere.enabled=true`
 - `push.autosetupremote=true`
