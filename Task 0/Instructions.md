@@ -41,18 +41,20 @@ There a few more settings you should set
 - `pull.merge=false`
 - `rebase.autostash=true`
 
+
 ## Connecting to the Romis
 
-To connect to the romis, disconnect from your current wi-fi and find the romi's network, the password will be set to `82488248`. If you can't find it, here are some common causes:
+<img src="./RomiPowerButton.png" alt="Top view of a romi with the power switch circled in red" width=500>
+
+First power on the romi by flipping the power switch to the on position. Once you are done with the romi flip the switch to the off position and then press the button next to the switch. If you here the romi beeping that means it is low on battery.
+
+Once the romi is on you can connect to the romis, by disconnecting from your current wi-fi network and find the romi's network(either romi-1 or romi-2 the number is on the bottom), the password will be set to `82488248`. If you can't find it, here are some common causes:
 
 - Romi is off
 - Romi is out of battery
 - You are attempting to connect to the wrong romi
 - You have wi-fi disabled
-- Your computer just doesn't work
 - Someone's already connected to the romi
-- Someone (100% not Ibrahim) drove the romi off a table
-- Other Reasons (Please ask experienced member)
 
 ### Possible fixes
 
