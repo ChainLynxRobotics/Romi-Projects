@@ -6,11 +6,12 @@ It is recommended to bring your own laptop as school laptops have limitations. W
 
 ## Downloading WPILib
 
-Go to [https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html#downloading], and download the installer.
+Go to [https://github.com/wpilibsuite/allwpilib/releases/latest/](https://github.com/wpilibsuite/allwpilib/releases/latest/), scroll down to the download section and find your OS and download the installer.
 
-<img src="./Download.png" alt="Download button" width="901"/>
+<img src="./WPILibDownload.png" width=901>
 
-Then follow the install instructions below the download button.
+Then Follow these instructions [https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html#extracting-the-installer](https://github.com/wpilibsuite/allwpilib/releases/latest/) to extract the installer and then run it.
+During the install select the option to install everything, install for all users(if its an option) and to download VSCode with `Download for this computer only`
 
 ## Downloading & configuring Git
 
