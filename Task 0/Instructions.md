@@ -42,13 +42,22 @@ There a few more settings you should set to make git easier to use
 - `pull.merge=false`
 - `rebase.autostash=true`
 
-## Connecting to the Romis
+
+## Creating your first robot project
+
+Find the WPILib logo <img src="./wpilib%20logo.png" alt="wpilib logo" width="25"/> in the top right of vscode, clicking on it will then open the command pallet in the top center with `>WPILib:` already filled out (you can also just type this in by hand), then search for `Create a new project`, you can then either hit enter or click on the command to begin project setup. You want to create a Template in java with romi command robot as the base, then select where you want to put the project and what you want to name it, finally set the team number to `8248` and create the project.
+
+## Running code
+
+### Connecting to the Romis
 
 <img src="./RomiPowerButton.png" alt="Top view of a romi with the power switch circled in red" width=500>
 
 First power on the romi by flipping the power switch to the on position. Once you are done with the romi flip the switch to the off position and then press the button next to the switch. If you here the romi beeping that means it is low on battery.
 
-Once the romi is on you can connect to the romis, by disconnecting from your current wi-fi network and find the romi's network(either romi-1 or romi-2 the number is on the bottom), the password will be set to `82488248`. If you can't find it, here are some common causes:
+Once the romi is on you can connect to the romis, by disconnecting from your current wi-fi network and find the romi's network(either romi-1 or romi-2 the number is on the bottom), the password will be set to `82488248`. 
+
+If you can't find it, here are some common causes:
 
 - Romi is off
 - Romi is out of battery
@@ -56,33 +65,34 @@ Once the romi is on you can connect to the romis, by disconnecting from your cur
 - You have wi-fi disabled
 - Someone's already connected to the romi
 
-### Possible fixes
+### Starting the program
 
-- Ask if other people are already connected to the romi
-- Put in batteries/replace the batteries in the romi
-- Restart your computer
+Click on the same WPILib logo you used to create the project but instead search for `Simulate Robot Code` once the program build and starts you will see the Sim Gui
 
-## Sim interface
+### Sim Gui
 
 <img src="./Sim.png" alt="Sim Interface" width="1301"/>
 
-### Robot State
+#### Robot State
+
+<img src="./RobotState.png" alt="Robot state pannel" width=150/>
+
 
 This is the current state of the robot. The robot can be:
 
-- Disconnected
-- Disabled
-- Autonomus
-- Teleoperated
+- Disconnected: The robot is not receiving any instructions from the computer.
+- Disabled: It is communicating with the computer, but is unable to move.
+- Autonomus: It will run code and move around without any human inputs.
+- Teleoperate: The human will be able to give the robot inputs for it to drive around an proform actions.
 
-Disconnected: The robot is not receiving any instructions from the computer.
-Disabled: It is communicating with the computer, but is unable to run any code.
-Autonomus: It will run code that is preloaded. The human cannot control the robot.
-Teleoperated: The human will give the robot inputs, which it will run.
+#### Joysticks
 
-### Joysticks
+<img src="./Joysticks.png" alt="Sim joystick binding interface" width=600/>
 
-### Other
+On the left you can see all of the controllers/joysticks that the SimGui detects, with the controllers at the top and the keyboard at the bottom.
+You can then drag whichever controller/joystick you want to you onto port 0.
+
+#### Other
 
 You will almost never need to touch the other sim elements, such as Timing and Network tables. If it is necessary, an experienced member will tell you.
 

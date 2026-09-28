@@ -4,17 +4,6 @@
 - [WPILib Command based programming structure](https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html)
 - [WPILib Romi programming docs](https://docs.wpilib.org/en/stable/docs/romi-robot/programming-romi.html)
 
-## Running code on a romi
-In order to run code on a romi, you need to connect to its wifi network, called `Romi1` or `Romi2` (printed on the bottom of the romi) with the password `82488248`. After you connecting, click on the <img src="./wpilib%20logo.png" alt="wpilib logo" width="18"/> in the top right of your screen and choose "Simulate Robot Code". A sim window like the one pictured below should pop up.
-
-<img src="./sim.png" alt="sim window" width="960"/>
-
-The most important sections of the window are the robot state box in the top left and the joystick section slightly below the center. The robot mode selector lets you change the state of the robot, the importiant mode is `Teleop` which is short for teleoperated, where you control the robot remotely.
-
-To control the robot you need to drag a controller(i used an 8bit do controller but most should work) from the left to `joystick[0]`. And then switch to `Teleop`.
-
-![alt text](simGUI.gif)
-
 ## Objectives 
 Off the template command-based Romi project, create a command that will allow joystick or keyboard input to control the Romi drivetrain. Create commands to drive the Romi forward and rotate it a certain amount. Whenever you see words in parenthesis after another word, that is showing another name for the word that might help you figure out what it means. For example, a method is commonly referred to as a function in other coding languages, and the math meaning of the word function is more intuitive for understanding what a function is to some people.
 
