@@ -1,4 +1,8 @@
 # Romi-Projects
+
+> [!NOTE]
+> **New:** a version for **WPILib 2027 / Commands v3** (with a built-in pretend Romi) is in [`2027-Commands-v3/`](2027-Commands-v3/README.md).
+
 Learn how to make robots move with Romis by learning WPILib command-based programming. You're greatly encouraged to type out the code as you're working through the examples to get a deeper understanding of how robot code works.
 
 ## Task 1: Controlling Romi Drivetrain and Sensors
