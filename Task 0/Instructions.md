@@ -31,16 +31,16 @@ Its probably already installed, you can check by running `which git` if not run 
 
 In order to use git you need to configure a few options, all of these can be configured by running `git config --global <the setting>` in a terminal.
 
-- `user.name=<your name>` Your name should be something identifiable, but beware it will be public
-- `user.email=<your forgejo username>@noreply.localhost`
+- `user.name "<your name>"` Your name should be something identifiable, but beware it will be public
+- `user.email "<your forgejo username>@noreply.localhost"`
 
 There a few more settings you should set to make git easier to use
 
-- `rerere.enabled=true`
-- `push.autosetupremote=true`
-- `pull.rebase=true`
-- `pull.merge=false`
-- `rebase.autostash=true`
+- `rerere.enabled true`
+- `push.autosetupremote true`
+- `pull.rebase true`
+- `pull.merge false`
+- `rebase.autostash true`
 
 
 ## Creating your first robot project
@@ -100,7 +100,7 @@ You will almost never need to touch the other sim elements, such as Timing and N
 
 ### Naming Conventions
 
-On ChainLynx, we use the following naming conventions
+At ChainLynx, we use the following naming conventions
 
 ```java
 // For classes
