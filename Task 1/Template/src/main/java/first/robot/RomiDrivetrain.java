@@ -2,14 +2,13 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package first.robot.subsystems;
+package first.robot;
 
-import org.wpilib.command2.SubsystemBase;
 import org.wpilib.drive.DifferentialDrive;
 import org.wpilib.drivers.motor.Spark;
 import org.wpilib.hardware.rotation.Encoder;
 
-public class RomiDrivetrain extends SubsystemBase {
+public class RomiDrivetrain {
   private static final double COUNTS_PER_REVOLUTION = 1440.0;
   private static final double WHEEL_DIAMETER_INCH = 2.75591; // 70 mm
 
@@ -53,15 +52,5 @@ public class RomiDrivetrain extends SubsystemBase {
 
   public double getRightDistanceInch() {
     return rightEncoder.getDistance();
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
   }
 }
