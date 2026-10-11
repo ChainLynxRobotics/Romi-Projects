@@ -8,7 +8,7 @@ It is recommended to bring your own laptop as school laptops have limitations. W
 
 Go to [https://github.com/wpilibsuite/allwpilib/releases/latest/](https://github.com/wpilibsuite/allwpilib/releases/latest/), scroll down to the download section and find your OS and download the installer.
 
-<img src="./WPILibDownload.png" width=901>
+<img src="./WPILibDownload.png" width=901 alt="WPILib docs download section">
 
 Then Follow these instructions [https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html#extracting-the-installer](https://github.com/wpilibsuite/allwpilib/releases/latest/) to extract the installer and then run it.
 During the install select the option to install everything, install for all users(if its an option) and to download VSCode with `Download for this computer only`
