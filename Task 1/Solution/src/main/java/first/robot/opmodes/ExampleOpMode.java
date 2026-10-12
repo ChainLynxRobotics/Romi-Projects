@@ -23,5 +23,6 @@ public class ExampleOpMode extends PeriodicOpMode {
   @Override
   public void periodic() {
     // Runs every 20ms when enabled
+    robot.drivetrain.arcadeDrive(-driveController.getLeftY(), -driveController.getLeftX());
   }
 }
