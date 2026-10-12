@@ -56,3 +56,81 @@ You can then drag whichever controller/joystick you want to you onto port 0.
 
 You will almost never need to touch the other sim elements, such as Timing and Network tables.
 
+## Parts of a robot program
+
+All of the code for the project is stored in the `src/main/java/first/robot` folder.
+
+### `Robot.java`
+
+The robot class holds all of the subsystems as well as holding all of the logic thats not specific to one subsystem or OpMode (We will talk about these next).
+
+### OpModes
+
+Stored in the `opmodes` folder. Each OpMode controls the operation of the robot in a specific mode. When running code for mode there is a dropdown menu to select which OpMode you want to use.
+
+Further explanation [FRCSoftware](https://frcsoftware.org/learning-course/stage1/stage1a/kitbot-drivetrain/#opmodes), [WPILib docs](https://docs.wpilib.org/en/latest/docs/software/basic-programming/opmodes.html).
+
+### Subsystems
+
+Stored in the `subsystems` folder. A subsystem is a portion of the robot that can operate mostly independently, eg. shooter, indexer, intake, vision, etc. They store the parts like motors and the logic that controls them. The only subsystem on a romi is the drivetrain.
+
+## Driving around with a controller
+
+The first step is to give `ExampleOpMode` a better name like `ControllerDriving`. You can just rename the File and vscode will ask if you want to automatically change everything else, click yes.
+
+In `ControllerDriving.java` you will find (extra comments added to explain sections of the code)
+
+```java
+@Teleop // This tells WPILib that this OpMode is for Teleop
+public class ControllerDriving extends PeriodicOpMode {
+  private final Robot robot;
+
+  public ControllerDriving(Robot robot) {
+    this.robot = robot;
+  }
+
+  @Override
+  public void start() {
+    // Code to run when the robot transitions from disabled to enabled
+
+  @Override
+  public void periodic() {
+    // Runs every 20ms when enabled
+  }
+
+  // there are also other methods that we can override from PeriodicOpMode
+  // such as disabledPeriodic but we wont need them in the romi tasks.
+}
+```
+
+In order to drive around with a controller we will need to do 2 things, get the x and y axis values of a joystick, and then use those values to tell the robot how fast to go forward and how much to turn.
+
+The first step in this plan is to create a controller assuming your using an Xbox controller (All of the teams controller are), then you will want to create a `XboxController` bound to port 0 (`XboxController` has multiple constructors make sure to use the one that takes the port id as an integer) and store it in a private final member variable of the class named `driveController` (or another descriptive name), private because no one outside of the OpMode needs to access it, final because it never needs to be changed, and a member variable so that it will stick around the entire life of the OpMode. (In the future if a variable is private or final will not always be specified so think about who will need to access the variable and if it ever needs to be changed)
+
+`private final XboxController driveController = new XboxController(0);`
+
+One importiant note is that joysticks dont use the same coordinate system that the robot does, for a joystick -y is forward +y is backwards -x is left and +x is right, for more info see [WPILib docs](https://docs.wpilib.org/en/latest/docs/software/basic-programming/coordinate-system.html#joystick-and-controller-coordinate-system)
+
+In order to command the romi we will use a method called `arcadeDrive` it takes in how fast to drive forward and how much to turn, both in a -1 - 1 range.
+
+In order to make sure that it will update the inputs while driving we will want to call `arcadeDrive` in `periodic`. In order to get the joystick angles of the controller you can call a getter method on `driveController`, try to figure out what its called, but if you get stuck you can look at the solution.
+<details>
+    <summary>Solution</summary>
+
+`driveController.getLeftX()` and `getLeftY()` or `getRightX` and `getRightY` if you are using the right joystick on the controller.
+
+</details>
+
+We can now plug the joystick values into the arcade drive function making sure to correct for the different coordinate systems.
+
+```java
+  @Override
+  public void periodic() {
+    // Runs every 20ms when enabled
+    robot.drivetrain.arcadeDrive(-driveController.getLeftY(), -driveController.getLeftX());
+  }
+```
+
+If we now run out code the romi should drive with these controls
+
+<img src=arcadeDriveJoystick.webp>
