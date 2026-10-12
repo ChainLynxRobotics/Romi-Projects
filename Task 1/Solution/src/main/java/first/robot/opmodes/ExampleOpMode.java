@@ -17,7 +17,7 @@ public class ExampleOpMode extends PeriodicOpMode {
 
   @Override
   public void start() {
-    // Code to run once when the robot is enabled
+    // Code to run when the robot transitions from disabled to enabled
   }
 
   @Override
