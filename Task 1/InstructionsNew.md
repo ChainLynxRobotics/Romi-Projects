@@ -111,7 +111,7 @@ The first step in this plan is to create a controller assuming your using an Xbo
 
 One importiant note is that joysticks dont use the same coordinate system that the robot does, for a joystick -y is forward +y is backwards -x is left and +x is right, for more info see [WPILib docs](https://docs.wpilib.org/en/latest/docs/software/basic-programming/coordinate-system.html#joystick-and-controller-coordinate-system)
 
-In order to command the romi we will use a method called `arcadeDrive` it takes in how fast to drive forward and how much to turn, both in a -1 - 1 range.
+In order to command the romi we will use a method called `arcadeDrive` it takes in two values `xaxisSpeed`, how fast to drive forward and `zaxisRotate`, how much to turn, both in a -1 - 1 range.
 
 In order to make sure that it will update the inputs while driving we will want to call `arcadeDrive` in `periodic`. In order to get the joystick angles of the controller you can call a getter method on `driveController`, try to figure out what its called, but if you get stuck you can look at the solution.
 <details>
