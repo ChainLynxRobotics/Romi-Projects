@@ -18,13 +18,11 @@ public class SquareAuto implements OpMode {
   /** Runs once when the robot is enabled. */
   @Override
   public void start() {
-    var drivetrain = robot.drivetrain;
-
     Command square =
         Command.noRequirements(coroutine -> {
               for (int side = 0; side < 4; side++) {
-                coroutine.await(drivetrain.driveForward(12)); // run it and wait until it's done
-                coroutine.await(drivetrain.turnLeft(90));
+                coroutine.await(robot.drivetrain.driveForward(12)); // run it and wait until it's done
+                coroutine.await(robot.drivetrain.turnLeft(90));
               }
             })
             .named("Square");

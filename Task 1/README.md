@@ -189,6 +189,17 @@ flowchart TD
   }
 ```
 
+<details>
+<summary> Solution </summary> 
+
+```java
+public double getAverageDistanceInches() {
+  return (getLeftDistanceInches() + getRightDistanceInches()) / 2;
+}
+```
+
+</details>  <br>
+
 ### 3b. Add the command (below `driveWithJoysticks`)
 
 ```java
@@ -209,6 +220,27 @@ flowchart TD
         .named("Drive Forward");
   }
 ```
+
+<details>
+<summary> Solution </summary> 
+
+```java
+public Command driveForward(double inches) {
+  return run(coroutine -> {
+        double start_distance = getAverageDistanceInches();
+
+        while (getAverageDistanceInches() - start_distance < inches) {
+          arcadeDrive(kDefaultDriveSpeed, 0);
+          coroutine.yield(); // wait 20 ms, let everything else run, then keep going
+        }
+
+        stop();
+      })
+      .named("Drive Forward");
+}
+```
+
+</details>  <br>
 
 | Part                        | Means                                                                                                                                 |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
@@ -305,6 +337,27 @@ Add this method (above `// ---- Commands ----`):
   }
 ```
 
+<details>
+<summary> Solution </summary> 
+
+```java
+  public Command turnLeft(double degrees) {
+    return run(coroutine -> {
+          double start_heading = getHeadingDegrees();
+
+          while (getHeadingDegrees() - start_heading < degrees) {
+            arcadeDrive(0, kDefaultRotSpeed);
+            coroutine.yield();
+          }
+
+          stop();
+        })
+        .named("Turn Left");
+  }
+```
+</details>  <br>
+
+
 >[!TIP]
 > Check your code on a real (or simulated) Romi. Turn left with using the keyboard controls using **E**. You should see `Heading` should go up when you turn left. If it goes down, check the `-` in `getHeadingDegrees()`.
 
@@ -355,9 +408,18 @@ Use **your** measured number.
 
 ### 5c. Stop early (in `turnLeft`, change the `while` line)
 
+Subtract your `kTurnStopEarlyDegrees` from the degrees in the loop to stop that much earlier.
+
+<details>
+<summary> Solution </summary> 
+
 ```java
-          while (getHeadingDegrees() - start < degrees - kTurnStopEarlyDegrees) {
+while (getHeadingDegrees() - start < degrees - kTurnStopEarlyDegrees) {
+  // ...
+}
 ```
+
+</details> <br>
 
 >[!NOTE]
 > This is not a perfect solution and you should still expect some overshoot due to variations in the precise time the motor stops (remember that each command is run every 20 ms, so there is some room for variation in the exact point the stop() command is called).
@@ -427,6 +489,28 @@ public class SquareAuto implements OpMode {
 
 >[!TIP]
 > Instead of copying and pasting the code 4 times, try use a `for` loop.
+
+
+<details>
+<summary> Solution </summary> 
+
+```java
+@Override
+public void start() {
+  Command square =
+      Command.noRequirements(coroutine -> {
+            for (int side = 0; side < 4; side++) {
+              coroutine.await(robot.drivetrain.driveForward(12)); // run it and wait until it's done
+              coroutine.await(robot.drivetrain.turnLeft(90));
+            }
+          })
+          .named("Square");
+
+  Scheduler.getDefault().schedule(square);
+}
+```
+
+</details> <br>
 
 | Part                                   | Means                                                                       |
 | -------------------------------------- | --------------------------------------------------------------------------- |

@@ -91,7 +91,7 @@ public class RomiDrivetrain implements Mechanism {
   /** Drives forward a distance, then stops. */
   public Command driveForward(double inches) {
     return run(coroutine -> {
-          double start = getAverageDistanceInches();
+          double start_distance = getAverageDistanceInches();
 
           while (getAverageDistanceInches() - start < inches) {
             arcadeDrive(kDefaultDriveSpeed, 0);
@@ -106,7 +106,7 @@ public class RomiDrivetrain implements Mechanism {
   /** Turns left (counter-clockwise) some degrees, then stops. */
   public Command turnLeft(double degrees) {
     return run(coroutine -> {
-          double start = getHeadingDegrees();
+          double start_angle = getHeadingDegrees();
 
           while (getHeadingDegrees() - start < degrees - kTurnStopEarlyDegrees) {
             arcadeDrive(0, kDefaultRotSpeed);
