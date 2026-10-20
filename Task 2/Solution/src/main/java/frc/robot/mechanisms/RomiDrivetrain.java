@@ -118,16 +118,18 @@ public class RomiDrivetrain implements Mechanism {
   /** Drives forward a distance using PID, so it slows down and stops right on target. */
   public Command driveForwardPID(double inches) {
     return run(coroutine -> {
-          double target = getAverageDistanceInches() + inches;
+          double setpoint = getAverageDistanceInches() + inches;
           drivePID.reset();
           drivePID.setSetpoint(target);
 
-          while (!drivePID.atSetpoint()) {
+          while (!drivePID.atSetpoint(setpoint)) {
             double speed = drivePID.calculate(getAverageDistanceInches());
             speed = Math.clamp(speed, -kMaxDrivePIDSpeed, kMaxDrivePIDSpeed);
             arcadeDrive(speed, 0);
 
-            Telemetry.log("Drive Target (in)", target);
+            Telemetry.log("Drive Setpoint (in)", setpoint);
+            Telemetry.log("Drive Error (in)", getAverageDistanceInches() - setpoint);
+
             coroutine.yield();
           }
 

@@ -4,13 +4,18 @@
 
 **Time:** about 1 hour · **Need:** your finished [Task 1](../Task%201/Instructions.md) project (or copy [`Task 1/Solution`](../Task%201/Solution)).
 
-> Stuck? Each step has a finished copy in [`checkpoints/`](checkpoints).
+> [!TIP] 
+Stuck? Each step has a finished copy in [`checkpoints/`](checkpoints).
 
 ---
 
 ## Step 1: See the problem
 
-In Task 1, `driveForward` only stops *after* it passes 12, so it **overshoots**. (Your stop-early number fixed the turns, but only for one speed.)
+In Task 1, we fixed the `driveForward()` overshoot when it stopped *after* it passes 12 by changing it so that it stops before 12, but saw that the amount you need to stop early by changes when you go faster, but also is most accurate when you move *very slowly*. We will now show you a better method using *feedback control*.
+
+| Word          | Means                                                                                 |
+| ------------- | ------------------------------------------------------------------------------------- |
+| **Overshoot** | Something the robot can do ("drive 12 inches").                                       |
 
 > ### ✅ Checkpoint 1: See the overshoot
 > 1. **Simulate Robot Code** → **Teleoperated** → **Drive** → **Enable**.
