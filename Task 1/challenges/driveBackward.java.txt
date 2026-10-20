@@ -1,0 +1,13 @@
+  /** Drives backward a distance, then stops. */
+  public Command driveBackward(double inches) {
+    return run(coroutine -> {
+          double start = getAverageDistanceInches();
+
+          while (start - getAverageDistanceInches() < inches) {
+            arcadeDrive(-kDefaultDriveSpeed, 0);
+            coroutine.yield();
+          }
+
+          stop();
+        })
+        .named("Drive Backward");

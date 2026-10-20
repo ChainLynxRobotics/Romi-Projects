@@ -1,0 +1,174 @@
+{
+ "NTProvider": {
+  "types": {
+   "/DriverStation": "DriverStation",
+   "/Telemetry/Sim Field": "Field2d",
+   "/Telemetry/Field": "Field2d"
+  },
+  "windows": {
+   "/Telemetry/Sim Field": {
+    "builtin": "",
+    "width": 2.5,
+    "height": 1.5,
+    "Robot": {
+     "width": 0.165,
+     "length": 0.165
+    },
+    "Trail": {
+     "style": "Line",
+     "weight": 3.0,
+     "color": [
+      1.0,
+      0.8,
+      0.2,
+      1.0
+     ],
+     "arrows": false,
+     "selectable": false
+    },
+    "window": {
+     "visible": true
+    }
+   },
+   "/Telemetry/Field": {
+    "builtin": "",
+    "width": 2.5,
+    "height": 1.5,
+    "Robot": {
+     "width": 0.165,
+     "length": 0.165
+    },
+    "Path": {
+     "style": "Line",
+     "weight": 3.0,
+     "color": [
+      0.3,
+      0.8,
+      1.0,
+      1.0
+     ],
+     "arrows": false,
+     "selectable": false
+    },
+    "Goal": {
+     "width": 0.08,
+     "length": 0.08,
+     "color": [
+      0.2,
+      1.0,
+      0.2,
+      1.0
+     ],
+     "arrows": false
+    },
+    "window": {
+     "visible": true
+    }
+   }
+  }
+ },
+ "NetworkTables Info": {
+  "visible": false
+ },
+ "NetworkTables": {
+  "transitory": {
+   "Telemetry": {
+    "open": true
+   }
+  }
+ },
+ "Plot": {
+  "Plot <0>": {
+   "plots": [
+    {
+     "name": "Distance",
+     "series": [
+      {
+       "id": "NT:/Telemetry/Average Distance (in)",
+       "color": [
+        0.3,
+        0.6,
+        1.0,
+        1
+       ],
+       "weight": 2.0,
+       "name": "Average Distance (in)"
+      },
+      {
+       "id": "NT:/Telemetry/Drive Target (in)",
+       "color": [
+        1.0,
+        0.5,
+        0.2,
+        1
+       ],
+       "weight": 2.0,
+       "name": "Drive Target (in)"
+      }
+     ],
+     "axis": [
+      {
+       "autoFit": true
+      }
+     ],
+     "viewTime": 8.0,
+     "height": 215,
+     "autoHeight": false,
+     "legendLocation": 2,
+     "backgroundColor": [
+      0,
+      0,
+      0,
+      0.85
+     ],
+     "legendOutside": true,
+     "legendHorizontal": true
+    },
+    {
+     "name": "Heading",
+     "series": [
+      {
+       "id": "NT:/Telemetry/Heading (deg)",
+       "color": [
+        0.4,
+        1.0,
+        0.4,
+        1
+       ],
+       "weight": 2.0,
+       "name": "Heading (deg)"
+      },
+      {
+       "id": "NT:/Telemetry/Turn Target (deg)",
+       "color": [
+        1.0,
+        0.5,
+        0.2,
+        1
+       ],
+       "weight": 2.0,
+       "name": "Turn Target (deg)"
+      }
+     ],
+     "axis": [
+      {
+       "autoFit": true
+      }
+     ],
+     "viewTime": 8.0,
+     "height": 215,
+     "autoHeight": false,
+     "legendLocation": 2,
+     "backgroundColor": [
+      0,
+      0,
+      0,
+      0.85
+     ],
+     "legendOutside": true,
+     "legendHorizontal": true
+    }
+   ]
+  }
+ }
+}

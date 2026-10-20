@@ -1,74 +1,38 @@
-# FRC Romi Troubleshooting Guide
+# Romi Troubleshooting Guide
 
-This guide is designed to help new members troubleshoot common issues when working with Romis, Java, and robot code.
+## Setup
 
----
+| Problem | Fix |
+|---|---|
+| Build error about **Java version** / `Math.clamp` / `org.wpilib` not found | You're in the wrong VS Code. Open **WPILib VS Code 2027** ([Task 0](Task%200/Instructions.md)). |
+| "Vendor dependency" errors | Use the vendordeps that came with the Template. Old 2026 vendordeps don't work with 2027. |
+| Can't find the Romi's WiFi | Romi on? Batteries charged? Right Romi (name on the bottom)? Someone else already connected? |
+| Romi won't connect | Update its firmware: [Romi imaging guide](https://docs.wpilib.org/en/stable/docs/romi-robot/imaging-romi.html) |
 
-## 1. **Initial Setup Issues**
-### Problem: Romi not connecting to the computer
-- **Solution:**
-    1. Ensure the Romi is powered on.
-    2. Verify that the Romi is registed on your wifi.
-    4. Update the Romi firmware using the [Romi Firmware Update Tool](https://docs.wpilib.org/en/stable/docs/romi/romi-setup.html).
+## Running code
 
-## 2. **Code Deployment Issues**
-### Problem: Code fails to deploy
-- **Solution:**
-    1. Verify the Romi is connected via USB or Wi-Fi.
-    2. Check the `build.gradle` file for correct dependencies.
-    3. Click the Wpilib widget and run "Build Robot Code"
-    4. Restart VS Code and try deploying again.
+| Problem | Fix |
+|---|---|
+| How do I run it? | <img src="Task%201/wpilib%20logo.png" alt="WPILib logo" width="16"/> (top right) → **Simulate Robot Code** → **Sim GUI** |
+| My OpMode isn't in the list | It must be in `frc/robot/opmodes/`, be `public`, have `@Teleop` or `@Autonomous`, and have a constructor that takes `Robot`. |
+| Pressed Enable, nothing moves | Did you pick an OpMode? Teleop needs **Drive**. For a real Romi, set `useRealRomi = true` in `build.gradle`. |
+| Pretend Romi doesn't move | The robot must be **enabled**. For sim-only, `useRealRomi = false` in `build.gradle`. |
+| Everything freezes | A `while` loop inside a command is missing `coroutine.yield();` |
+| `Command` won't compile: "named" | Every command needs `.named("Some Name")` at the end. |
 
-### Problem: Robot code not running on the Romi
-- **Solution:**
-    1. Confirm the `Robot.java` file has a valid `robotInit()` and `teleopPeriodic()` method.
-    2. Check the console output for errors during deployment.
-    3. Ensure the Romi is in "Run" mode (green LED should be on).
+## Sensors & motors (real Romi)
 
----
+| Problem | Fix |
+|---|---|
+| Drives backward | Flip the `-` signs on the joystick lines in `DriveTeleop`. |
+| Heading goes **down** when turning left | Check the `-` in `getHeadingDegrees()` (Task 1 Step 4a). |
+| PID never finishes | Real motors need more push. Raise `kDriveP` / `kTurnP`. |
 
-## 3. **Sensor and Motor Issues**
-### Problem: Motors not responding
-- **Solution:**
-    1. Verify motor connections on the Romi board.
-    2. Check the motor controller configuration in the code.
-    3. Test the motors using the WPILib Romi simulator.
+## Tips
+- Watch numbers: open the **NetworkTables** view, or graph them with **Plot → New Plot Window**.
+- `System.out.println("hi");` prints to the VS Code terminal.
 
-### Problem: Sensors not providing data
-- **Solution:**
-    1. Ensure sensors are properly connected to the Romi.
-    2. Verify the sensor ports match the configuration in the code.
-    3. Use `SmartDashboard` or `Shuffleboard` to debug sensor values.
-
----
-
-## 4. **Common Errors**
-### Error: "No Robot Code"
-- **Solution:**
-    1. Check for syntax errors in the code.
-    2. Ensure the Romi is powered and connected.
-    3. Re-deploy the code and monitor the console for errors.
-
-### Error: "Failed to connect to target"
-- **Solution:**
-    1. Restart the Romi and reconnect it to the computer.
-    2. Verify the correct COM port is selected in the WPILib settings.
-    3. Update the Romi firmware if necessary.
-
----
-
-## 5. **Debugging Tips**
-- Use `System.out.println()` to print debug messages in your code.
-- Check the WPILib documentation for examples and troubleshooting steps.
-- Join the [FRC Discord](https://discord.gg/frc) or forums for community support.
-
----
-
-## 6. **Additional Resources**
-- [WPILib Romi Documentation](https://docs.wpilib.org/en/stable/docs/romi/index.html)
-- [FRC Java Programming Guide](https://docs.wpilib.org/en/stable/docs/software/index.html)
-- [Romi Troubleshooting FAQ](https://docs.wpilib.org/en/stable/docs/romi/romi-faq.html)
-
----
-
-Happy coding and good luck with your FRC Romi projects!
+## More help
+- [WPILib Romi docs](https://docs.wpilib.org/en/stable/docs/romi-robot/index.html)
+- [Commands v3 design doc](https://github.com/wpilibsuite/allwpilib/blob/main/design-docs/commands-v3.md)
+- Ask an experienced team member!

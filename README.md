@@ -1,14 +1,32 @@
-# Romi-Projects
-Learn how to make robots move with Romis by learning WPILib command-based programming. You're greatly encouraged to type out the code as you're working through the examples to get a deeper understanding of how robot code works.
+# Romi-Projects: 2027 (Commands v3)
 
-## Task 1: Controlling Romi Drivetrain and Sensors
-Control the Romi differential drivetrain by using its gyroscope and encoders to keep track of its position and rotation.
+> 📝 **Note:** This uses the **WPILib 2027 alpha**. On WPILib 2026? Use the [main tutorials](../README.md) instead.
 
-## Task 2: Basic Control Systems (PID) 
-Implement PID to more precisely rotate and translate your robot to setpoints. 
+Learn to program robots with **Romis** and **WPILib 2027 Commands v3**. No Romi? No problem: every project includes a pretend Romi you can drive in the simulator.
 
-## Task 3: Path Planning
-Use Path Planner and its vendor dependency to control your robot in autonomous mode by configuring an Auto Builder.
+> 💡 **Tip:** Type the short snippets yourself. You'll learn way faster. For whole new files, pasting is fine.
 
-## Task 4: Advantage Kit/Advantage Scope and In-Depth Logging
-Create an abstraction between your hardware interface and your software commands to make your code more reusable and effectively log everything for quicker debugging. 
+```mermaid
+flowchart LR
+    T0["<b>Task 0</b><br/>Set up laptop"] --> T1["<b>Task 1</b><br/>Drive with commands"]
+    T1 --> T2["<b>Task 2</b><br/>PID: stop on target"]
+    T2 --> T3["<b>Task 3</b><br/>Odometry & paths"]
+```
+
+| | Task | You'll make |
+|---|---|---|
+| 🛠️ | [Task 0: Configuring Computer](Task%200/Instructions.md) | WPILib 2027, Git, the sim window |
+| 🕹️ | [Task 1: Drive with Commands](Task%201/Instructions.md) | Joystick driving, "drive 12 in" / "turn 90°" buttons, a square auto |
+| 🎯 | [Task 2: PID](Task%202/Instructions.md) | Commands that stop exactly on target, live tuning, a *real* square |
+| 🗺️ | [Task 3: Odometry & Paths](Task%203/Instructions.md) | A live map of the Romi, curvy paths, a there-and-back auto |
+
+## What's in here
+
+| Folder | What |
+|---|---|
+| `Template/` | Starting project. **Copy it** to begin Task 1. |
+| `Task N/Instructions.md` | The tutorial |
+| `Task N/checkpoints/stepN/` | The code after each step. Compare if you get stuck. |
+| `Task N/Solution/` | Finished project for that task |
+
+Having trouble? See the [Troubleshooting Guide](Troubleshooting%20Guide.md).
