@@ -11,42 +11,48 @@ Stuck? Each step has a finished copy in [`checkpoints/`](checkpoints).
 
 ## Step 1: See the problem
 
-In Task 1, we fixed the `driveForward()` overshoot when it stopped *after* it passes 12 by changing it so that it stops before 12, but saw that the amount you need to stop early by changes when you go faster, but also is most accurate when you move *very slowly*. We will now show you a better method using *feedback control*.
+In Task 1, we fixed the `driveForward()` overshoot when it stopped *after* it passes 12 by changing it so that it stops before 12, but saw that the amount you need to stop early by changes when you go faster, but also is most accurate when you move *very slowly*. We will now show you a better method using *feedback control*. Feedback control works by using information about where we're at to adjust our output (think about the robot recieving "feedback" about how close it is getting to its target).
 
-| Word          | Means                                                                                 |
-| ------------- | ------------------------------------------------------------------------------------- |
-| **Overshoot** | Something the robot can do ("drive 12 inches").                                       |
+### Terms to know
+| Word             | Means                                                                                                     |
+| ---------------- | --------------------------------------------------------------------------------------------------------- |
+| Setpoint         | The target value for a control system.                                                                    |
+| Overshoot        | (The amount) a control system goes over the septoint.                                                     |
+| Undershoot       | (The amount) a control system goes under the setpoint.                                                    |
+| Error            | The difference between a control system's current value and its setpoint                                  |
+| Feedback control | A method of control where that uses information about the error to drive a a control system to a setpoint |
 
 > ### ✅ Checkpoint 1: See the overshoot
-> 1. **Simulate Robot Code** → **Teleoperated** → **Drive** → **Enable**.
-> 2. Press **Z** and watch the **Distance** graph (already set up in the **Plot** window).
-> 3. The line goes up and ends at about **13**, not 12.
+> 1. Reset `kDriveSpeedSpeed` to 0.4 and delete any overshoot correction you may have done.
+> 2. **Simulate Robot Code** → **Teleoperated** → **Drive** → **Enable**.
+> 3. Press **Z** and watch the **Distance** graph (already set up in the **Plot** window).
+> 4. The line goes up and ends at about **13**, not 12.
 >
 > <img src="images/t2-step1-overshoot.png" alt="Overshoot on the Distance graph" width="800"/>
 >
 > Graph looks flat or off-screen? Double-click it to re-fit.
 
-## The fix: PID
+## The fix: P(roportional) control
 
-Speed depends on how far you still have to go. Far away means fast; close means slow; on target means stop.
+We should automatically slow down as we get closer to the setpoint so that we don't overshoot. We can do this using a type of feedback control called *P control*, outlined below. It's called that because our output is *proportional* to our error. 
 
 ```mermaid
 flowchart LR
-    T["target<br/>12 in"] --> E(("error =<br/>target − distance"))
+    T["target<br/>12 in"] --> E(("error =<br/>setpoint − distance"))
     M["encoders<br/>distance"] --> E
     E --> P["speed = kP × error"]
     P --> R["Romi"]
     R --> M
 ```
 
-| Error (inches left) | Speed with kP = 0.2 |
-|---|---|
-| 12 | 2.4 → capped at our max speed, **0.6** |
-| 2 | **0.4** |
-| 0.5 | **0.1** |
-| 0 | **0** (stop) |
+| Error (inches left) | Speed with kP = 0.2                    |
+| ------------------- | -------------------------------------- |
+| 12                  | 2.4 → capped at our max speed, **0.6** |
+| 2                   | **0.4**                                |
+| 0.5                 | **0.1**                                |
+| 0                   | **0** (stop)                           |
 
-That's the **P** in PID. **I** and **D** are extra tweaks; we mostly leave them at 0.
+That's the **P** in PID. We will learn more about the **I** and **D** terms later. Leave them at 0 for now.
 
 ---
 
@@ -56,7 +62,7 @@ That's the **P** in PID. **I** and **D** are extra tweaks; we mostly leave them 
 
 ```java
     // Drive PID
-    public static final double kDriveP = 0.2;
+    public static final double kDriveP = 0.1;
     public static final double kDriveI = 0;
     public static final double kDriveD = 0;
     public static final double kDriveToleranceInches = 0.5; // "close enough"
@@ -67,7 +73,7 @@ That's the **P** in PID. **I** and **D** are extra tweaks; we mostly leave them 
 ### 2b. In `RomiDrivetrain.java`, add the imports (skip any VS Code already added)
 
 ```java
-import static org.wpilib.units.Units.Seconds; // 👈 put this one next to the other "import static" line
+import static org.wpilib.units.Units.Seconds; // place next to other "import static" line
 import org.wpilib.math.controller.PIDController;
 import org.wpilib.tunable.Tunables;
 ```
@@ -85,43 +91,93 @@ import org.wpilib.tunable.Tunables;
     Tunables.publish("Drive PID", drivePID); // lets you change P, I, D live in the sim window
 ```
 
-### 2e. Add the command (below `driveForward`)
+### 2e. driveForwardPID()
+
+Use WPILib's `PIDController` to drive forward using P control. This time, instead of us, showing you how to use it, you will learn how to yourself by reading WPILib's *documentation*. Documentation is like a manual for some code that someone else has written. It will become important for you to understand how to read *documentation* so that you can find information yourself. 
+
+[Link to WPILib Documentation](https://github.wpilib.org/allwpilib/docs/beta/java/index.html). Search up `PIDController`.
+
 
 ```java
   /** Drives forward a distance using PID, so it slows down and stops right on target. */
   public Command driveForwardPID(double inches) {
     return run(coroutine -> {
-          double target = getAverageDistanceInches() + inches;
-          drivePID.reset();
-          drivePID.setSetpoint(target);
 
-          while (!drivePID.atSetpoint()) {
-            double speed = drivePID.calculate(getAverageDistanceInches());
-            speed = Math.clamp(speed, -kMaxDrivePIDSpeed, kMaxDrivePIDSpeed);
-            arcadeDrive(speed, 0);
+          // 1. Calculate the setpoint by adding the target to the current distance.
 
-            Telemetry.log("Drive Target (in)", target);
+          // 2. Reset the PID Controller.
+          // 3. Set the PID Controller's setpoint.
+
+          while (/*4. Check stop condition*/) {
+
+            // 5. Calculate the output using the PID Controller
+            // 6. Clamp the output between -1 and 1 using Math.clamp()
+            // 7. Drive forward using arcadeDrive();
+
+
+            // 8. Log the error and setpoint using Telemetry.log()
+            // as "Drive Setpoint (in)" and "Drive Error (in)"
+
             coroutine.yield();
           }
 
-          stop();
+          // 8. Stop the motors using stop()
         })
         .named("Drive Forward PID")
         .withTimeout(Seconds.of(3)); // give up after 3 seconds, just in case
   }
 ```
 
-| Line | Means |
-|---|---|
-| `setSetpoint(target)` | Where we want to end up |
-| `calculate(distance)` | Gives a speed: `kP × (target − distance)` |
-| `Math.clamp(...)` | Don't go faster than `kMaxDrivePIDSpeed` |
-| `atSetpoint()` | `true` when close enough **and** almost stopped |
+>[!WARNING] Setting a timeout
+> Safe code always sets a timeout. When things don't go according to plan, you should always have a backup plan or else the robot can keep going and do something dangerous.
 
-### 2f. Use it on the A button (in `DriveTeleop.java`, change the `faceDown` line)
+
+>[!TIP] Getting started with documentation
+> You may find the following function in PIDController useful: `reset()`. Try to find other functions that do what we're looking to do. Don't be afraid to ask for help if you need it. CTRL+F (or Cmd+F) is your friend.
+
+
+<details>
+<summary> Solution </summary> 
 
 ```java
-    // A button (Z on the keyboard): drive forward 12 inches with PID
+public Command driveForwardPID(double inches) {
+  return run(coroutine -> {
+        double setpoint = getAverageDistanceInches() + inches;
+        drivePID.reset();
+        drivePID.setSetpoint(setpoint);
+
+        while (!drivePID.atSetpoint()) {
+          double speed = drivePID.calculate(getAverageDistanceInches());
+          speed = Math.clamp(speed, -kMaxDrivePIDSpeed, kMaxDrivePIDSpeed);
+          arcadeDrive(speed, 0);
+
+          Telemetry.log("Drive Setpoint (in)", setpoint);
+          Telemetry.log("Drive Error (in)", getAverageDistanceInches() - setpoint);
+          
+          coroutine.yield();
+        }
+
+        stop();
+      })
+      .named("Drive Forward PID")
+      .withTimeout(Seconds.of(3)); // give up after 3 seconds, just in case
+}
+```
+
+| Line                    | Means                                                               |
+| ----------------------- | ------------------------------------------------------------------- |
+| `setSetpoint(setpoint)` | Where we want to end up                                             |
+| `calculate(distance)`   | Gives a speed: `kP × (target − distance)`                           |
+| `Math.clamp(...)`       | Stay betwen `-kMaxDrivePIDSpeed`  and `kMaxDrivePIDSpeed`           |
+| `atSetpoint()`          | `true` when error and speed is within the set tolerance. tolerance. |
+
+</details> <br>
+
+
+### 2f. Use it on the Z button (in `DriveTeleop.java`, change the `faceDown` line)
+
+```java
+    // Z button: drive forward 12 inches with P(ID) control
     controller.faceDown().onTrue(drivetrain.driveForwardPID(12));
 ```
 
@@ -134,28 +190,60 @@ import org.wpilib.tunable.Tunables;
 
 ---
 
-## Step 3: Tune it (no restarting!)
+## Step 3: Tune it
 
-In the **NetworkTables** window, under **Transitory Values**, open **Tunables → Drive PID** (collapse **Telemetry** if you can't see it). Click the number next to **p**, type a new value, press **Enter**. Then press **Z** again and watch the graph.
+Changing the value of kP adjusts how aggressive the P controller becomes.
 
-| Try kP = | What you'll see |
-|---|---|
-| **0.02** | 🐢 Too slow. Stops around 8–9 in, gives up after 3 s. |
-| **0.2** | ✅ Smooth, stops at 12 in about 1 s. |
-| **3** | 🏎️ Too jumpy. Shoots past 12, then backs up. |
-
-<img src="images/t2-step3-tunables.png" alt="Live tuning p" width="800"/>
+>### Try it yourself.
+> In the **NetworkTables** window, under **Transitory Values**, open **Tunables → Drive PID** (collapse **Telemetry** if you can't see it). Click the number next to **p**, type a new value, press **Enter**. Then press **Z** again and watch the graph.
+>
+>| kP       | What you'll see                                      |
+>| -------- | ---------------------------------------------------- |
+>| **0.02** | Too slow. Stops around 8–9 in, gives up after 3 s. |
+>| **3**    | Too jumpy. Shoots past 12, then backs up.          |
 
 > ### ✅ Checkpoint 3
 > You saw all three behaviors on the plot.
 >
 > When you find a value you like, **put it in `Constants.java`**. Live changes are lost when the sim restarts.
+> <img src="images/t2-step3-tunables.png" alt="Live tuning p" width="800"/>
+
+
+
+Now it's your turn. Try tuning the P value so that it's not too slow nor too jumpy.
+
+>[!WARNING] Always start small
+> Large values are jumpy which can be dangerous for larger robots and strong mechanisms (think of a 120 lb robot jittering instead of a small Romi). Moreover, this behavior introduce large forces for any control system and can damage it (this has happend more than once...)
+
+
+>[!NOTE] Motor Stalling and Deadband
+> For low values of kP, the motor stalls. The motor cannot 
+> output very small requested values because it has internal friction that keeps it from turning
+> at low power. All motors have a *deadband*, a range of values too small for them to output.
+
+>[!TIP] Tuning Values with Binary Search
+> Try averaging a value that is too much and a value that is too small. If the new value is too large, average it again with a smaller value you've tried. If it's too small, average it with a larger value you've tried. For example, we might average 3 and 0.02 to get ~1.5. If 1.5 is too high, we average it again with 0.02. If it's too low, we average it with 3. This way, you get closer by half each time and your search space decreases by half each time. This method is called *binary search*.
+
+<details>
+<summary> Solution </summary> 
+
+`kP = 0.2`
+
+</details> <br/>
+
+
 
 ---
 
-## Step 4: PID turn
+## Step 4: P(roporational) D(erivative) turn
 
 ### 4a. `Constants.java` (under the drive PID constants)
+
+Adding the D term adds damping to the system. The D stands for "derivative". You may not have heard of this term before but you can think abou this term as adding "damping". One way I like to visual a PD controller is as a "virtual" spring mass damper like below.
+
+<img src="images/spring-mass-damper.gif" alt="Spring mass damper cart" width="500"/>
+
+Let's get started. Add these constants to `src/main/java/frc/robot/Constants.java`.
 
 ```java
     // Turn PID
@@ -180,31 +268,45 @@ At the end of the constructor:
     Tunables.publish("Turn PID", turnPID);
 ```
 
-### 4c. The command (below `turnLeft`). It's the same pattern, using heading instead of distance.
+### 4c. Complete command (below `turnLeftPID()`). It's the same pattern as `driveForwarPID()` using heading instead of distance.
 
 ```java
-  /** Turns left (counter-clockwise) some degrees using PID. Negative degrees turn right. */
-  public Command turnLeftPID(double degrees) {
-    return run(coroutine -> {
-          double target = getHeadingDegrees() + degrees;
-          turnPID.reset();
-          turnPID.setSetpoint(target);
-
-          while (!turnPID.atSetpoint()) {
-            double speed = turnPID.calculate(getHeadingDegrees());
-            speed = Math.clamp(speed, -kMaxTurnPIDSpeed, kMaxTurnPIDSpeed);
-            arcadeDrive(0, speed);
-
-            Telemetry.log("Turn Target (deg)", target);
-            coroutine.yield();
-          }
-
-          stop();
-        })
-        .named("Turn Left PID")
-        .withTimeout(Seconds.of(3));
-  }
+/** Turns left (counter-clockwise) some degrees using PID. Negative degrees turn right. */
+public Command turnLeftPID(double degrees) {
+  return run(coroutine -> {
+        // Complete me
+      })
+      .named("Turn Left PID")
+      .withTimeout(Seconds.of(3));
+}
 ```
+
+<details>
+<summary> Solution </summary> 
+
+```java
+public Command turnLeftPID(double degrees) {
+  return run(coroutine -> {
+        double target = getHeadingDegrees() + degrees;
+        turnPID.reset();
+        turnPID.setSetpoint(target);
+
+        while (!turnPID.atSetpoint()) {
+          double speed = turnPID.calculate(getHeadingDegrees());
+          speed = Math.clamp(speed, -kMaxTurnPIDSpeed, kMaxTurnPIDSpeed);
+          arcadeDrive(0, speed);
+
+          Telemetry.log("Turn Setpoint (deg)", target);
+          Telemetry.log("Turn Error (deg)", target - getHeadingDegrees());
+          coroutine.yield();
+        }
+
+        stop();
+      })
+      .named("Turn Left PID")
+      .withTimeout(Seconds.of(3));
+```
+</details>
 
 ### 4d. `DriveTeleop.java`: change the `faceRight` line
 
@@ -222,7 +324,27 @@ At the end of the constructor:
 
 ## Step 5: A real square
 
-New file **`opmodes/SquarePIDAuto.java`** (like Task 1 Step 2c), then select all and replace with this. It's `SquareAuto` with the PID commands:
+Create a new file **`opmodes/SquarePIDAuto.java`** (like Task 1 Step 2c). It's quite similar to the square auto we already did. Do you think you can do it from scratch this time? As a robot programmer, you should start to get familiar as you will be using `OpMode`s and `Command`s quite a bit. Try to do it without looking back from memory. Only look back if you really can't figure out. Remember, struggling is part of what helps you remember. The solution is right below but you're only cheating yourself.
+
+```java
+package frc.robot.opmodes;
+
+import frc.robot.Robot;
+import org.wpilib.command3.Command;
+import org.wpilib.command3.Scheduler;
+import org.wpilib.opmode.Autonomous;
+import org.wpilib.opmode.OpMode;
+
+/** Shows up as "Square PID" in the Autonomous list of the sim window. */
+@Autonomous(name = "Square PID")
+public class SquarePIDAuto implements OpMode {
+  // Complete me
+}
+```
+
+
+<details>
+<summary> Solution </summary> 
 
 ```java
 package frc.robot.opmodes;
@@ -261,6 +383,10 @@ public class SquarePIDAuto implements OpMode {
 }
 ```
 
+</details>
+
+
+
 > ### ✅ Checkpoint 5: Race them!
 > Restart the sim. Run **Autonomous → Square**, then restart and run **Autonomous → Square PID**.
 >
@@ -274,15 +400,16 @@ public class SquarePIDAuto implements OpMode {
 
 ---
 
-## 🎉 Done!
+## End of Task 2
 
-| You learned | Code |
-|---|---|
-| P control: speed grows with error | `new PIDController(kP, kI, kD)` |
-| When to stop | `setTolerance(...)`, `atSetpoint()` |
-| Speed limits | `Math.clamp(...)` |
-| Live tuning | `Tunables.publish(...)` |
-| Safety timeout | `.withTimeout(Seconds.of(3))` |
+| You learned                                     | Code                                |
+| ----------------------------------------------- | ----------------------------------- |
+| P control: speed grows with error               | `new PIDController(kP, kI, kD)`     |
+| PD control: speed grows with error, damped by D | `new PIDController(kP, kI, kD)`     |
+| When to stop                                    | `setTolerance(...)`, `atSetpoint()` |
+| Speed limits                                    | `Math.clamp(...)`                   |
+| Live tuning                                     | `Tunables.publish(...)`             |
+| Safety timeout                                  | `.withTimeout(Seconds.of(3))`       |
 
 ### Challenges (optional)
 Answers (tested in the sim) are in [`challenges/`](challenges) — try first!
@@ -295,11 +422,11 @@ Answers (tested in the sim) are in [`challenges/`](challenges) — try first!
 <details>
 <summary>❌ Something's wrong?</summary>
 
-| Problem | Fix |
-|---|---|
-| `Math.clamp` not found | You need Java 21+. Use the WPILib 2027 VS Code. |
+| Problem                                          | Fix                                                                 |
+| ------------------------------------------------ | ------------------------------------------------------------------- |
+| `Math.clamp` not found                           | You need Java 21+. Use the WPILib 2027 VS Code.                     |
 | Command never ends (Romi sits still near target) | kP is too small to beat friction. Raise kP, or raise the tolerance. |
-| Romi shakes back and forth | kP too big → lower it, or add a little D. |
-| No **Tunables** folder | Did you add `Tunables.publish(...)` to the constructor? |
+| Romi shakes back and forth                       | kP too big → lower it, or add a little D.                           |
+| No **Tunables** folder                           | Did you add `Tunables.publish(...)` to the constructor?             |
 
 </details>
