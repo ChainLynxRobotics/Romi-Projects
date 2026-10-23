@@ -4,31 +4,53 @@
 
 package first.robot;
 
-import first.robot.subsystems.RomiDrivetrain;
+import first.robot.mechanisms.RomiDrivetrain;
+import first.robot.sim.RomiSimulator;
+import org.wpilib.command3.Scheduler;
+import org.wpilib.command3.button.CommandGamepad;
 import org.wpilib.framework.OpModeRobot;
+import org.wpilib.system.DataLogManager;
 
 /**
- * The methods in this class are called automatically corresponding to each mode, as described in
- * the TimedRobot documentation. If you change the name of this class or the package after creating
- * this project, you must also update the Main.java file in the project.
+ * The Robot holds everything the robot is made of (mechanisms, controllers).
+ *
+ * <p>OpModes (Teleop and Autonomous classes) get this Robot passed to them, so they can use
+ * everything in here.
  */
 public class Robot extends OpModeRobot {
-
+  // ---- Mechanisms ----
   public final RomiDrivetrain drivetrain = new RomiDrivetrain();
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
-  public Robot() {}
+  // ---- Controllers ----
+  public final CommandGamepad controller = new CommandGamepad(0);
 
-  /**
-   * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
-   * that you want ran during disabled, autonomous, teleoperated and utility.
-   *
-   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
-   * SmartDashboard integrated updating.
-   */
+  // ---- Simulator (don't change) ----
+  private final RomiSimulator simulator = new RomiSimulator();
+
+  public Robot() {
+    // Record every run to a log file in the "logs" folder, so you can look at it later
+    DataLogManager.start();
+  }
+
+  /** Runs every 20 ms, no matter what mode the robot is in. */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    // Runs all the commands. Without this line, nothing happens!
+    Scheduler.getDefault().run();
+
+    drivetrain.logTelemetry();
+  }
+
+  /** Runs once every time the robot is disabled. */
+  @Override
+  public void disabledInit() {
+    // Stop every command when the robot is disabled.
+    Scheduler.getDefault().cancelAll();
+  }
+
+  /** Runs every 20 ms in simulation only. */
+  @Override
+  public void simulationPeriodic() {
+    simulator.update();
+  }
 }

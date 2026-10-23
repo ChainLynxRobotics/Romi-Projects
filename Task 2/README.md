@@ -2,28 +2,28 @@
 
 **You'll build:** drive and turn commands that slow down and stop *exactly* on target, plus a square that's actually square.
 
-**Time:** about 1 hour · **Need:** your finished [Task 1](../Task%201/Instructions.md) project (or copy [`Task 1/Solution`](../Task%201/Solution)).
+**Time:** about 1 hour · **Need:** your finished [Task 1](../Task%201/README.md) project (or copy [`Task 1/Solution`](../Task%201/Solution)).
 
-> [!TIP] 
-Stuck? Each step has a finished copy in [`checkpoints/`](checkpoints).
+> [!TIP]
+> Stuck? Each step has a finished copy in [`checkpoints/`](checkpoints).
 
 ---
 
 ## Step 1: See the problem
 
-In Task 1, we fixed the `driveForward()` overshoot when it stopped *after* it passes 12 by changing it so that it stops before 12, but saw that the amount you need to stop early by changes when you go faster, but also is most accurate when you move *very slowly*. We will now show you a better method using *feedback control*. Feedback control works by using information about where we're at to adjust our output (think about the robot recieving "feedback" about how close it is getting to its target).
+In Task 1, we fixed the `driveForward()` overshoot when it stopped *after* it passes 12 by changing it so that it stops before 12, but saw that the amount you need to stop early by changes when you go faster, but also is most accurate when you move *very slowly*. We will now show you a better method using *feedback control*. Feedback control works by using information about where we're at to adjust our output (think about the robot receiving "feedback" about how close it is getting to its target).
 
 ### Terms to know
 | Word             | Means                                                                                                     |
 | ---------------- | --------------------------------------------------------------------------------------------------------- |
 | Setpoint         | The target value for a control system.                                                                    |
-| Overshoot        | (The amount) a control system goes over the septoint.                                                     |
+| Overshoot        | (The amount) a control system goes over the setpoint.                                                     |
 | Undershoot       | (The amount) a control system goes under the setpoint.                                                    |
 | Error            | The difference between a control system's current value and its setpoint                                  |
-| Feedback control | A method of control where that uses information about the error to drive a a control system to a setpoint |
+| Feedback control | A method of control that uses information about the error to drive a control system to a setpoint |
 
 > ### ✅ Checkpoint 1: See the overshoot
-> 1. Reset `kDriveSpeedSpeed` to 0.4 and delete any overshoot correction you may have done.
+> 1. Reset `kDefaultDriveSpeed` to 0.4 and delete any overshoot correction you may have done.
 > 2. **Simulate Robot Code** → **Teleoperated** → **Drive** → **Enable**.
 > 3. Press **Z** and watch the **Distance** graph (already set up in the **Plot** window).
 > 4. The line goes up and ends at about **13**, not 12.
@@ -93,7 +93,7 @@ import org.wpilib.tunable.Tunables;
 
 ### 2e. driveForwardPID()
 
-Use WPILib's `PIDController` to drive forward using P control. This time, instead of us, showing you how to use it, you will learn how to yourself by reading WPILib's *documentation*. Documentation is like a manual for some code that someone else has written. It will become important for you to understand how to read *documentation* so that you can find information yourself. 
+Use WPILib's `PIDController` to drive forward using P control. This time, instead of us showing you how to use it, you will learn how yourself by reading WPILib's *documentation*. Documentation is like a manual for some code that someone else has written. It will become important for you to understand how to read *documentation* so that you can find information yourself. 
 
 [Link to WPILib Documentation](https://github.wpilib.org/allwpilib/docs/beta/java/index.html). Search up `PIDController`.
 
@@ -128,11 +128,13 @@ Use WPILib's `PIDController` to drive forward using P control. This time, instea
   }
 ```
 
->[!WARNING] Setting a timeout
+> [!WARNING]
+> **Setting a timeout**
 > Safe code always sets a timeout. When things don't go according to plan, you should always have a backup plan or else the robot can keep going and do something dangerous.
 
 
->[!TIP] Getting started with documentation
+> [!TIP]
+> **Getting started with documentation**
 > You may find the following function in PIDController useful: `reset()`. Try to find other functions that do what we're looking to do. Don't be afraid to ask for help if you need it. CTRL+F (or Cmd+F) is your friend.
 
 
@@ -152,7 +154,7 @@ public Command driveForwardPID(double inches) {
           arcadeDrive(speed, 0);
 
           Telemetry.log("Drive Setpoint (in)", setpoint);
-          Telemetry.log("Drive Error (in)", getAverageDistanceInches() - setpoint);
+          Telemetry.log("Drive Error (in)", setpoint - getAverageDistanceInches());
           
           coroutine.yield();
         }
@@ -167,9 +169,9 @@ public Command driveForwardPID(double inches) {
 | Line                    | Means                                                               |
 | ----------------------- | ------------------------------------------------------------------- |
 | `setSetpoint(setpoint)` | Where we want to end up                                             |
-| `calculate(distance)`   | Gives a speed: `kP × (target − distance)`                           |
-| `Math.clamp(...)`       | Stay betwen `-kMaxDrivePIDSpeed`  and `kMaxDrivePIDSpeed`           |
-| `atSetpoint()`          | `true` when error and speed is within the set tolerance. tolerance. |
+| `calculate(distance)`   | Gives a speed: `kP × (setpoint − distance)`                           |
+| `Math.clamp(...)`       | Stay between `-kMaxDrivePIDSpeed` and `kMaxDrivePIDSpeed`           |
+| `atSetpoint()`          | `true` when error and speed is within the set tolerance.           |
 
 </details> <br>
 
@@ -182,7 +184,7 @@ public Command driveForwardPID(double inches) {
 ```
 
 > ### ✅ Checkpoint 2
-> Press **Z**. On the **Distance** graph, the **Drive Target** line jumps to the target.
+> Press **Z**. On the **Distance** graph, the **Drive Setpoint** line jumps to the setpoint.
 >
 > The distance line curves up and **flattens right on the target line**, at about 12.0.
 >
@@ -212,16 +214,19 @@ Changing the value of kP adjusts how aggressive the P controller becomes.
 
 Now it's your turn. Try tuning the P value so that it's not too slow nor too jumpy.
 
->[!WARNING] Always start small
-> Large values are jumpy which can be dangerous for larger robots and strong mechanisms (think of a 120 lb robot jittering instead of a small Romi). Moreover, this behavior introduce large forces for any control system and can damage it (this has happend more than once...)
+> [!WARNING]
+> **Always start small**
+> Large values are jumpy which can be dangerous for larger robots and strong mechanisms (think of a 120 lb robot jittering instead of a small Romi). Moreover, this behavior introduces large forces for any control system and can damage it (this has happened more than once...)
 
 
->[!NOTE] Motor Stalling and Deadband
+> [!NOTE]
+> **Motor Stalling and Deadband**
 > For low values of kP, the motor stalls. The motor cannot 
 > output very small requested values because it has internal friction that keeps it from turning
 > at low power. All motors have a *deadband*, a range of values too small for them to output.
 
->[!TIP] Tuning Values with Binary Search
+> [!TIP]
+> **Tuning Values with Binary Search**
 > Try averaging a value that is too much and a value that is too small. If the new value is too large, average it again with a smaller value you've tried. If it's too small, average it with a larger value you've tried. For example, we might average 3 and 0.02 to get ~1.5. If 1.5 is too high, we average it again with 0.02. If it's too low, we average it with 3. This way, you get closer by half each time and your search space decreases by half each time. This method is called *binary search*.
 
 <details>
@@ -235,15 +240,15 @@ Now it's your turn. Try tuning the P value so that it's not too slow nor too jum
 
 ---
 
-## Step 4: P(roporational) D(erivative) turn
+## Step 4: P(roportional) D(erivative) turn
 
 ### 4a. `Constants.java` (under the drive PID constants)
 
-Adding the D term adds damping to the system. The D stands for "derivative". You may not have heard of this term before but you can think abou this term as adding "damping". One way I like to visual a PD controller is as a "virtual" spring mass damper like below.
+Adding the D term adds damping to the system. The D stands for "derivative". You may not have heard of this term before but you can think about this term as adding "damping". One way I like to visualize a PD controller is as a "virtual" spring mass damper like below.
 
 <img src="images/spring-mass-damper.gif" alt="Spring mass damper cart" width="500"/>
 
-Let's get started. Add these constants to `src/main/java/frc/robot/Constants.java`.
+Let's get started. Add these constants to `src/main/java/first/robot/Constants.java`.
 
 ```java
     // Turn PID
@@ -268,7 +273,7 @@ At the end of the constructor:
     Tunables.publish("Turn PID", turnPID);
 ```
 
-### 4c. Complete command (below `turnLeftPID()`). It's the same pattern as `driveForwarPID()` using heading instead of distance.
+### 4c. Complete the command (below `turnLeft`). It's the same pattern as `driveForwardPID()` using heading instead of distance.
 
 ```java
 /** Turns left (counter-clockwise) some degrees using PID. Negative degrees turn right. */
@@ -287,17 +292,17 @@ public Command turnLeftPID(double degrees) {
 ```java
 public Command turnLeftPID(double degrees) {
   return run(coroutine -> {
-        double target = getHeadingDegrees() + degrees;
+        double setpoint = getHeadingDegrees() + degrees;
         turnPID.reset();
-        turnPID.setSetpoint(target);
+        turnPID.setSetpoint(setpoint);
 
         while (!turnPID.atSetpoint()) {
           double speed = turnPID.calculate(getHeadingDegrees());
           speed = Math.clamp(speed, -kMaxTurnPIDSpeed, kMaxTurnPIDSpeed);
           arcadeDrive(0, speed);
 
-          Telemetry.log("Turn Setpoint (deg)", target);
-          Telemetry.log("Turn Error (deg)", target - getHeadingDegrees());
+          Telemetry.log("Turn Setpoint (deg)", setpoint);
+          Telemetry.log("Turn Error (deg)", setpoint - getHeadingDegrees());
           coroutine.yield();
         }
 
@@ -327,9 +332,9 @@ public Command turnLeftPID(double degrees) {
 Create a new file **`opmodes/SquarePIDAuto.java`** (like Task 1 Step 2c). It's quite similar to the square auto we already did. Do you think you can do it from scratch this time? As a robot programmer, you should start to get familiar as you will be using `OpMode`s and `Command`s quite a bit. Try to do it without looking back from memory. Only look back if you really can't figure out. Remember, struggling is part of what helps you remember. The solution is right below but you're only cheating yourself.
 
 ```java
-package frc.robot.opmodes;
+package first.robot.opmodes;
 
-import frc.robot.Robot;
+import first.robot.Robot;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Scheduler;
 import org.wpilib.opmode.Autonomous;
@@ -347,9 +352,9 @@ public class SquarePIDAuto implements OpMode {
 <summary> Solution </summary> 
 
 ```java
-package frc.robot.opmodes;
+package first.robot.opmodes;
 
-import frc.robot.Robot;
+import first.robot.Robot;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Scheduler;
 import org.wpilib.opmode.Autonomous;
@@ -417,7 +422,7 @@ Answers (tested in the sim) are in [`challenges/`](challenges) — try first!
 - Put `driveForwardPID(-12)` on the **Y** button (**V** key). Do you need to change any PID code? Why or why not?
 - On a **real Romi**, re-tune `kDriveP` and `kTurnP`. Real motors aren't the same as the sim's.
 
-**Next:** [Task 3: Odometry & Paths](../Task%203/Instructions.md)
+**Next:** [Task 3: Odometry & Paths](../Task%203/README.md)
 
 <details>
 <summary>❌ Something's wrong?</summary>

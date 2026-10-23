@@ -2,7 +2,7 @@
 
 **You'll build:** a map that shows where your Romi *thinks* it is, smooth curvy paths drawn on the map, and an autonomous that follows them.
 
-**Time:** about 1–1.5 hours · **Need:** your finished [Task 2](../Task%202/Instructions.md) project (or copy [`Task 2/Solution`](../Task%202/Solution)).
+**Time:** about 1–1.5 hours · **Need:** your finished [Task 2](../Task%202/README.md) project (or copy [`Task 2/Solution`](../Task%202/Solution)).
 
 > Stuck? Each step has a finished copy in [`checkpoints/`](checkpoints).
 
@@ -23,7 +23,7 @@ flowchart LR
 
 ### 1a. `Constants.java`
 
-Add the imports at the top (under `package frc.robot;`):
+Add the imports at the top (under `package first.robot;`):
 
 ```java
 import org.wpilib.math.geometry.Pose2d;
@@ -190,9 +190,9 @@ import org.wpilib.math.trajectory.TrajectoryConfig;
 (Like Task 1 Step 2c: **New File** icon, then select all and replace with:)
 
 ```java
-package frc.robot.opmodes;
+package first.robot.opmodes;
 
-import frc.robot.Robot;
+import first.robot.Robot;
 import java.util.List;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
@@ -347,9 +347,9 @@ Combine everything: follow a path, PID-turn around, follow a path back.
 New file **`opmodes/ThereAndBackAuto.java`** (New File icon, select all, replace):
 
 ```java
-package frc.robot.opmodes;
+package first.robot.opmodes;
 
-import frc.robot.Robot;
+import first.robot.Robot;
 import java.util.List;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Scheduler;

@@ -15,7 +15,7 @@ java {
     targetCompatibility = JavaVersion.VERSION_25
 }
 
-def ROBOT_MAIN_CLASS = "frc.robot.Main"
+def ROBOT_MAIN_CLASS = "first.robot.Main"
 
 // Set this to true to enable desktop support.
 def includeDesktopSupport = true

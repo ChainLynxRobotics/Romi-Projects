@@ -1,6 +1,6 @@
-package frc.robot.opmodes;
+package first.robot.opmodes;
 
-import frc.robot.Robot;
+import first.robot.Robot;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Scheduler;
 import org.wpilib.opmode.Autonomous;

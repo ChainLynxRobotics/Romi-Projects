@@ -95,7 +95,7 @@
        "name": "Average Distance (in)"
       },
       {
-       "id": "NT:/Telemetry/Drive Target (in)",
+       "id": "NT:/Telemetry/Drive Setpoint (in)",
        "color": [
         1.0,
         0.5,
@@ -103,7 +103,7 @@
         1
        ],
        "weight": 2.0,
-       "name": "Drive Target (in)"
+       "name": "Drive Setpoint (in)"
       }
      ],
      "axis": [
@@ -139,7 +139,7 @@
        "name": "Heading (deg)"
       },
       {
-       "id": "NT:/Telemetry/Turn Target (deg)",
+       "id": "NT:/Telemetry/Turn Setpoint (deg)",
        "color": [
         1.0,
         0.5,
@@ -147,7 +147,7 @@
         1
        ],
        "weight": 2.0,
-       "name": "Turn Target (deg)"
+       "name": "Turn Setpoint (deg)"
       }
      ],
      "axis": [

@@ -2,7 +2,7 @@
 
 **You'll build:** joystick driving · a "drive 12 inches" button · a "turn 90°" button · measuring and fixing turn overshoot · an autonomous that drives a square.
 
-**Time:** about 1 hour · **Need:** [Task 0](../Task%200/Instructions.md) done. A Romi is optional, because the Template includes a pretend Romi.
+**Time:** about 1 hour · **Need:** [Task 0](../Task%200/README.md) done. A Romi is optional, because the Template includes a pretend Romi.
 
 > [!TIP] 
 Stuck? Each step has a finished copy in [`checkpoints/`](checkpoints).
@@ -67,7 +67,7 @@ Don't want to click <img src="./wpilib%20logo.png" alt="WPILib logo" width="18"/
 
 ### 2a. Add the controller to `Robot.java`
 
-All the code is in **`src/main/java/frc/robot/`**.
+All the code is in **`src/main/java/first/robot/`**.
 
 >[!TIP]
 VSCode will give suggestions as you type. If you take a suggestion that needs an `import` using the enter key, it will add the `import` lines for you.
@@ -126,9 +126,9 @@ Click **`Robot.java`** in the Explorer (the file list on the left), then click t
 VS Code fills the new file with starter code: press **⌘A** (Mac) / **Ctrl+A** (Windows) to select it all, then paste this over it:
 
 ```java
-package frc.robot.opmodes;
+package first.robot.opmodes;
 
-import frc.robot.Robot;
+import first.robot.Robot;
 import org.wpilib.opmode.OpMode;
 import org.wpilib.opmode.Teleop;
 
@@ -227,9 +227,9 @@ public double getAverageDistanceInches() {
 ```java
 public Command driveForward(double inches) {
   return run(coroutine -> {
-        double start_distance = getAverageDistanceInches();
+        double start = getAverageDistanceInches();
 
-        while (getAverageDistanceInches() - start_distance < inches) {
+        while (getAverageDistanceInches() - start < inches) {
           arcadeDrive(kDefaultDriveSpeed, 0);
           coroutine.yield(); // wait 20 ms, let everything else run, then keep going
         }
@@ -343,9 +343,9 @@ Add this method (above `// ---- Commands ----`):
 ```java
   public Command turnLeft(double degrees) {
     return run(coroutine -> {
-          double start_heading = getHeadingDegrees();
+          double start = getHeadingDegrees();
 
-          while (getHeadingDegrees() - start_heading < degrees) {
+          while (getHeadingDegrees() - start < degrees) {
             arcadeDrive(0, kDefaultRotSpeed);
             coroutine.yield();
           }
@@ -452,9 +452,9 @@ flowchart LR
 New file **`opmodes/SquareAuto.java`** (like Step 2c: click a file in `opmodes`, **New File** icon, then select all and replace):
 
 ```java
-package frc.robot.opmodes;
+package first.robot.opmodes;
 
-import frc.robot.Robot;
+import first.robot.Robot;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Scheduler;
 import org.wpilib.opmode.Autonomous;
@@ -548,7 +548,7 @@ Answers (tested in the sim) are in [`challenges/`](challenges) — try first!
 - Make a **Big Square** auto with 24-inch sides. (Hint: copy `SquareAuto`, change the name and the 12.)
 - Make a **Triangle** auto: 3 sides, 120° turns. Does your stop-early number still work for bigger turns?
 
-**Next:** [Task 2: PID](../Task%202/Instructions.md)
+**Next:** [Task 2: PID](../Task%202/README.md)
 
 <details>
 <summary>❌ Something's wrong?</summary>
@@ -556,7 +556,7 @@ Answers (tested in the sim) are in [`challenges/`](challenges) — try first!
 | Problem                            | Fix                                                                                                               |
 | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | Red squiggles under a word         | Missing `import`. Hover → **Quick Fix** → pick the `org.wpilib...` one.                                           |
-| **Drive** isn't in the OpMode list | The file must be inside `frc/robot/opmodes`, and the class must be `public` with `@Teleop`.                       |
+| **Drive** isn't in the OpMode list | The file must be inside `first/robot/opmodes`, and the class must be `public` with `@Teleop`.                       |
 | Keys do nothing                    | Click on the sim window first. Open **Joysticks** (bottom): **Keyboard 0** should be on **Joystick[0]**.          |
 | Pressing Z does nothing            | Did you add the `onTrue(...)` line? Are you in **Teleoperated → Drive** and **enabled**?                          |
 | Everything froze                   | A `while` loop is missing `coroutine.yield();`                                                                    |

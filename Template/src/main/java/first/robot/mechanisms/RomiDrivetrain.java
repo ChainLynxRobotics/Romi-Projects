@@ -2,9 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.mechanisms;
+package first.robot.mechanisms;
 
-import static frc.robot.Constants.DriveConstants.*;
+import static first.robot.Constants.DriveConstants.*;
 
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;

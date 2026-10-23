@@ -2,9 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.mechanisms;
+package first.robot.mechanisms;
 
-import static frc.robot.Constants.DriveConstants.*;
+import static first.robot.Constants.DriveConstants.*;
 import static org.wpilib.units.Units.Seconds;
 
 import java.util.function.DoubleSupplier;
@@ -118,16 +118,17 @@ public class RomiDrivetrain implements Mechanism {
   /** Drives forward a distance using PID, so it slows down and stops right on target. */
   public Command driveForwardPID(double inches) {
     return run(coroutine -> {
-          double target = getAverageDistanceInches() + inches;
+          double setpoint = getAverageDistanceInches() + inches;
           drivePID.reset();
-          drivePID.setSetpoint(target);
+          drivePID.setSetpoint(setpoint);
 
           while (!drivePID.atSetpoint()) {
             double speed = drivePID.calculate(getAverageDistanceInches());
             speed = Math.clamp(speed, -kMaxDrivePIDSpeed, kMaxDrivePIDSpeed);
             arcadeDrive(speed, 0);
 
-            Telemetry.log("Drive Target (in)", target);
+            Telemetry.log("Drive Setpoint (in)", setpoint);
+            Telemetry.log("Drive Error (in)", setpoint - getAverageDistanceInches());
             coroutine.yield();
           }
 
@@ -155,16 +156,17 @@ public class RomiDrivetrain implements Mechanism {
   /** Turns left (counter-clockwise) some degrees using PID. Negative degrees turn right. */
   public Command turnLeftPID(double degrees) {
     return run(coroutine -> {
-          double target = getHeadingDegrees() + degrees;
+          double setpoint = getHeadingDegrees() + degrees;
           turnPID.reset();
-          turnPID.setSetpoint(target);
+          turnPID.setSetpoint(setpoint);
 
           while (!turnPID.atSetpoint()) {
             double speed = turnPID.calculate(getHeadingDegrees());
             speed = Math.clamp(speed, -kMaxTurnPIDSpeed, kMaxTurnPIDSpeed);
             arcadeDrive(0, speed);
 
-            Telemetry.log("Turn Target (deg)", target);
+            Telemetry.log("Turn Setpoint (deg)", setpoint);
+            Telemetry.log("Turn Error (deg)", setpoint - getHeadingDegrees());
             coroutine.yield();
           }
 
