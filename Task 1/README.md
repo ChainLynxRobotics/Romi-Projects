@@ -103,6 +103,20 @@ Get started by adding the following code. Complete the `driveWithJoysticks` comm
   }
 ```
 
+<details>
+<summary> Solution </summary> 
+
+```java
+import java.util.function.DoubleSupplier; // add at the top 
+
+public Command driveWithJoysticks(DoubleSupplier forward, DoubleSupplier rotation) {
+  return runRepeatedly(() -> arcadeDrive(forward.getAsDouble(), rotation.getAsDouble()))
+      .named("Joystick Drive");
+}
+```
+
+</details>  <br>
+
 
 | Part                 | Means                                                                                                              |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------ |
@@ -123,7 +137,41 @@ Need a multiline lambda? Add braces! Like so:
 
 Click **`Robot.java`** in the Explorer (the file list on the left), then click the **New File** icon at the top of the Explorer and type **`opmodes/DriveTeleop.java`** (this makes the `opmodes` folder too). Press **Enter**.
 
-VS Code fills the new file with starter code: press **⌘A** (Mac) / **Ctrl+A** (Windows) to select it all, then paste this over it:
+VS Code fills the new file with some starter code. Replace it with this template. It will be your job to finish it. Set the default command on the drivetrain to the `driveWithJoysticks()` command we made on the `drivetrain`.
+
+```java
+package first.robot.opmodes;
+
+import first.robot.Robot;
+import org.wpilib.opmode.OpMode;
+import org.wpilib.opmode.Teleop;
+
+/** Shows up as "Drive" in the Teleop list of the sim window. */
+@Teleop(name = "Drive")
+public class DriveTeleop implements OpMode {
+  public DriveTeleop(Robot robot) {
+    var drivetrain = // Complete me.
+    var controller = robot.controller; 
+
+    // Call driveWithJoysticks
+    // Set forward to the left stick's y value and the rotation to the llefteft stick's X.
+    // The sticks are reversed, so make sure to add a minus sign.
+
+  }
+}
+```
+
+>[!TIP]
+> The drivetrain and controller can be accessed via the robot (e.g. `robot.subsystem`) lets you access subsystem. 
+> Set a default command for it using the `setDefaultcommand()` method.
+
+>[!TIP]
+> `robot.drivetrain.driveWithJoysticks()` needs two `DoubleSupplier`s. Provide a supplier by writing `() -> ...`. 
+> Replace the `...` with the (negative) value of the corresponding joystick.
+
+
+<details>
+<summary> Solution </summary> 
 
 ```java
 package first.robot.opmodes;
@@ -146,6 +194,8 @@ public class DriveTeleop implements OpMode {
   }
 }
 ```
+</details>  <br>
+
 
 **Default command** = what the drivetrain does when no other command is using it.
 
