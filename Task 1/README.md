@@ -25,7 +25,7 @@ flowchart LR
 | **Mechanism** | A part of the robot (like the drivetrain). Only **one command** can use it at a time. |
 | **OpMode**    | Config that defines how the robot should behave. Can be teleoperated or autonomous.   |
 
->[!NOTE]
+> [!NOTE]
 More information is available at: https://docs.wpilib.org/en/latest/docs/software/commandbased/commands-v3/index.html 
 
 ---
@@ -284,7 +284,7 @@ public Command driveForward(double inches) {
 | `coroutine.yield()`         | Pause this command here and hand control back to the scheduler. It can run other scheduled work, then resume this command later.      |
 | Scheduler                   | Manages which commands should run and when. Tries to give each command a chance to run every 20 ms, but slow commands can hold it up. |
 
->[!NOTE]
+> [!NOTE]
 > The Scheduler schedules commands *cooperatively*. This means that commands take turns running. A command tells the Scheduler its turn is done with `coroutine.yield()`. The scheduler tries to give each command a turn every 20 ms, but if some commands take a long time (they do too much before using `coroutine.yield()`) it can hold up the Scheduler. Most commands that you write should finish quickly so that other commands get a chance to run and the Scheduler can keep everything running on time.
 
 >[!WARNING]
@@ -457,21 +457,23 @@ while (getHeadingDegrees() - start < degrees - kTurnStopEarlyDegrees) {
 
 </details> <br>
 
->[!NOTE]
+> [!NOTE]
 > This is not a perfect solution and you should still expect some overshoot due to variations in the precise time the motor stops (remember that each command is run every 20 ms, so there is some room for variation in the exact point the stop() command is called).
-
-## Step 6: Measure and fix the overshoot in `driveForward()`
-
-Now it's your turn. Try and apply what you learned to see if you can improve the overshoot in `driveForward()`.
-
 
 >### ✅ Checkpoint 5
 >Restart the sim → **Teleoperated** → **Drive** → **Enable** → press **X** three times. Each turn is now about **90**. What happens if we change the speed?
 >
 >Change `kDefaultRotSpeed = 0.35` and restart the sim. It overshoots again (~97). Stop-early only fits one speed because faster speeds need to stop earlier. Slower speeds likewise need to stop a little later. Put it back to `0.2`; Task 2 fixes this for good.
 
->[!TIP]
-You stop faster when you're moving slower (go figure). If you set your default speed lower, you should see less overshoot at the start. Try `kDefaultRotSpeed = 0.035`. It will turn very slowly (~10x slower in fact), but should also overshoot by much less. Sometimes this is good enough! The same should be true for `kDefaultDriveSpeed`.
+> [!TIP]
+> You stop faster when you're moving slower (go figure). If you set your default speed lower, you should see less overshoot at the start. Try `kDefaultRotSpeed = 0.035`. It will turn very slowly (~10x slower in fact), but should also overshoot by much less. Sometimes this is good enough! The same should be true for `kDefaultDriveSpeed`.
+
+### 5d. Your turn: fix the overshoot in `driveForward()` (optional)
+
+Now it's your turn. Try and apply what you learned to see if you can improve the overshoot in `driveForward()`. Press **Z** a few times, measure how far past 12 the **Average Distance** goes, then stop that much earlier.
+
+> [!NOTE]
+> Task 2 starts by undoing this, so it can show you a better fix.
 
 
 ---
@@ -520,7 +522,7 @@ public class SquareAuto implements OpMode {
 }
 ```
 
->[!NOTE]
+> [!NOTE]
 > The commands you made earlier in the drivetrain can be accessed via `robot`. The drivetrain is part of the robot, so we can use `robot.drivetrain.driveForward()`  and `robot.drivetrain.turnLeft()` to access the commands you previously created.
 
 >[!TIP]
@@ -562,7 +564,7 @@ public void start() {
 
 ---
 
->[!NOTE]
+> [!NOTE]
 > OpMode code runs at two times: the **constructor** runs when you *pick* the mode, and **`start()`** runs when you press *Enable*.
 ---
 ## End of Task 1
