@@ -15,7 +15,7 @@ Learn to program robots with **Romis** and **WPILib 2027 Commands v3**. No Romi?
 
 | Folder | What |
 |---|---|
-| `Task 1/Template/` | Starting project. **Copy it** to begin Task 1. |
+| `Task N/Template/` | Starting project for that task. **Copy it** to begin. (Same as the previous task's Solution.) |
 | `Task N/README.md` | The tutorial |
 | `Task N/checkpoints/stepN/` | The code after each step. Compare if you get stuck. |
 | `Task N/Solution/` | Finished project for that task |

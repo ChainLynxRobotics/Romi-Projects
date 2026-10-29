@@ -2,7 +2,7 @@
 
 **You'll build:** a map that shows where your Romi *thinks* it is, smooth curvy paths drawn on the map, and an autonomous that follows them.
 
-**Time:** about 1–1.5 hours · **Need:** your finished [Task 2](../Task%202/README.md) project (or copy [`Task 2/Solution`](../Task%202/Solution)).
+**Time:** about 1–1.5 hours · **Need:** your finished [Task 2](../Task%202/README.md) project (or copy [`Task 3/Template`](Template)).
 
 > Stuck? Each step has a finished copy in [`checkpoints/`](checkpoints).
 
@@ -187,7 +187,7 @@ import org.wpilib.math.trajectory.TrajectoryConfig;
 
 ### 2e. New file **`opmodes/SCurveAuto.java`**
 
-(Like Task 1 Step 2c: **New File** icon, then select all and replace with:)
+(Like Task 1 Step 2b: **New File** icon, then select all and replace with:)
 
 ```java
 package first.robot.opmodes;

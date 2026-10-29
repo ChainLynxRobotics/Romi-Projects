@@ -65,41 +65,27 @@ Don't want to click <img src="./wpilib%20logo.png" alt="WPILib logo" width="18"/
 ## Step 2: Drive with a controller/keyboard
 
 
-### 2a. Add the controller to `Robot.java`
+All the code is in **`src/main/java/first/robot/`**. Your Template already has a controller in `Robot.java` (`robot.controller`) and an empty `// ---- Commands ----` section in `mechanisms/RomiDrivetrain.java`.
 
-All the code is in **`src/main/java/first/robot/`**.
+> [!TIP]
+> VSCode will give suggestions as you type. If you take a suggestion that needs an `import` using the enter key, it will add the `import` lines for you.
 
->[!TIP]
-VSCode will give suggestions as you type. If you take a suggestion that needs an `import` using the enter key, it will add the `import` lines for you.
-
-
-```java
-  import org.wpilib.command3.button.CommandGamepad; // add at the top 
-
-  // ---- Mechanisms ----
-  public final RomiDrivetrain drivetrain = new RomiDrivetrain();
-
-  // ---- Controllers ----                                      
-  public final CommandGamepad controller = new CommandGamepad(0); 
-```
-
-### 2b. Add a drive command to `mechanisms/RomiDrivetrain.java`
+### 2a. Add a drive command to `mechanisms/RomiDrivetrain.java`
 
 Get started by adding the following code. Complete the `driveWithJoysticks` command by following the example given in `exampleCommand`.
 
 ```java
   import java.util.function.DoubleSupplier; // add at the top 
 
-  // Add this **above** `logTelemetry()`:
-  // ---- Commands ----
+  // Add these under `// ---- Commands ----` (above `logTelemetry()`):
   public Command exampleCommand(DoubleSupplier supplier) {
-    return runRepeated(() -> System.out.println("Got " + supplier.getAsDouble() + " from the DoubleSupplier.")).named("Example Command");
+    return runRepeatedly(() -> System.out.println("Got " + supplier.getAsDouble() + " from the DoubleSupplier.")).named("Example Command");
   }
 
   /** Drives with the joysticks. Runs forever (until another command takes over). */
   public Command driveWithJoysticks(DoubleSupplier forward, DoubleSupplier rotation) {
     // Use runRepeatedly with a lambda that calls arcadeDrive with the latest values from both suppliers.
-    // Name the command "Drive With Joysticks"
+    // Name the command "Joystick Drive"
   }
 ```
 
@@ -133,7 +119,7 @@ Need a multiline lambda? Add braces! Like so:
 }
 ```
 
-### 2c. Make a Teleop OpMode
+### 2b. Make a Teleop OpMode
 
 Click **`Robot.java`** in the Explorer (the file list on the left), then click the **New File** icon at the top of the Explorer and type **`opmodes/DriveTeleop.java`** (this makes the `opmodes` folder too). Press **Enter**.
 
@@ -499,7 +485,7 @@ flowchart LR
     F1[forward 12] --> T1[left 90] --> F2[forward 12] --> T2[left 90] --> F3[forward 12] --> T3[left 90] --> F4[forward 12] --> T4[left 90]
 ```
 
-New file **`opmodes/SquareAuto.java`** (like Step 2c: click a file in `opmodes`, **New File** icon, then select all and replace):
+New file **`opmodes/SquareAuto.java`** (like Step 2b: click a file in `opmodes`, **New File** icon, then select all and replace):
 
 ```java
 package first.robot.opmodes;

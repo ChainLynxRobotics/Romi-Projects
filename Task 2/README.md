@@ -2,7 +2,7 @@
 
 **You'll build:** drive and turn commands that slow down and stop *exactly* on target, plus a square that's actually square.
 
-**Time:** about 1 hour · **Need:** your finished [Task 1](../Task%201/README.md) project (or copy [`Task 1/Solution`](../Task%201/Solution)).
+**Time:** about 1 hour · **Need:** your finished [Task 1](../Task%201/README.md) project (or copy [`Task 2/Template`](Template)).
 
 > [!TIP]
 > Stuck? Each step has a finished copy in [`checkpoints/`](checkpoints).
@@ -329,7 +329,7 @@ public Command turnLeftPID(double degrees) {
 
 ## Step 5: A real square
 
-Create a new file **`opmodes/SquarePIDAuto.java`** (like Task 1 Step 2c). It's quite similar to the square auto we already did. Do you think you can do it from scratch this time? As a robot programmer, you should start to get familiar as you will be using `OpMode`s and `Command`s quite a bit. Try to do it without looking back from memory. Only look back if you really can't figure out. Remember, struggling is part of what helps you remember. The solution is right below but you're only cheating yourself.
+Create a new file **`opmodes/SquarePIDAuto.java`** (like Task 1 Step 2b). It's quite similar to the square auto we already did. Do you think you can do it from scratch this time? As a robot programmer, you should start to get familiar as you will be using `OpMode`s and `Command`s quite a bit. Try to do it without looking back from memory. Only look back if you really can't figure out. Remember, struggling is part of what helps you remember. The solution is right below but you're only cheating yourself.
 
 ```java
 package first.robot.opmodes;
