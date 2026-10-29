@@ -32,7 +32,7 @@ More information is available at: https://docs.wpilib.org/en/latest/docs/softwar
 
 ## Step 1: Run the Template
 
-1. Copy the **`Template`** folder (put the copy right next to it) and rename the copy to **`MyRomi`**.
+1. Copy the **`Task 1/Template`** folder (put the copy right next to it) and rename the copy to **`MyRomi`**.
 2. WPILib VS Code → **File → Open Folder** → `MyRomi`.
 3. Click the <img src="./wpilib%20logo.png" alt="WPILib logo" width="18"/> (top right) → **Simulate Robot Code** (if it asks, tick **Sim GUI**). The first time takes a minute or two.
 4. To stop close the sim window.
