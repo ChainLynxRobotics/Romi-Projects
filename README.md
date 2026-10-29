@@ -4,15 +4,6 @@
 
 Learn to program robots with **Romis** and **WPILib 2027 Commands v3**. No Romi? No problem: every project includes a pretend Romi you can drive in the simulator.
 
-> 💡 **Tip:** Type the short snippets yourself. You'll learn way faster. For whole new files, pasting is fine.
-
-```mermaid
-flowchart LR
-    T0["<b>Task 0</b><br/>Set up laptop"] --> T1["<b>Task 1</b><br/>Drive with commands"]
-    T1 --> T2["<b>Task 2</b><br/>PID: stop on target"]
-    T2 --> T3["<b>Task 3</b><br/>Odometry & paths"]
-```
-
 | | Task | You'll make |
 |---|---|---|
 | 🛠️ | [Task 0: Configuring Computer](Task%200/README.md) | WPILib 2027, Git, the sim window |
