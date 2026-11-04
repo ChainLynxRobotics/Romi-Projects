@@ -8,6 +8,7 @@
 
 > Stuck? Each step has a finished copy in [`checkpoints/`](checkpoints).
 
+
 ---
 
 ## Step 1: Odometry ("where am I?")
