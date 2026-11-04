@@ -1,5 +1,7 @@
 # Task 0: Configuring Computer
 
+[Back to Overview](/README.md)
+
 ## Overview
 
 Bring your own laptop if you can (school laptops are locked down). You need **WPILib VS Code**: plain VS Code is missing the robot tools.
