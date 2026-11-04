@@ -1,5 +1,11 @@
 # Romi-Projects: 2027 (Commands v3)
 
+The Romi is a small and inexpensive robot designed for learning about programming FRC® robots. All the same tools used for programming full-sized FRC robots can be used to program the Romi. 
+
+![](https://docs.wpilib.org/en/stable/_images/romi.webp)
+
+[ROMI WPILIB Docs](https://docs.wpilib.org/en/stable/docs/romi-robot/index.html) for Reference
+
 > 📝 **Note:** This uses the **WPILib 2027 alpha**. On WPILib 2026? Use the [main tutorials](https://git.emeraldcityrobotics.org/chainlynx/Romi-Projects/src/branch/main) instead.
 
 Learn to program robots with **Romis** and **WPILib 2027 Commands v3**. No Romi? No problem: every project includes a pretend Romi you can drive in the simulator.
