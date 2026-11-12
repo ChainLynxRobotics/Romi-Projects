@@ -1,14 +1,29 @@
-# Romi-Projects
-Learn how to make robots move with Romis by learning WPILib command-based programming. You're greatly encouraged to type out the code as you're working through the examples to get a deeper understanding of how robot code works.
+# Romi-Projects: 2027 (Commands v3)
 
-## Task 1: Controlling Romi Drivetrain and Sensors
-Control the Romi differential drivetrain by using its gyroscope and encoders to keep track of its position and rotation.
+The Romi is a small and inexpensive robot designed for learning about programming FRC® robots. All the same tools used for programming full-sized FRC robots can be used to program the Romi. 
 
-## Task 2: Basic Control Systems (PID) 
-Implement PID to more precisely rotate and translate your robot to setpoints. 
+![](https://docs.wpilib.org/en/stable/_images/romi.webp)
 
-## Task 3: Path Planning
-Use Path Planner and its vendor dependency to control your robot in autonomous mode by configuring an Auto Builder.
+[ROMI WPILIB Docs](https://docs.wpilib.org/en/stable/docs/romi-robot/index.html) for Reference
 
-## Task 4: Advantage Kit/Advantage Scope and In-Depth Logging
-Create an abstraction between your hardware interface and your software commands to make your code more reusable and effectively log everything for quicker debugging. 
+> 📝 **Note:** This uses the **WPILib 2027 alpha**. On WPILib 2026? Use the [main tutorials](https://git.emeraldcityrobotics.org/chainlynx/Romi-Projects/src/branch/main) instead.
+
+Learn to program robots with **Romis** and **WPILib 2027 Commands v3**. No Romi? No problem: every project includes a pretend Romi you can drive in the simulator.
+
+| | Task | You'll make |
+|---|---|---|
+| 🛠️ | [Task 0: Configuring Computer](Task%200/README.md) | WPILib 2027, Git, the sim window |
+| 🕹️ | [Task 1: Drive with Commands](Task%201/README.md) | Joystick driving, "drive 12 in" / "turn 90°" buttons, a square auto |
+| 🎯 | [Task 2: PID](Task%202/README.md) | Commands that stop exactly on target, live tuning, a *real* square |
+| 🗺️ | [Task 3: Odometry & Paths](Task%203/README.md) | A live map of the Romi, curvy paths, a there-and-back auto |
+
+## What's in here
+
+| Folder | What |
+|---|---|
+| `Task N/Template/` | Starting project for that task. **Copy it** to begin. (Same as the previous task's Solution.) |
+| `Task N/README.md` | The tutorial |
+| `Task N/checkpoints/stepN/` | The code after each step. Compare if you get stuck. |
+| `Task N/Solution/` | Finished project for that task |
+
+Having trouble? See the [Troubleshooting Guide](Troubleshooting%20Guide.md).
