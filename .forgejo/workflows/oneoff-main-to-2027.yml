@@ -1,0 +1,48 @@
+# ONE-OFF: run by hand from the Actions tab ("Run workflow"); the merge commit it makes
+# removes this file again, so nothing is left behind.
+#
+# Makes `main` the 2027 (Commands v3) tutorials: main's tree becomes exactly the `2027`
+# branch's tree, plus the GitHub <-> Forgejo sync files. Old main files that 2027 does not
+# have (Template/, .DS_Store, old task folders, ...) are removed. Done as a real merge
+# commit (parents: previous main, 2027), so nothing is force-pushed, all history stays
+# reachable, PR #1 shows as merged, and the sync fast-forwards GitHub main.
+name: One-off — make main the 2027 branch
+
+on:
+  workflow_dispatch:
+
+jobs:
+  main-to-2027:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge 2027 into main taking 2027's tree wholesale, then push
+        env:
+          SRC_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          command -v git >/dev/null || { apt-get update -qq && apt-get install -y -qq git; }
+          t="${RUNNER_TEMP:-/tmp}"
+          printf '#!/bin/sh\nprintf %%s "$SRC_TOKEN"\n' > "$t/askpass"; chmod +x "$t/askpass"
+          export GIT_ASKPASS="$t/askpass" GIT_TERMINAL_PROMPT=0
+          git config --global user.name "Forgejo Actions"
+          git config --global user.email "actions@git.emeraldcityrobotics.org"
+          git clone --quiet --branch main "https://x@git.emeraldcityrobotics.org/${{ github.repository }}.git" "$t/repo"
+          cd "$t/repo"
+          git fetch --quiet origin 2027
+          echo "main: $(git rev-parse --short HEAD)   2027: $(git rev-parse --short origin/2027)"
+          if git merge-base --is-ancestor origin/2027 HEAD; then
+            echo "2027 is already merged into main - nothing to do."; exit 0
+          fi
+          # Merge commit with both parents, then replace the index+worktree with 2027's tree...
+          git merge --no-ff --no-commit -s ours origin/2027 >/dev/null
+          git read-tree -u --reset origin/2027
+          # ...keeping only the sync machinery from main (this one-off file is deliberately dropped).
+          git checkout HEAD -- scripts/git-sync.sh .forgejo/workflows/sync-to-github.yml .github/workflows/sync-to-forgejo.yml
+          git commit -q -m "Make main the 2027 (Commands v3) tutorials" \
+            -m "main's tree is now exactly the 2027 branch's tree plus the GitHub<->Forgejo sync files (scripts/git-sync.sh, .forgejo/workflows/sync-to-github.yml, .github/workflows/sync-to-forgejo.yml). Old files that 2027 does not have are removed. Merge commit; parents: previous main and 2027."
+          echo "== Difference between new main and 2027 (must be only the 3 sync files):"
+          git diff --stat origin/2027 HEAD
+          echo "== Paths removed from old main:"
+          git diff --diff-filter=D --name-only HEAD~1 HEAD
+          git push origin main
+          git log --oneline --graph -3
