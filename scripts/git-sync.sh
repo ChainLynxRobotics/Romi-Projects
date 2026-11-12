@@ -23,14 +23,21 @@
 #
 # What a push event syncs:
 #   * the ref that was just pushed (created on DST if it is new there), plus
-#   * every other branch/tag that already exists on BOTH hosts and differs — so a run
+#   * every other branch that exists on BOTH hosts where SRC is strictly ahead — so a run
 #     that was missed (runner down, token expired) is caught up by the next push.
-#   Branches that exist only on DST are left alone, so a branch deleted on SRC is not
-#   resurrected by unrelated pushes coming back from DST.
-# workflow_dispatch pushes every branch and tag (union of refs) — a manual catch-up.
+#   Branches where DST is ahead are reported and left alone (DST's own run brings them
+#   here). Branches that exist only on DST are left alone, so a branch deleted on SRC is
+#   not resurrected by unrelated pushes coming back from DST.
+# workflow_dispatch also pushes every branch/tag that is missing on DST — a manual catch-up.
 #
 # Why no loop: the push to DST triggers DST's copy of this workflow, which clones DST,
 # finds every ref already identical on SRC, and exits with "Nothing to sync".
+#
+# CAVEAT (both GitHub and Forgejo): a push only triggers the workflows that exist on the
+# pushed branch. So a push to a branch that does not contain this script and the workflow
+# files (e.g. an old feature branch) runs nothing; it is carried over by the next push to
+# main on that host (catch-up above). To make such a branch sync on its own pushes, merge
+# main into it once. Branches created from main after this landed sync on every push.
 #
 # Fixing a red run ("! [rejected] <branch> -> <branch> (fetch first)"):
 #   git clone https://git.emeraldcityrobotics.org/chainlynx/Romi-Projects.git && cd Romi-Projects
@@ -82,24 +89,45 @@ if [ "$EVENT" = "delete" ]; then
 fi
 
 # ---------------------------------------------------------------- push / dispatch
-want=()
+# Fetch the other host's branch tips (into a private namespace, no tags) so we can tell
+# "we are ahead" (push), "they are ahead" (they will push to us) and "diverged" (fail) apart.
+git fetch --quiet --no-tags "$DST_URL" '+refs/heads/*:refs/dst/heads/*' 2>/dev/null || true
+
+want=(); behind=(); diverged=()
 while IFS=' ' read -r sha ref; do
   case "$ref" in refs/heads/*|refs/tags/*) ;; *) continue ;; esac
   there="$(dst_sha "$ref")"
   [ "$there" = "$sha" ] && continue                          # identical on both hosts
-  if [ "$EVENT" = "workflow_dispatch" ] || [ -n "$there" ] || [ "$ref" = "${REF:-}" ]; then
-    want+=("$ref:$ref")
+  if [ -z "$there" ]; then                                   # not on the other host yet
+    if [ "$EVENT" = "workflow_dispatch" ] || [ "$ref" = "${REF:-}" ]; then want+=("$ref:$ref"); fi
+    continue
   fi
+  case "$ref" in
+    refs/tags/*) diverged+=("$ref (tag points at a different commit on each host)") ;;
+    *) if git merge-base --is-ancestor "$there" "$sha" 2>/dev/null; then
+         want+=("$ref:$ref")                                 # fast-forward: we are ahead
+       elif git merge-base --is-ancestor "$sha" "$there" 2>/dev/null; then
+         behind+=("$ref")                                    # they are ahead: nothing to do here
+       else
+         diverged+=("$ref")
+       fi ;;
+  esac
 done < <(git for-each-ref --format='%(objectname) %(refname)' refs/heads refs/tags)
 
-if [ "${#want[@]}" -eq 0 ]; then
+[ "${#behind[@]}" -gt 0 ] && echo "Other host is ahead on: ${behind[*]} (its own sync run brings those here)."
+
+if [ "${#want[@]}" -gt 0 ]; then
+  echo "Pushing (fast-forward only): ${want[*]}"
+  if ! git push "$DST_URL" "${want[@]}"; then
+    echo "::error::Push rejected (a push landed on the other host at the same moment?). Nothing was overwritten; the next sync run will retry."
+    exit 1
+  fi
+elif [ "${#diverged[@]}" -eq 0 ]; then
   echo "Nothing to sync — the other host already has everything."
-  exit 0
 fi
 
-echo "Pushing (fast-forward only): ${want[*]}"
-if ! git push "$DST_URL" "${want[@]}"; then
-  echo "::error::Push rejected — at least one branch has diverged between GitHub and Forgejo. Nothing was overwritten. Merge the two versions by hand (see the header of scripts/git-sync.sh) and push again."
+if [ "${#diverged[@]}" -gt 0 ]; then
+  echo "::error::DIVERGED between GitHub and Forgejo: ${diverged[*]} — commits exist on both hosts that the other lacks. Nothing was overwritten. Merge the two versions by hand (see the header of scripts/git-sync.sh) and push the merge to either host."
   exit 1
 fi
 echo "Done."
