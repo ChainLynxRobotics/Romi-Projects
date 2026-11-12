@@ -1,0 +1,54 @@
+# GitHub -> Forgejo half of the two-way sync.
+# Forgejo Actions also executes files in .github/workflows/, so the job is gated to
+# github.com (on Forgejo it shows up as "skipped"). The Forgejo -> GitHub half lives in
+# .forgejo/workflows/sync-to-github.yml.
+# Fast-forward only: a diverged branch makes this job fail instead of overwriting anything.
+# How it works, and how to fix a red run: see scripts/git-sync.sh.
+#
+# Needs one repo secret on GitHub (Settings -> Secrets and variables -> Actions):
+#   FORGEJO_SYNC_TOKEN  Forgejo access token with write:repository for chainlynx/Romi-Projects
+name: Sync to Forgejo
+
+on:
+  push:
+    branches: ['**']
+    tags: ['**']
+  delete:
+  workflow_dispatch:   # manual full catch-up: pushes every branch and tag
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-to-forgejo
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.server_url == 'https://github.com'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone this repo (bare)
+        env:
+          SRC_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          t="${RUNNER_TEMP:-/tmp}"
+          printf '#!/bin/sh\nprintf %%s "$SRC_TOKEN"\n' > "$t/askpass-src"; chmod +x "$t/askpass-src"
+          GIT_ASKPASS="$t/askpass-src" GIT_TERMINAL_PROMPT=0 \
+            git clone --bare --quiet "https://x-access-token@github.com/${{ github.repository }}.git" "$t/repo.git"
+          git --git-dir="$t/repo.git" show HEAD:scripts/git-sync.sh > "$t/git-sync.sh"
+
+      - name: Push to Forgejo (fast-forward only)
+        env:
+          DST_URL: https://x@git.emeraldcityrobotics.org/chainlynx/Romi-Projects.git
+          DST_TOKEN: ${{ secrets.FORGEJO_SYNC_TOKEN }}
+          EVENT: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          DEL_REF: ${{ github.event.ref }}
+          DEL_TYPE: ${{ github.event.ref_type }}
+          ON_DELETE: safe
+        run: |
+          set -eu
+          t="${RUNNER_TEMP:-/tmp}"
+          REPO_DIR="$t/repo.git" bash "$t/git-sync.sh"
